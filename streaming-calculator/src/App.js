@@ -1,5 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
+import * as streamingAvailability from "streaming-availability";
+
 
 function App() {
   return (
