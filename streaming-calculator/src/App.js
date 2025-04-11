@@ -19,7 +19,7 @@ function App() {
         >
           Learn React
         </a>
-        <text>Hola</text>
+        <text>Encestando con Patrick cada tirito que tengo (Vicentin)</text>
       </header>
     </div>
   );
