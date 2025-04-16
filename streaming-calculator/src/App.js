@@ -3,29 +3,59 @@ import './App.css';
 import * as api from './api.js';
 
 function App() {
-  const [title, setTitle] = useState(''); // Estado para almacenar el título
-  const [movies, setMovies] = useState([]); // Estado para almacenar las películas
+  const [title, setTitle] = useState('');
+  const [movies, setMovies] = useState([]);
+  const [cursor, setCursor] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [prevCursors, setPrevCursors] = useState([]);
 
+  // Cargar título al montar
   useEffect(() => {
     async function fetchData() {
-      const data = await api.getData(); // Llama a la función getData
-      setTitle(data); // Actualiza el estado con el título
+      const data = await api.getData();
+      setTitle(data);
     }
     fetchData();
+  }, []);
 
-    async function fetchMovies() {
-      const movieData = await api.getShows(); // Llama a la función getShows
-      setMovies(movieData); // Actualiza el estado con las películas
-    }
-    fetchMovies();
-  }, []); // Ejecuta solo una vez al montar el componente
+  // Cargar primera tanda de películas
+  useEffect(() => {
+    fetchInitialMovies();
+  }, []);
+
+  async function fetchInitialMovies() {
+    const result = await api.getShows();
+    setMovies(result.movies);
+    setHasMore(result.hasMore);
+    setCursor(result.nextCursor);
+  }
+
+  const handleNextPage = async () => {
+    if (!hasMore) return;
+    const result = await api.getShows(cursor);
+    setPrevCursors(prev => [...prev, cursor]);
+    setMovies(result.movies);
+    setHasMore(result.hasMore);
+    setCursor(result.nextCursor);
+  };
+
+  const handlePrevPage = async () => {
+    if (prevCursors.length === 0) return;
+    const prevCursor = prevCursors[prevCursors.length - 1];
+    const result = await api.getShows(prevCursor);
+    setPrevCursors(prev => prev.slice(0, -1));
+    setMovies(result.movies);
+    setHasMore(result.hasMore);
+    setCursor(result.nextCursor);
+  };
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Información de la Película</h1>
-        {title ? <p>{title}</p> : <p>Cargando...</p>} {/* Muestra el título o un mensaje de carga */}
+        {title ? <p>{title}</p> : <p>Cargando...</p>}
       </header>
+
       <div className="movie-grid">
         {movies.length > 0 ? (
           movies.map((movie, index) => (
@@ -40,6 +70,15 @@ function App() {
         ) : (
           <p>Cargando películas...</p>
         )}
+      </div>
+
+      <div className="pagination">
+        <button onClick={handlePrevPage} disabled={prevCursors.length === 0}>
+          Anterior
+        </button>
+        <button onClick={handleNextPage} disabled={!hasMore}>
+          Siguiente
+        </button>
       </div>
     </div>
   );
