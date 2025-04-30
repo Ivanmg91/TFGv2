@@ -3,20 +3,10 @@ import './App.css';
 import * as api from './api.js';
 
 function App() {
-  const [title, setTitle] = useState('');
   const [movies, setMovies] = useState([]);
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(false);
   const [prevCursors, setPrevCursors] = useState([]);
-
-  // Cargar título al montar
-  useEffect(() => {
-    async function fetchData() {
-      const data = await api.getData();
-      setTitle(data);
-    }
-    fetchData();
-  }, []);
 
   // Cargar primera tanda de películas
   useEffect(() => {
@@ -41,7 +31,7 @@ function App() {
 
   const handlePrevPage = async () => {
     if (prevCursors.length === 0) return;
-    const prevCursor = prevCursors[prevCursors.length - 1];
+    const prevCursor = prevCursors[prevCursors.length - 2];
     const result = await api.getShows(prevCursor);
     setPrevCursors(prev => prev.slice(0, -1));
     setMovies(result.movies);
@@ -53,13 +43,12 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Información de la Película</h1>
-        {title ? <p>{title}</p> : <p>Cargando...</p>}
       </header>
 
       <div className="movie-grid">
         {movies.length > 0 ? (
           movies.map((movie, index) => (
-            <div className="card" key={index}>
+            <div className="movie-card" key={index}>
               <img src={movie.poster} alt={movie.title} />
               <div className="card-content">
                 <h3 className="card-title">{movie.title}</h3>
