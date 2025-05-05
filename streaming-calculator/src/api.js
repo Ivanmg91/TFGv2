@@ -1,4 +1,5 @@
 import * as streamingAvailability from "streaming-availability";
+import './App.js';
 
 const RAPID_API_KEY = "e073b530e0msh5a489d58ded6fe2p167d0cjsn6e3a9bca4a92";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
@@ -13,11 +14,10 @@ export async function getData() {
   return data.originalTitle;
 }
 
-export async function getShows(cursor = null) {
+export async function getShows(cursor = null, selectedGenres = []) {
   const response = await client.showsApi.searchShowsByFilters({
-    country: "us",
-    catalogs: ["netflix"],
-    genres: ["action"],
+    country: "es",
+    genres: selectedGenres,
     showType: streamingAvailability.ShowType.Movie,
     orderBy: "popularity_1year",
     cursor: cursor,
@@ -28,6 +28,7 @@ export async function getShows(cursor = null) {
     title: movie.originalTitle,
     poster: movie.posterPath,
     description: movie.overview,
+    genres: movie.genres.map(genre => genre.name),
   }));
 
   return {
