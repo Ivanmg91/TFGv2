@@ -21,13 +21,6 @@ function App() {
     setCursor(result.nextCursor);
   }
 
-  async function fetchMovies() {
-    const result = await api.getShows(cursor, selectedGenres);
-    setMovies(result.movies);
-    setHasMore(result.hasMore);
-    setCursor(result.nextCursor);
-  }
-
   const handleNextPage = async () => {
     if (!hasMore) return;
     const result = await api.getShows(cursor, selectedGenres);
@@ -54,10 +47,19 @@ function App() {
     );
   };
 
-  const handleApplyFilters = () => {
+  const handleApplyFilters = async () => {
     console.log("Géneros seleccionados:", selectedGenres);
-    // Aquí puedes usar `selectedGenres` para filtrar las películas o realizar alguna acción
-    fetchMovies()
+  
+    // Restablecer el estado para comenzar desde la primera página
+    setCursor(null);
+    setMovies([]);
+    setPrevCursors([]);
+  
+    // Obtener las películas con los filtros aplicados desde la primera página
+    const result = await api.getShows(null, selectedGenres);
+    setMovies(result.movies);
+    setHasMore(result.hasMore);
+    setCursor(result.nextCursor);
   };
 
   return (
