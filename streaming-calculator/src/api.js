@@ -18,7 +18,6 @@ export async function getShows(cursor = null, selectedGenres = []) {
   const response = await client.showsApi.searchShowsByFilters({
     country: "es",
     genres: selectedGenres,
-    showType: streamingAvailability.ShowType.Movie,
     orderBy: "popularity_1year",
     cursor: cursor,
     outputLanguage: "es",
@@ -26,7 +25,7 @@ export async function getShows(cursor = null, selectedGenres = []) {
 
   const movies = response.shows.map(movie => ({
     title: movie.originalTitle,
-    poster: movie.posterPath,
+    poster: movie.imageSet.verticalPoster.w360,
     description: movie.overview,
     genres: movie.genres.map(genre => genre.name),
   }));
