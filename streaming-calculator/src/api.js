@@ -14,20 +14,49 @@ export async function getData() {
   return data.originalTitle;
 }
 
-export async function getShows(cursor = null, selectedGenres = []) {
+export async function getShowsByFilters(cursor = null, selectedGenres = []) {
   const response = await client.showsApi.searchShowsByFilters({
     country: "es",
     genres: selectedGenres,
-    orderBy: "popularity_1year",
+    orderBy: "popularity_1year", // Editar
     cursor: cursor,
     outputLanguage: "es",
   });
 
   const movies = response.shows.map(movie => ({
     title: movie.originalTitle,
-    poster: movie.imageSet.verticalPoster.w360,
+    poster: movie.imageSet.verticalPoster.w360, // There are different poster sizes 
     description: movie.overview,
     genres: movie.genres.map(genre => genre.name),
+  }));
+
+  return {
+    movies,
+    hasMore: response.hasMore,
+    nextCursor: response.nextCursor,
+  };
+}
+
+export async function searchShowsByTitle(title, cursor = null) {
+  const response = await client.showsApi.searchShowsByTitle({
+    title: title,
+    country: "es",
+    outputLanguage: "es",
+    cursor: cursor, // Añadir cursor para paginación
+  });
+
+  const movies = response.map(movie => ({
+    title: movie.title || "Título no disponible",
+    originalTitle: movie.originalTitle || "Título original no disponible",
+    poster: movie.imageSet?.verticalPoster?.w360 || '',
+    description: movie.overview || 'Sin descripción disponible',
+    genres: movie.genres?.map(genre => genre.name) || [],
+    releaseYear: movie.releaseYear || "Año no disponible",
+    directors: movie.directors || [],
+    cast: movie.cast || [],
+    rating: movie.rating || "Sin calificación",
+    runtime: movie.runtime || "Duración no disponible",
+    streamingOptions: movie.streamingOptions || {},
   }));
 
   return {
