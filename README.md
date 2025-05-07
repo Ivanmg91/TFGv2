@@ -23,4 +23,7 @@ http://localhost:3000
 - Editar la vista movil (IMPORTANTE)
 - Intentar login
 - Intentar base de datos (para añadir peliculas favoritas, por ejemplo)
-- Ahora no encuentra al buscar por titulo
+- Al seleccionar generos y pasar de pagina dejan de estar aplicados los generos
+- Igual las primeras peliculas q se muestran no deberian ser top shows sino peliculas random q siempre van a ser diferentes y q se puedan paginar.
+- Habra q poner el boton de aplicar fuera del dropdown para q no solo aplique los generos sino tambien todos los demas filtros q faltan por introducir.
+- Q vaya hasta arriba de la pagina al pasar de pagina
