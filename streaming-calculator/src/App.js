@@ -8,6 +8,7 @@ function App() {
   const [hasMore, setHasMore] = useState(false);
   const [prevCursors, setPrevCursors] = useState([]);
   const[selectedGenres, setSelectedGenres] = useState([]);
+  const[selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [searchFieldText, setSearchText] = useState("");
 
   // Cargar primera tanda de películas
@@ -17,7 +18,7 @@ function App() {
 
   // Initial shows
   async function fetchInitialMovies() {
-    const result = await api.getShowsByFilters();
+    const result = await api.getTopShows(); //getshowsbyfilter puede usar pagination
     setMovies(result.movies);
     setHasMore(result.hasMore);
     setCursor(result.nextCursor);
@@ -26,7 +27,7 @@ function App() {
   // Next page button
   const handleNextPage = async () => {
     if (!hasMore) return;
-    const result = await api.getShowsByFilters(cursor, selectedGenres);
+    const result = await api.getShowsByFilters(cursor, selectedGenres, selectedPlatforms);
     setPrevCursors(prev => [...prev, cursor]);
     setMovies(result.movies);
     setHasMore(result.hasMore);
@@ -37,49 +38,62 @@ function App() {
   const handlePrevPage = async () => {
     if (prevCursors.length === 0) return;
     const prevCursor = prevCursors[prevCursors.length - 2];
-    const result = await api.getShowsByFilters(prevCursor, selectedGenres);
+    const result = await api.getShowsByFilters(prevCursor, selectedGenres, selectedPlatforms);
     setPrevCursors(prev => prev.slice(0, -1));
     setMovies(result.movies);
     setHasMore(result.hasMore);
     setCursor(result.nextCursor);
   };
 
-  // Change genres
-  const handleGenreChange = (event) => {
-    const { value, checked } = event.target;
-    setSelectedGenres((prev) =>
-      checked ? [...prev, value] : prev.filter((genre) => genre !== value)
-    );
-  };
-
   // Apply filters
   const handleApplyFilters = async () => {
     console.log("Géneros seleccionados:", selectedGenres);
+  
+    // Actualizar la lista de géneros seleccionados
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-genres"]:checked');
+    const selected = Array.from(checkboxes).map((checkbox) => checkbox.value);
+    setSelectedGenres(selected); // Se borran los q estaban en la lista
+    handleClearGenres();
+
+    // Actualizar la lista de plataformas seleccionadas
+    const checkboxesPlatforms = document.querySelectorAll('input[type="checkbox"][name="dropdown-platforms"]:checked');
+    const selectedPlatforms = Array.from(checkboxesPlatforms).map((checkbox) => checkbox.value);
+    setSelectedPlatforms(selectedPlatforms);
+    handleClearPlatforms();
   
     // Restablecer el estado para comenzar desde la primera página
     setCursor(null);
     setMovies([]);
     setPrevCursors([]);
-
-    // Deseleccionar los checkbuttons seleccionados
-    handleClearFilters();
-    handleClearSearchText();
   
     // Obtener las películas con los filtros aplicados desde la primera página
-    const result = await api.getShowsByFilters(null, selectedGenres);
+    const result = await api.getShowsByFilters(null, selected, selectedPlatforms);
     setMovies(result.movies);
     setHasMore(result.hasMore);
     setCursor(result.nextCursor);
+
+    handleClearSearchText();
   };
 
   // Clear filters
-  const handleClearFilters = () => {
-    setSelectedGenres([]); // Vaciar los géneros seleccionados
+  const handleClearGenres = () => {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-genres"]:checked');
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = false; // Desmarcar cada checkbox
+    });
+  };
+
+  // Clear filters
+  const handleClearPlatforms = () => {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-platforms"]:checked');
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = false; // Desmarcar cada checkbox
+    });
   };
 
   // Clear search text
   const handleClearSearchText = () => {
-    setSearchText(""); // Vaciar los géneros seleccionados
+    setSearchText(""); // Vaciar el fieldtext
   };
 
   const handleSearchChange = (event) => {
@@ -89,11 +103,13 @@ function App() {
   // Search movies
   const handleSearchMovies = async () => {
     if (!searchFieldText.trim()) return; // Avoid empty searchs
-    const result = await api.searchShowsByTitle(searchFieldText);
+    const result = await api.getShowsByTitle(searchFieldText);
     setMovies(result.movies);
     setHasMore(result.hasMore);
     setCursor(result.nextCursor);
     setPrevCursors([]); // Reset cursors
+
+    handleClearGenres();
   };
 
   return (
@@ -104,121 +120,169 @@ function App() {
 
       <div className="filters-row">
         <text className='filters'>&#x25BC;Filtros</text>
-        <button>Seleccionar Plataformas</button>
+        <div className='dropdown'>
+          <label class="dropbutton">Plataformas</label>
+          <div className='dropdown-content'>
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="netflix" />
+              Netflix
+            </label>
+
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="hbo" />
+              HBO
+            </label>
+
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="disney" />
+              Disney
+            </label>
+
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="prime" />
+              Prime
+            </label>
+
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="apple"  />
+              Apple
+            </label>
+
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="mubi" />
+              Mubi
+            </label>
+
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="curiosity" />
+              Curiosity
+            </label>
+            
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="plutotv" />
+              Pluto TV
+            </label>
+            
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-platforms" value="zee5"/>
+              Zee5
+            </label>
+
+            <button onClick={handleClearPlatforms}>
+              Quitar todos
+            </button>
+          </div>
+        </div>
         <button>Películas/Series</button>
         <div className='dropdown'>
           <label class="dropbutton">Generos</label>
           <div className='dropdown-content'>
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="action" checked={selectedGenres.includes("action")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="action" />
               Acción
             </label>
 
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="adventure" checked={selectedGenres.includes("adventure")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="adventure" />
               Aventura
             </label>
 
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="animation" checked={selectedGenres.includes("animation")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="animation" />
               Animación
             </label>
 
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="comedy" checked={selectedGenres.includes("comedy")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="comedy" />
               Comedia
             </label>
 
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="crime" checked={selectedGenres.includes("crime")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="crime"  />
               Crimen
             </label>
 
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="documentary" checked={selectedGenres.includes("documentary")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="documentary" />
               Documental
             </label>
 
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="drama" checked={selectedGenres.includes("drama")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="drama" />
               Drama
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="family" checked={selectedGenres.includes("family")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="family" />
               Familiar
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="fantasy" checked={selectedGenres.includes("fantasy")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="fantasy"/>
               Fantasia
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="history" checked={selectedGenres.includes("history")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="history" />
               Historia
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="horror" checked={selectedGenres.includes("horror")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="horror" />
               Horror
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="music" checked={selectedGenres.includes("music")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="music" />
               Music
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="mistery" checked={selectedGenres.includes("mistery")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="mystery" />
               Misterio
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="news" checked={selectedGenres.includes("news")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="news" />
               Noticias
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="reality" checked={selectedGenres.includes("reality")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="reality" />
               Reality
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="romance" checked={selectedGenres.includes("romance")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="romance" />
               Romance
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="scifi" checked={selectedGenres.includes("scifi")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="scifi" />
               Ciencia Ficción
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="talk" checked={selectedGenres.includes("talk")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="talk" />
               Entrevista
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="thriller" checked={selectedGenres.includes("thriller")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="thriller" />
               Thriller
             </label>
             
             <label class="dropdown-option">
-              <input type="checkbox" name="dropdown-group" value="war" checked={selectedGenres.includes("war")} onChange={handleGenreChange} />
+              <input type="checkbox" name="dropdown-genres" value="war" />
               Guerra
             </label>
             
             <label class="dropdown-option">
-              <input className='genre-checkbutton' type="checkbox" name="dropdown-group" value="western" checked={selectedGenres.includes("western")} onChange={handleGenreChange} /*al pulsar el boton hace handleclearfilters q los borra de la lista y como no estan en la lista de selectedgenres los desmarca*//>
+              <input className='genre-checkbutton' type="checkbox" name="dropdown-genres" value="western" /*al pulsar el boton hace handleclearfilters q los borra de la lista y como no estan en la lista de selectedgenres los desmarca*//>
               Western
             </label> 
 
-            <button onClick={handleApplyFilters}>
-              Aplicar
-            </button>
-
-            <button onClick={handleClearFilters}>
+            <button onClick={handleClearGenres}>
               Quitar todos
             </button>
           </div>
@@ -229,6 +293,9 @@ function App() {
         <button>Max Relase Year</button>
         <button>Order by</button>
         <button>Order type: asc, desc</button>
+        <button className="dropbutton" onClick={handleApplyFilters}>
+              Aplicar Filtros
+            </button>
         <input type='text' placeholder='Buscar película...' value={searchFieldText} onChange={handleSearchChange} className='search-textfield'></input>
         <button onClick={handleSearchMovies}>Buscar</button>
       </div>
