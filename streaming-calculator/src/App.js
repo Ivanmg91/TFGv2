@@ -9,6 +9,7 @@ function App() {
   const [prevCursors, setPrevCursors] = useState([]);
   const[selectedGenres, setSelectedGenres] = useState([]);
   const[selectedPlatforms, setSelectedPlatforms] = useState([]);
+  const[selectedShowTypes, setSelectedShowTypes] = useState([]);
   const [searchFieldText, setSearchText] = useState("");
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
@@ -29,7 +30,7 @@ function App() {
   // Next page button
   const handleNextPage = async () => {
     if (!hasMore) return;
-    const result = await api.getShowsByFilters(cursor, selectedGenres, selectedPlatforms);
+    const result = await api.getShowsByFilters(cursor, selectedGenres, selectedPlatforms, selectedShowTypes);
     setPrevCursors(prev => [...prev, cursor]);
     setMovies(result.movies);
     setHasMore(result.hasMore);
@@ -40,7 +41,7 @@ function App() {
   const handlePrevPage = async () => {
     if (prevCursors.length === 0) return;
     const prevCursor = prevCursors[prevCursors.length - 2];
-    const result = await api.getShowsByFilters(prevCursor, selectedGenres, selectedPlatforms);
+    const result = await api.getShowsByFilters(prevCursor, selectedGenres, selectedPlatforms, selectedShowTypes);
     setPrevCursors(prev => prev.slice(0, -1));
     setMovies(result.movies);
     setHasMore(result.hasMore);
@@ -49,19 +50,21 @@ function App() {
 
   // Apply filters
   const handleApplyFilters = async () => {
-    console.log("Géneros seleccionados:", selectedGenres);
   
     // Actualizar la lista de géneros seleccionados
     const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-genres"]:checked');
     const selected = Array.from(checkboxes).map((checkbox) => checkbox.value);
     setSelectedGenres(selected); // Se borran los q estaban en la lista
-    handleClearGenres();
 
     // Actualizar la lista de plataformas seleccionadas
     const checkboxesPlatforms = document.querySelectorAll('input[type="checkbox"][name="dropdown-platforms"]:checked');
     const selectedPlatforms = Array.from(checkboxesPlatforms).map((checkbox) => checkbox.value);
     setSelectedPlatforms(selectedPlatforms);
-    handleClearPlatforms();
+
+    // Actualizar la lista de showtypes seleccionados
+    const checkboxesShowTypes = document.querySelectorAll('input[type="checkbox"][name="dropdown-showtype"]:checked');
+    const selectedShowTypes = Array.from(checkboxesShowTypes).map((checkbox) => checkbox.value);
+    setSelectedShowTypes(selectedShowTypes);
   
     // Restablecer el estado para comenzar desde la primera página
     setCursor(null);
@@ -69,12 +72,12 @@ function App() {
     setPrevCursors([]);
   
     // Obtener las películas con los filtros aplicados desde la primera página
-    const result = await api.getShowsByFilters(null, selected, selectedPlatforms);
+    const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes);
     setMovies(result.movies);
     setHasMore(result.hasMore);
     setCursor(result.nextCursor);
 
-    handleClearSearchText();
+    handleClearAll();
   };
 
   // Clear filters
@@ -98,6 +101,22 @@ function App() {
     setSearchText(""); // Vaciar el fieldtext
   };
 
+  // Clear showtypes
+  const handleClearShowTypes = () => {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-showtype"]:checked');
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = false; // Desmarcar cada checkbox
+    });
+  };
+
+  // Clear all the filters
+  const handleClearAll = () => {
+    handleClearGenres();
+    handleClearPlatforms();
+    handleClearSearchText();
+    handleClearShowTypes();
+  }
+
   const handleSearchChange = (event) => {
     setSearchText(event.target.value);
   };
@@ -111,7 +130,7 @@ function App() {
     setCursor(result.nextCursor);
     setPrevCursors([]); // Reset cursors
 
-    handleClearGenres();
+    handleClearAll();
   };
 
   // More info cards
@@ -119,6 +138,22 @@ function App() {
     setSelectedMovie(movie);
     setIsMenuVisible(true);
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div className="App">
@@ -181,7 +216,24 @@ function App() {
             </button>
           </div>
         </div>
-        <button>Películas/Series</button>
+        <div className='dropdown'>
+          <label class="dropbutton">Películas/Series</label>
+          <div className='dropdown-content'>
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-showtype" value="movie" />
+              Películas
+            </label>
+
+            <label class="dropdown-option">
+              <input type="checkbox" name="dropdown-showtype" value="series" />
+              Series
+            </label>
+
+            <button onClick={handleClearGenres}>
+              Quitar todos
+            </button>
+          </div>
+        </div>
         <div className='dropdown'>
           <label class="dropbutton">Generos</label>
           <div className='dropdown-content'>
@@ -304,7 +356,7 @@ function App() {
         <button className="dropbutton" onClick={handleApplyFilters}>
               Aplicar Filtros
             </button>
-        <input type='text' placeholder='Buscar película...' value={searchFieldText} onChange={handleSearchChange} className='search-textfield'></input>
+        <input type='text' placeholder='Buscar película... (sin filtros)' value={searchFieldText} onChange={handleSearchChange} className='search-textfield'></input>
         <button onClick={handleSearchMovies}>Buscar</button>
       </div>
 

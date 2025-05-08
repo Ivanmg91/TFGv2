@@ -1,34 +1,92 @@
 import * as streamingAvailability from "streaming-availability";
 import './App.js';
 
-const RAPID_API_KEY = "af2469ec88msh6b559a4140ac497p19de27jsn094c3d8b6fb0";
+const RAPID_API_KEY = "4654dd0d3cmsh03796de88e5c5d2p1a75c0jsnee7caa5b9852";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
   apiKey: RAPID_API_KEY
 }));
+
+// To translate somethings
+/*async function traducirTextoGoogleRapidApi(texto, source, target) {
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-RapidAPI-Key': 'af2469ec88msh6b559a4140ac497p19de27jsn094c3d8b6fb0',
+      'X-RapidAPI-Host': 'google-api31.p.rapidapi.com'
+    },
+    body: JSON.stringify({
+      text: texto,
+      to: target,
+      from_lang: source
+    })
+  };
+
+  const response = await fetch('https://google-api31.p.rapidapi.com/gtranslate', options);
+  const data = await response.json();
+
+  console.log('Respuesta completa:', data);
+
+  if (data && data.translated_text) {
+    return data.translated_text;
+  } else {
+    throw new Error('No se pudo obtener la traducción. Respuesta API: ' + JSON.stringify(data));
+  }
+}
+
+// Ejemplo de uso:
+traducirTextoGoogleRapidApi('Hola mundo', 'es', 'en')
+  .then(traduccion => console.log('Traducción:', traduccion))
+  .catch(err => console.error('Error:', err));
+*/
+
+// To translate genres
+const genreTranslations = {
+  "Action": "Acción",
+  "Adventure": "Aventura",
+  "Animation": "Animación",
+  "Comedy": "Comedia",
+  "Crime": "Crimen",
+  "Documentary": "Documental",
+  "Drama": "Drama",
+  "Family": "Familiar",
+  "Fantasy": "Fantasía",
+  "History": "Historia",
+  "Horror": "Terror",
+  "Music": "Música",
+  "Mystery": "Misterio",
+  "Romance": "Romance",
+  "Science Fiction": "Ciencia ficción",
+  "TV Movie": "Película de TV",
+  "Thriller": "Suspenso",
+  "War": "Guerra",
+  "Western": "Occidental"
+};
 
 export async function getData() {
   const data = await client.showsApi.getShow({
     id: "tt0068646",
     country: "es",
   });
-  return data.originalTitle;
+  return data.title;
 }
 
-export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = []) {
+export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = []) {
   const response = await client.showsApi.searchShowsByFilters({
     country: "es",
     genres: selectedGenres,
     //orderBy: "popularity_1year", // Editar
     cursor: cursor,
-    outputLanguage: "es",
     catalogs: selectedPlatforms,
+    showType: selectedShowTypes,
+    outputLanguage: "es"
   });
 
   const movies = response.shows.map(movie => ({
-    title: movie.originalTitle,
+    title: movie.title,
     poster: movie.imageSet.verticalPoster.w360, // There are different poster sizes 
     description: movie.overview,
-    genres: movie.genres.map(genre => genre.name),
+    genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
   }));
 
   return {
@@ -86,15 +144,14 @@ export async function getTopShows(cursor = null) {
     country: "es",
     cursor: cursor,
     outputLanguage: "es",
-    //service: randomService,
     service: randomService,
   });
 
   const movies = response.map(movie => ({
-    title: movie.originalTitle,
+    title: movie.title,
     poster: movie.imageSet.verticalPoster.w360, // There are different poster sizes 
     description: movie.overview,
-    genres: movie.genres.map(genre => genre.name),
+    genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
   }));
 
   return {
@@ -117,7 +174,7 @@ export async function getShowsByTitle(title, cursor = null) {
     originalTitle: movie.originalTitle || "Título original no disponible",
     poster: movie.imageSet?.verticalPoster?.w480 || '',
     description: movie.overview || 'Sin descripción disponible',
-    genres: movie.genres?.map(genre => genre.name) || [],
+    genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
     releaseYear: movie.releaseYear || "Año no disponible",
     directors: movie.directors || [],
     cast: movie.cast || [],
