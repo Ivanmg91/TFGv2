@@ -78,7 +78,7 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
     //orderBy: "popularity_1year", // Editar
     cursor: cursor,
     catalogs: selectedPlatforms,
-    showType: selectedShowTypes,
+    showType: selectedShowTypes.length === 1 ? selectedShowTypes : null,
     outputLanguage: "es"
   });
 
