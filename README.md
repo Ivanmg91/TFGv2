@@ -13,6 +13,10 @@ Trabajo fin de grado 2DAM
 ### Enter to the terminal url
 http://localhost:3000
 
+## INFO
+The web app is being hosted with github pages. This is a free hosting service from github repositories. For update it only need use this command:
+- npm run deploy
+
 ## Pendiente
 - Hacer algo intuitivo para cuando quieres ver peliculas sin filtrarlas por genero...
 - Si pones muchos filtros es obvio q no va a existir esa pelicula. hacer q no se quede en cargando películas y muestre un aviso de q no hay resultados. MEDIO RESUELTO = en el fetch inicial sale no se encontraron peliculas
@@ -27,3 +31,4 @@ http://localhost:3000
 - Igual las primeras peliculas q se muestran no deberian ser top shows sino peliculas random q siempre van a ser diferentes y q se puedan paginar.
 - Habra q poner el boton de aplicar fuera del dropdown para q no solo aplique los generos sino tambien todos los demas filtros q faltan por introducir.
 - Q vaya hasta arriba de la pagina al pasar de pagina
+- Al abrir el desplegable con la info de la pelicula un boton de ver ahora q t lleve a los enlaces de suscripcion o metodos de pago de las plataformas donde se puede ver

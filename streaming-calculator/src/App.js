@@ -10,6 +10,8 @@ function App() {
   const[selectedGenres, setSelectedGenres] = useState([]);
   const[selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [searchFieldText, setSearchText] = useState("");
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   // Cargar primera tanda de películas
   useEffect(() => {
@@ -110,6 +112,12 @@ function App() {
     setPrevCursors([]); // Reset cursors
 
     handleClearGenres();
+  };
+
+  // More info cards
+  const handleCardClick = (movie) => {
+    setSelectedMovie(movie);
+    setIsMenuVisible(true);
   };
 
   return (
@@ -278,7 +286,7 @@ function App() {
             </label>
             
             <label class="dropdown-option">
-              <input className='genre-checkbutton' type="checkbox" name="dropdown-genres" value="western" /*al pulsar el boton hace handleclearfilters q los borra de la lista y como no estan en la lista de selectedgenres los desmarca*//>
+              <input type="checkbox" name="dropdown-genres" value="western" /*al pulsar el boton hace handleclearfilters q los borra de la lista y como no estan en la lista de selectedgenres los desmarca*//>
               Western
             </label> 
 
@@ -303,11 +311,11 @@ function App() {
       <div className="movie-grid">
         {movies.length > 0 ? (
           movies.map((movie, index) => (
-            <div className="movie-card" key={index}>
+            <div className="movie-card" key={index} onClick={() => handleCardClick(movie)}>
               <img src={movie.poster} alt={movie.title} />
               <div className="card-content">
                 <h3 className="card-title">{movie.title}</h3>
-                <p className="card-description">{movie.description}</p>
+                {/*<p className="card-description">{movie.description}</p>*/}
                 <p className="card-genres">
                   {Array.isArray(movie.genres)
                   ? movie.genres.join(", ")
@@ -322,6 +330,19 @@ function App() {
           <p>No se encontraron resultados.</p>
         )}
       </div>
+
+      {isMenuVisible && <div className="overlay" onClick={() => setIsMenuVisible(false)}></div>}
+
+      {isMenuVisible && selectedMovie && (
+        <div className="floating-menu">
+          <button className="close-button" onClick={() => setIsMenuVisible(false)}>X</button>
+          <h2>{selectedMovie.title}</h2>
+          <img src={selectedMovie.poster} alt={selectedMovie.title} />
+          <p>{selectedMovie.description || "Descripción no disponible"}</p>
+          <p>Géneros: {Array.isArray(selectedMovie.genres) ? selectedMovie.genres.join(", ") : selectedMovie.genres}</p>
+          <p>Rating: {selectedMovie.rating || "No disponible"}</p>
+        </div>
+      )}
 
       <div className="pagination">
         <button onClick={handlePrevPage} disabled={prevCursors.length === 0}>
