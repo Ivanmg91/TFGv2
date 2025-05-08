@@ -9,7 +9,7 @@ const client = new streamingAvailability.Client(new streamingAvailability.Config
 export async function getData() {
   const data = await client.showsApi.getShow({
     id: "tt0068646",
-    country: "us",
+    country: "es",
   });
   return data.originalTitle;
 }
@@ -115,7 +115,7 @@ export async function getShowsByTitle(title, cursor = null) {
   const movies = response.map(movie => ({
     title: movie.title || "Título no disponible",
     originalTitle: movie.originalTitle || "Título original no disponible",
-    poster: movie.imageSet?.verticalPoster?.w360 || '',
+    poster: movie.imageSet?.verticalPoster?.w480 || '',
     description: movie.overview || 'Sin descripción disponible',
     genres: movie.genres?.map(genre => genre.name) || [],
     releaseYear: movie.releaseYear || "Año no disponible",
