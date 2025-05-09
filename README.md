@@ -14,8 +14,9 @@ Trabajo fin de grado 2DAM
 http://localhost:3000
 
 ## INFO
-The web app is being hosted with github pages. This is a free hosting service from github repositories. For update it only need use this command:
-- npm run deploy
+The web app is being hosted with netlify. This is a free hosting service. For update it only need do a git commit.
+Has integrated google analytics and google adsense.
+It use a 2 differents api from rapidapi.com: streaming availability and google api.
 
 ## Pendiente
 - Hacer algo intuitivo para cuando quieres ver peliculas sin filtrarlas por genero...
