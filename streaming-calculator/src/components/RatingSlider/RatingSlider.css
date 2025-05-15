@@ -1,0 +1,86 @@
+.rating-slider {
+  width: 200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.rating-slider label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rating-slider input[type="range"] {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: transparent;
+  accent-color: #1976d2;
+  height: 28px;
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+.rating-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1976d2;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px #0003;
+  margin-top: -7px;
+}
+
+.rating-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: #ccc;
+  border-radius: 2px;
+}
+
+/* Firefox */
+.rating-slider input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1976d2;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.rating-slider input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: #ccc;
+  border-radius: 2px;
+}
+
+/* IE/Edge */
+.rating-slider input[type="range"]::-ms-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1976d2;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+.rating-slider input[type="range"]::-ms-fill-lower,
+.rating-slider input[type="range"]::-ms-fill-upper {
+  background: #ccc;
+  border-radius: 2px;
+}
+
+.rating-slider input[type="range"]:focus {
+  outline: none;
+}
+
+.rating-slider input[type="range"] {
+  padding: 0;
+  background: transparent;
+}
