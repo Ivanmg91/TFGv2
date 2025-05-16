@@ -1,10 +1,12 @@
 import * as streamingAvailability from "streaming-availability";
 import './App.js';
 
-const RAPID_API_KEY = "4654dd0d3cmsh03796de88e5c5d2p1a75c0jsnee7caa5b9852";
+const RAPID_API_KEY = "9f046801c3mshfca9ccfbf4cb559p1ac9f9jsnc0130eea4de9";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
   apiKey: RAPID_API_KEY
 }));
+
+const actualYear = new Date().getFullYear();
 
 // To translate somethings
 /*async function traducirTextoGoogleRapidApi(texto, source, target) {
@@ -71,7 +73,7 @@ export async function getData() {
   return data.title;
 }
 
-export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = [], minRating = 0, maxRatin = 10) {
+export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = [], minRating = 0, maxRatin = 10, minRelase = 1900, maxRelase = actualYear) {
   const response = await client.showsApi.searchShowsByFilters({
     country: "es",
     genres: selectedGenres,
@@ -82,6 +84,8 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
     outputLanguage: "es",
     ratingMin: minRating,
     ratingMax: maxRatin,
+    yearMin: minRelase,
+    yearMax: maxRelase,
   });
 
   const movies = response.shows.map(movie => ({

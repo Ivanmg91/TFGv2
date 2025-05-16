@@ -17,11 +17,15 @@ const PaginationButtons = ({
   selectedMovie,
   minRating,
   maxRating,
+  minRelase,
+  maxRelase,
+  sliderValues,
+  setSliderValues
 }) => {
   // Función para manejar la página siguiente
   const handleNextPage = async () => {
     if (!hasMore) return;
-    const result = await api.getShowsByFilters(cursor, selectedGenres, selectedPlatforms, selectedShowTypes, minRating * 10, maxRating * 10);
+    const result = await api.getShowsByFilters(cursor, selectedGenres, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase);
     setPrevCursors((prev) => [...prev, cursor]);
     setMovies(result.movies);
     setHasMore(result.hasMore);
@@ -34,7 +38,7 @@ const PaginationButtons = ({
   const handlePrevPage = async () => {
     if (prevCursors.length === 0) return;
     const prevCursor = prevCursors[prevCursors.length - 2];
-    const result = await api.getShowsByFilters(prevCursor, selectedGenres, selectedPlatforms, selectedShowTypes, minRating * 10, maxRating * 10);
+    const result = await api.getShowsByFilters(prevCursor, selectedGenres, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase);
     setPrevCursors((prev) => prev.slice(0, -1));
     setMovies(result.movies);
     setHasMore(result.hasMore);
