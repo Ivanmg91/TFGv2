@@ -5,7 +5,9 @@ import FiltersRow from './components/FiltersRow.js';
 import PaginationButtons from './components/PaginationButtons.js';
 import MoviesGrid from './components/MoviesGrid.js';
 
+
 function App() {
+  const actualYear = new Date().getFullYear();
   const [movies, setMovies] = useState([]);
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(false);
@@ -17,6 +19,14 @@ function App() {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [minRating, setMinRating] = useState(0);
   const [maxRating, setMaxRating] = useState(10);
+  const [minRelase, setMinRelase] = useState(1900);
+  const [maxRelase, setMaxRelase] = useState(actualYear);
+  const [sliderValues, setSliderValues] = useState({
+    minRating: 0,
+    maxRating: 10,
+    minRelase: 2000,
+    maxRelase: 2025,
+  });
 
   useEffect(() => {
     fetchInitialMovies();
@@ -52,6 +62,12 @@ function App() {
         setMinRating={setMinRating}
         maxRating={maxRating}
         setMaxRating={setMaxRating}
+        minRelase={minRelase}
+        setMinRelase={setMinRelase}
+        maxRelase={maxRelase}
+        setMaxRelase={setMaxRelase}
+        sliderValues={sliderValues}
+        setSliderValues={setSliderValues}
       />
 
       <MoviesGrid
@@ -76,6 +92,10 @@ function App() {
         selectedMovie={selectedMovie}
         minRating={minRating}
         maxRating={maxRating}
+        minRelase={minRelase}
+        maxRelase={maxRelase}
+        sliderValues={sliderValues}
+        setSliderValues={setSliderValues}
       />
     </div>
   );

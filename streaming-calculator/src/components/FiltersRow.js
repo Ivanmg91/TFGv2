@@ -2,9 +2,29 @@ import React, { useState } from 'react';
 import '../App.css';
 import * as api from '../api.js';
 import RatingSlider from './RatingSlider/RatingSlider.js';
+import RelaseSlider from './RelaseSlider/RelaseSlider.js';
 
-const FiltersRow = ({ setMovies, setCursor, setPrevCursors, setHasMore, setSelectedGenres, setSelectedPlatforms, setSelectedShowTypes, minRating, setMinRating, maxRating, setMaxRating}) => {
+const FiltersRow = ({
+  setMovies, 
+  setCursor, 
+  setPrevCursors, 
+  setHasMore, 
+  setSelectedGenres, 
+  setSelectedPlatforms, 
+  setSelectedShowTypes, 
+  minRating, 
+  setMinRating, 
+  maxRating, 
+  setMaxRating,
+  minRelase, 
+  setMinRelase, 
+  maxRelase, 
+  setMaxRelase,
+  sliderValues,
+  setSliderValues
+}) => {
   const [searchFieldText, setSearchText] = useState("");
+  const actualYear = new Date().getFullYear();
   
   // Clear filters
   const handleClearPlatforms = () => {
@@ -39,14 +59,14 @@ const FiltersRow = ({ setMovies, setCursor, setPrevCursors, setHasMore, setSelec
       const checkboxesShowTypes = document.querySelectorAll('input[type="checkbox"][name="dropdown-showtype"]:checked');
       const selectedShowTypes = Array.from(checkboxesShowTypes).map((checkbox) => checkbox.value);
       setSelectedShowTypes(selectedShowTypes);
-    
+
       // Restablecer el estado para comenzar desde la primera página
       setCursor(null);
       setMovies([]);
       setPrevCursors([]);
     
       // Obtener las películas con los filtros aplicados desde la primera página
-      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, minRating * 10, maxRating * 10);
+      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase);
       setMovies(result.movies);
       setHasMore(result.hasMore);
       setCursor(result.nextCursor);
@@ -60,7 +80,6 @@ const FiltersRow = ({ setMovies, setCursor, setPrevCursors, setHasMore, setSelec
       handleClearPlatforms();
       handleClearSearchText();
       handleClearShowTypes();
-      handleResetSliders();
       handleResetSliders();
     }
 
@@ -97,26 +116,73 @@ const FiltersRow = ({ setMovies, setCursor, setPrevCursors, setHasMore, setSelec
     const handleMinRatingChange = (value) => {
       if (value > maxRating) {
         setMinRating(maxRating);
+        setSliderValues(prev => ({
+          ...prev,
+          minRating: maxRating
+        }));
       } else {
         setMinRating(value);
+        setSliderValues(prev => ({
+          ...prev,
+          minRating: value
+        }));
       }
     };
 
     const handleMaxRatingChange = (value) => {
       if (value < minRating) {
         setMaxRating(minRating);
+        setSliderValues(prev => ({
+          ...prev,
+          maxRating: minRating
+        }));
       } else {
         setMaxRating(value);
+        setSliderValues(prev => ({
+          ...prev,
+          maxRating: value
+        }));
+      }
+    };
+
+    const handleMinRelaseChange = (value) => {
+      if (value > maxRelase) {
+        setMinRelase(maxRelase);
+        setSliderValues(prev => ({
+          ...prev,
+          minRelase: maxRelase
+        }));
+      } else {
+        setMinRelase(value);
+        setSliderValues(prev => ({
+          ...prev,
+          minRelase: value
+        }));
+      }
+    };
+
+    const handleMaxRelaseChange = (value) => {
+      if (value < minRelase) {
+        setMaxRelase(minRelase);
+        setSliderValues(prev => ({
+          ...prev,
+          maxRelase: minRelase
+        }));
+      } else {
+        setMaxRelase(value);
+        setSliderValues(prev => ({
+          ...prev,
+          maxRelase: value
+        }));
       }
     };
 
     const handleResetSliders = () => {
       setMinRating(0);
       setMaxRating(10);
+      setMinRelase(1900);
+      setMaxRelase(actualYear);
     }
-
-
-
 
     return (
         <div className="filters-row">
@@ -324,8 +390,24 @@ const FiltersRow = ({ setMovies, setCursor, setPrevCursors, setHasMore, setSelec
               </button>
             </div>
           </div>
-          <button>Min Relase Year</button>
-          <button>Max Relase Year</button>
+          <div className="dropdown">
+            <label className="dropbutton">Min Relase Year</label>
+            <div className="dropdown-content">
+              <RelaseSlider value={minRelase} onChange={handleMinRelaseChange} max={maxRelase} />
+              <button onClick={handleResetSliders}>
+                Resetear ratings
+              </button>
+            </div>
+          </div>
+          <div className="dropdown">
+            <label className="dropbutton">Máx Relase Year</label>
+            <div className="dropdown-content">
+              <RelaseSlider value={maxRelase} onChange={handleMaxRelaseChange} min={minRelase} />
+              <button onClick={handleResetSliders}>
+                Resetear ratings
+              </button>
+            </div>
+          </div>
           <button>Order by</button>
           <button>Order type: asc, desc</button>
           <button className="dropbutton" onClick={handleApplyFilters}>
