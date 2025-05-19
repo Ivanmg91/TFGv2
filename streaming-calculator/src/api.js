@@ -73,7 +73,7 @@ export async function getData() {
   return data.title;
 }
 
-export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = [], minRating = 0, maxRatin = 10, minRelase = 1900, maxRelase = actualYear) {
+export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = [], minRating = 0, maxRatin = 10, minRelase = 1900, maxRelase = actualYear, orderBy) {
   const response = await client.showsApi.searchShowsByFilters({
     country: "es",
     genres: selectedGenres,
@@ -86,13 +86,17 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
     ratingMax: maxRatin,
     yearMin: minRelase,
     yearMax: maxRelase,
+    orderBy: orderBy,
   });
 
   const movies = response.shows.map(movie => ({
     title: movie.title,
+    originalTitle: movie.originalTitle || "Título original no disponible",
     poster: movie.imageSet.verticalPoster.w360, // There are different poster sizes 
     description: movie.overview,
     genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
+    relaseYear: movie.releaseYear,
+    rating: movie.rating,
   }));
 
   return {
