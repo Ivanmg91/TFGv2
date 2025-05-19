@@ -27,6 +27,7 @@ function App() {
     minRelase: 2000,
     maxRelase: 2025,
   });
+  const [selectedOrderBy, setSelectedOrderBy] = useState();
 
   useEffect(() => {
     fetchInitialMovies();
@@ -68,6 +69,7 @@ function App() {
         setMaxRelase={setMaxRelase}
         sliderValues={sliderValues}
         setSliderValues={setSliderValues}
+        setSelectedOrderBy={setSelectedOrderBy}
       />
 
       <MoviesGrid
@@ -96,6 +98,8 @@ function App() {
         maxRelase={maxRelase}
         sliderValues={sliderValues}
         setSliderValues={setSliderValues}
+        selectedOrderBy={selectedOrderBy}
+        setSelectedOrdeyBy={setSelectedOrderBy}
       />
     </div>
   );

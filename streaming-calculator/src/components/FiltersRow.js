@@ -21,7 +21,8 @@ const FiltersRow = ({
   maxRelase, 
   setMaxRelase,
   sliderValues,
-  setSliderValues
+  setSliderValues,
+  setSelectedOrderBy,
 }) => {
   const [searchFieldText, setSearchText] = useState("");
   const actualYear = new Date().getFullYear();
@@ -39,6 +40,14 @@ const FiltersRow = ({
     const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-genres"]:checked');
     checkboxes.forEach((checkbox) => {
       checkbox.checked = false; // Desmarcar cada checkbox
+    });
+  };
+
+  // Clear filters
+  const handleClearOrderBy = () => {
+    const radios = document.querySelectorAll('input[type="radio"][name="dropdown-orderby"]:checked');
+    radios.forEach((radio) => {
+      radio.checked = false; // Desmarcar cada checkbox
     });
   };
 
@@ -60,13 +69,17 @@ const FiltersRow = ({
       const selectedShowTypes = Array.from(checkboxesShowTypes).map((checkbox) => checkbox.value);
       setSelectedShowTypes(selectedShowTypes);
 
+      // Almacenar valor ordenar por
+      const orderByOption = document.querySelector('input[type="radio"][name="dropdown-orderby"]:checked')?.value || null;
+      setSelectedOrderBy(orderByOption);
+
       // Restablecer el estado para comenzar desde la primera página
       setCursor(null);
       setMovies([]);
       setPrevCursors([]);
     
       // Obtener las películas con los filtros aplicados desde la primera página
-      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase);
+      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, orderByOption);
       setMovies(result.movies);
       setHasMore(result.hasMore);
       setCursor(result.nextCursor);
@@ -81,6 +94,7 @@ const FiltersRow = ({
       handleClearSearchText();
       handleClearShowTypes();
       handleResetSliders();
+      handleClearOrderBy();
     }
 
     // Clear search text
@@ -408,7 +422,49 @@ const FiltersRow = ({
               </button>
             </div>
           </div>
-          <button>Order by</button>
+          <div className='dropdown'>
+            <label class="dropbutton">Ordenar por</label>
+            <div className='dropdown-content'>
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-orderby" value="original_title" />
+                Alfabéticamente por su titulo original
+              </label>
+
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-orderby" value="release_date" />
+                Fecha
+              </label>
+
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-orderby" value="rating" />
+                Rating
+              </label>
+
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-orderby" value="popularity_alltime" />
+                Popularidad siempre
+              </label>
+
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-orderby" value="popularity_1year"  />
+                Popularidad 1 año
+              </label>
+
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-orderby" value="popularity_1month" />
+                Popularidad 1 mes
+              </label>
+
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-orderby" value="popularity_1week" />
+                Popularidad 1 semana
+              </label>
+
+              <button onClick={handleClearOrderBy}>
+                Quitar
+              </button>
+            </div>
+          </div>
           <button>Order type: asc, desc</button>
           <button className="dropbutton" onClick={handleApplyFilters}>
                 Aplicar Filtros

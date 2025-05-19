@@ -20,12 +20,15 @@ const PaginationButtons = ({
   minRelase,
   maxRelase,
   sliderValues,
-  setSliderValues
+  setSliderValues,
+  selectedOrderBy,
+  setSelectedOrderBy,
+
 }) => {
   // Función para manejar la página siguiente
   const handleNextPage = async () => {
     if (!hasMore) return;
-    const result = await api.getShowsByFilters(cursor, selectedGenres, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase);
+    const result = await api.getShowsByFilters(cursor, selectedGenres, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, selectedOrderBy);
     setPrevCursors((prev) => [...prev, cursor]);
     setMovies(result.movies);
     setHasMore(result.hasMore);
@@ -38,7 +41,7 @@ const PaginationButtons = ({
   const handlePrevPage = async () => {
     if (prevCursors.length === 0) return;
     const prevCursor = prevCursors[prevCursors.length - 2];
-    const result = await api.getShowsByFilters(prevCursor, selectedGenres, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase);
+    const result = await api.getShowsByFilters(prevCursor, selectedGenres, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, selectedOrderBy);
     setPrevCursors((prev) => prev.slice(0, -1));
     setMovies(result.movies);
     setHasMore(result.hasMore);
@@ -68,11 +71,13 @@ const PaginationButtons = ({
           </button>
           <h2>{selectedMovie.title}</h2>
           <img src={selectedMovie.poster} alt={selectedMovie.title} />
+          <p>Titulo original: {selectedMovie.originalTitle}</p>
           <p>{selectedMovie.description || 'Descripción no disponible'}</p>
           <p>
             Géneros: {Array.isArray(selectedMovie.genres) ? selectedMovie.genres.join(', ') : selectedMovie.genres}
           </p>
           <p>Rating: {selectedMovie.rating || 'No disponible'}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
         </div>
       )}
     </>
