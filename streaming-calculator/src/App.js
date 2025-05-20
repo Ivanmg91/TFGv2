@@ -28,6 +28,7 @@ function App() {
     maxRelase: 2025,
   });
   const [selectedOrderBy, setSelectedOrderBy] = useState();
+  const [selectedOrderType, setSelectedOrderType] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -73,6 +74,7 @@ function App() {
         sliderValues={sliderValues}
         setSliderValues={setSliderValues}
         setSelectedOrderBy={setSelectedOrderBy}
+        setSelectedOrderType={setSelectedOrderType}
         setLoading={setLoading}
       />
 
@@ -105,6 +107,8 @@ function App() {
         setSliderValues={setSliderValues}
         selectedOrderBy={selectedOrderBy}
         setSelectedOrdeyBy={setSelectedOrderBy}
+        selectedOrderType={selectedOrderType}
+        setSelectedOrdeyType={setSelectedOrderType}
       />
     </div>
   );

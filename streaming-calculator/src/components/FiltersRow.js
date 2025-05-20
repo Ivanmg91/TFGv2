@@ -23,6 +23,7 @@ const FiltersRow = ({
   sliderValues,
   setSliderValues,
   setSelectedOrderBy,
+  setSelectedOrderType,
   setLoading,
 }) => {
   const [searchFieldText, setSearchText] = useState("");
@@ -52,6 +53,14 @@ const FiltersRow = ({
     });
   };
 
+  // Clear filters
+  const handleClearOrderType = () => {
+    const radios = document.querySelectorAll('input[type="radio"][name="dropdown-ordertype"]:checked');
+    radios.forEach((radio) => {
+      radio.checked = false; // Desmarcar cada checkbox
+    });
+  };
+
   // Apply filters
     const handleApplyFilters = async () => {
       setLoading(true);    
@@ -75,13 +84,17 @@ const FiltersRow = ({
       const orderByOption = document.querySelector('input[type="radio"][name="dropdown-orderby"]:checked')?.value || null;
       setSelectedOrderBy(orderByOption);
 
+      // Almacenar valor typo de orden
+      const orderByType = document.querySelector('input[type="radio"][name="dropdown-ordertype"]:checked')?.value || null;
+      setSelectedOrderType(orderByType);
+
       // Restablecer el estado para comenzar desde la primera página
       setCursor(null);
       setMovies([]);
       setPrevCursors([]);
     
       // Obtener las películas con los filtros aplicados desde la primera página
-      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, orderByOption);
+      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, orderByOption, orderByType);
       setMovies(result.movies);
       setHasMore(result.hasMore);
       setCursor(result.nextCursor);
@@ -98,6 +111,7 @@ const FiltersRow = ({
       handleClearShowTypes();
       handleResetSliders();
       handleClearOrderBy();
+      handleClearOrderType();
     }
 
     // Clear search text
@@ -470,7 +484,24 @@ const FiltersRow = ({
               </button>
             </div>
           </div>
-          <button>Order type: asc, desc</button>
+          <div className='dropdown'>
+            <label class="dropbutton">Sentido asc/desc</label>
+            <div className='dropdown-content'>
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-ordertype" value="asc" />
+                Ascendente
+              </label>
+
+              <label class="dropdown-option">
+                <input type="radio" name="dropdown-ordertype" value="desc" />
+                Descendente
+              </label>
+
+              <button onClick={handleClearOrderType}>
+                Quitar
+              </button>
+            </div>
+          </div>
           <button className="dropbutton" onClick={handleApplyFilters}>
                 Aplicar Filtros
               </button>
