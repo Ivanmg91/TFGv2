@@ -73,7 +73,7 @@ export async function getData() {
   return data.title;
 }
 
-export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = [], minRating = 0, maxRatin = 10, minRelase = 1900, maxRelase = actualYear, orderBy) {
+export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = [], minRating = 0, maxRatin = 10, minRelase = 1900, maxRelase = actualYear, orderBy, orderType) {
   const response = await client.showsApi.searchShowsByFilters({
     country: "es",
     genres: selectedGenres,
@@ -87,6 +87,7 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
     yearMin: minRelase,
     yearMax: maxRelase,
     orderBy: orderBy,
+    orderDirection: orderType,
   });
 
   const movies = response.shows.map(movie => ({
