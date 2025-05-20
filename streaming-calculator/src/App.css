@@ -49,7 +49,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 10px 10px 60px #bebebe
+  box-shadow: 10px 10px 60px #bebebe;
 }
 
 .movie-card:hover {
@@ -75,6 +75,42 @@
   color: #666;
   text-align: center;
   margin-top: 5px;
+}
+
+/* Skeleton loading cards */
+.skeleton-card {
+  background: #e0e0e0;
+  border-radius: 14px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 1.5s infinite;
+  box-shadow: 10px 10px 60px #bebebe;
+}
+
+.skeleton-poster {
+  width: 100%;
+  height: 220px;
+  background: #cccccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.skeleton-title,
+.skeleton-genres {
+  width: 80%;
+  height: 18px;
+  background: #cccccc;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
 }
 
  /* Floating menu style*/

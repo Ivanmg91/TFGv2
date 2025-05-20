@@ -1,9 +1,17 @@
 import React from 'react';
 
-const MoviesGrid = ({ movies, handleCardClick, hasMore }) => {
+const MoviesGrid = ({ movies, handleCardClick, hasMore, loading }) => {
   return (
     <div className="movie-grid">
-      {movies.length > 0 ? (
+      {loading ? (
+        Array.from({ length: 8 }).map((_, idx) => (
+          <div className="skeleton-card" key={idx}>
+            <div className="skeleton-poster"></div>
+            <div className="skeleton-title"></div>
+            <div className="skeleton-genres"></div>
+          </div>
+        ))
+      ) : movies.length > 0 ? (
         movies.map((movie, index) => (
           <div className="movie-card" key={index} onClick={() => handleCardClick(movie)}>
             <img src={movie.poster} alt={movie.title} />
@@ -15,8 +23,6 @@ const MoviesGrid = ({ movies, handleCardClick, hasMore }) => {
             </div>
           </div>
         ))
-      ) : hasMore ? (
-        <p>Cargando películas...</p>
       ) : (
         <p>No se encontraron resultados.</p>
       )}
