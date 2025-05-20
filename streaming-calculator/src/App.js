@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import * as api from './api.js';
-import FiltersRow from './components/FiltersRow.js';
+import FiltersRow from './components/FiltersRow/FiltersRow.js';
 import PaginationButtons from './components/PaginationButtons.js';
 import MoviesGrid from './components/MoviesGrid.js';
+import NavBar from './components/NavBar/NavBar.js';
 
 
 function App() {
@@ -51,9 +52,13 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Streaming Calculator</h1>
-      </header>
+      <NavBar 
+        setMovies={setMovies}
+        setCursor={setCursor}
+        setPrevCursors={setPrevCursors}
+        setHasMore={setHasMore}
+        setLoading={setLoading}   
+      />
 
       <FiltersRow
         setMovies={setMovies}

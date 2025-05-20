@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import '../App.css';
-import * as api from '../api.js';
-import RatingSlider from './RatingSlider/RatingSlider.js';
-import RelaseSlider from './RelaseSlider/RelaseSlider.js';
+import React from 'react';
+import './FiltersRow.css';
+import * as api from '../../api.js';
+import RatingSlider from '../RatingSlider/RatingSlider.js';
+import RelaseSlider from '../RelaseSlider/RelaseSlider.js';
 
 const FiltersRow = ({
   setMovies, 
@@ -26,7 +26,6 @@ const FiltersRow = ({
   setSelectedOrderType,
   setLoading,
 }) => {
-  const [searchFieldText, setSearchText] = useState("");
   const actualYear = new Date().getFullYear();
   
   // Clear filters
@@ -107,17 +106,12 @@ const FiltersRow = ({
     const handleClearAll = () => {
       handleClearGenres();
       handleClearPlatforms();
-      handleClearSearchText();
       handleClearShowTypes();
       handleResetSliders();
       handleClearOrderBy();
       handleClearOrderType();
     }
 
-    // Clear search text
-    const handleClearSearchText = () => {
-      setSearchText(""); // Vaciar el fieldtext
-    };
 
     // Clear showtypes
     const handleClearShowTypes = () => {
@@ -127,23 +121,6 @@ const FiltersRow = ({
       });
     };
 
-    const handleSearchChange = (event) => {
-      setSearchText(event.target.value);
-    };
-    
-    // Search movies
-    const handleSearchMovies = async () => {
-      if (!searchFieldText.trim()) return; // Avoid empty searchs
-      setLoading(true);
-      const result = await api.getShowsByTitle(searchFieldText);
-      setMovies(result.movies);
-      setHasMore(result.hasMore);
-      setCursor(result.nextCursor);
-      setPrevCursors([]); // Reset cursors
-    
-      setLoading(false);
-      handleClearAll();
-    };
 
     // Control the max value
     const handleMinRatingChange = (value) => {
@@ -505,8 +482,6 @@ const FiltersRow = ({
           <button className="dropbutton" onClick={handleApplyFilters}>
                 Aplicar Filtros
               </button>
-          <input type='text' placeholder='Buscar película... (sin filtros)' value={searchFieldText} onChange={handleSearchChange} className='search-textfield'></input>
-          <button onClick={handleSearchMovies}>Buscar</button>
         </div>
     )
 }
