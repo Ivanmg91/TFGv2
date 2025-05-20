@@ -23,6 +23,7 @@ const FiltersRow = ({
   sliderValues,
   setSliderValues,
   setSelectedOrderBy,
+  setLoading,
 }) => {
   const [searchFieldText, setSearchText] = useState("");
   const actualYear = new Date().getFullYear();
@@ -53,7 +54,8 @@ const FiltersRow = ({
 
   // Apply filters
     const handleApplyFilters = async () => {
-    
+      setLoading(true);    
+
       // Actualizar la lista de géneros seleccionados
       const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-genres"]:checked');
       const selected = Array.from(checkboxes).map((checkbox) => checkbox.value);
@@ -84,6 +86,7 @@ const FiltersRow = ({
       setHasMore(result.hasMore);
       setCursor(result.nextCursor);
   
+      setLoading(false);
       handleClearAll();
     };
 
@@ -117,12 +120,14 @@ const FiltersRow = ({
     // Search movies
     const handleSearchMovies = async () => {
       if (!searchFieldText.trim()) return; // Avoid empty searchs
+      setLoading(true);
       const result = await api.getShowsByTitle(searchFieldText);
       setMovies(result.movies);
       setHasMore(result.hasMore);
       setCursor(result.nextCursor);
       setPrevCursors([]); // Reset cursors
     
+      setLoading(false);
       handleClearAll();
     };
 

@@ -28,16 +28,19 @@ function App() {
     maxRelase: 2025,
   });
   const [selectedOrderBy, setSelectedOrderBy] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchInitialMovies();
   }, []);
 
   async function fetchInitialMovies() {
+    setLoading(true);
     const result = await api.getTopShows();
     setMovies(result.movies);
     setHasMore(result.hasMore);
     setCursor(result.nextCursor);
+    setLoading(false);
   }
 
   const handleCardClick = (movie) => {
@@ -70,12 +73,14 @@ function App() {
         sliderValues={sliderValues}
         setSliderValues={setSliderValues}
         setSelectedOrderBy={setSelectedOrderBy}
+        setLoading={setLoading}
       />
 
       <MoviesGrid
         movies={movies}
         handleCardClick={handleCardClick}
         hasMore={hasMore}
+        loading={loading}
       />
 
       <PaginationButtons
