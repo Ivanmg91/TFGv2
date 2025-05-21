@@ -94,6 +94,8 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
     title: movie.title,
     originalTitle: movie.originalTitle || "Título original no disponible",
     poster: movie.imageSet.verticalPoster.w360, // There are different poster sizes 
+    horizontalPoster: movie.imageSet.horizontalPoster.w1080,
+    horizontalBackDrop: movie.imageSet?.horizontalBackdrop?.w1080 || '',
     description: movie.overview,
     genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
     relaseYear: movie.releaseYear,
@@ -161,6 +163,8 @@ export async function getTopShows(cursor = null) {
   const movies = response.map(movie => ({
     title: movie.title,
     poster: movie.imageSet.verticalPoster.w360, // There are different poster sizes 
+    horizontalPoster: movie.imageSet.horizontalPoster.w1080,
+    horizontalBackDrop: movie.imageSet?.horizontalBackdrop?.w1080 || '',
     description: movie.overview,
     genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
   }));
@@ -184,6 +188,8 @@ export async function getShowsByTitle(title, cursor = null) {
     title: movie.title || "Título no disponible",
     originalTitle: movie.originalTitle || "Título original no disponible",
     poster: movie.imageSet?.verticalPoster?.w480 || '',
+    horizontalPoster: movie.imageSet.horizontalPoster.w1080,
+    horizontalBackDrop: movie.imageSet?.horizontalBackdrop?.w1080 || '',
     description: movie.overview || 'Sin descripción disponible',
     genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
     releaseYear: movie.releaseYear || "Año no disponible",

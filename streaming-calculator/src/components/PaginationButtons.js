@@ -1,5 +1,6 @@
 import React from 'react';
 import * as api from '../api.js';
+import { useEffect } from 'react';
 
 const PaginationButtons = ({
   cursor,
@@ -15,14 +16,8 @@ const PaginationButtons = ({
   isMenuVisible,
   setIsMenuVisible,
   selectedMovie,
-  minRating,
-  maxRating,
-  minRelase,
-  maxRelase,
   sliderValues,
-  setSliderValues,
   selectedOrderBy,
-  setSelectedOrderBy,
   selectedOrderType,
 
 }) => {
@@ -51,6 +46,17 @@ const PaginationButtons = ({
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Bloquear scroll del body cuando el menú está visible
+  useEffect(() => {
+    if (isMenuVisible) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+    // Limpieza por si el componente se desmonta
+    return () => document.body.classList.remove('no-scroll');
+  }, [isMenuVisible]);
+
   return (
     <>
       <div className="pagination">
@@ -71,13 +77,26 @@ const PaginationButtons = ({
             X
           </button>
           <h2>{selectedMovie.title}</h2>
-          <img src={selectedMovie.poster} alt={selectedMovie.title} />
+          <img src={selectedMovie.horizontalPoster} alt={selectedMovie.title} />
           <p>Titulo original: {selectedMovie.originalTitle}</p>
           <p>{selectedMovie.description || 'Descripción no disponible'}</p>
           <p>
             Géneros: {Array.isArray(selectedMovie.genres) ? selectedMovie.genres.join(', ') : selectedMovie.genres}
           </p>
           <p>Rating: {selectedMovie.rating || 'No disponible'}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
+          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
           <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
         </div>
       )}

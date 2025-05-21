@@ -62,6 +62,40 @@
   right: -0.5rem;
 }
 
+.menu-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 8px 58px;
+}
+
+.menu-dropdown {
+  position: absolute;
+  right: 10px;
+  top: 60px; /* Ajusta según la altura del navbar */
+  background: #000000;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 100;
+  min-width: 180px;
+}
+
+.menu-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-dropdown li {
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.menu-dropdown li:hover {
+  background: #f5f5f5;
+}
+
 @media (max-width: 768px) {
   .navbar-center .nav-links {
     display: none;
