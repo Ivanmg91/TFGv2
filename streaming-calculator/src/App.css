@@ -70,6 +70,7 @@
 
 .movie-card h3 {
   font-size: 16px;
+  color: #ffffff;
   margin: 10px 0 5px;
   text-align: center;
 }
@@ -119,7 +120,9 @@
 
  /* Floating menu style*/
 .floating-menu {
-  width: 70%;
+  max-height: 90%;
+  max-width: 85%;
+  width: 85%;
   height: auto;
   position: fixed;
   top: 50%;
@@ -130,6 +133,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   border-radius: 8px;
+  overflow-y: auto;
 }
 
 .floating-menu img {
@@ -148,6 +152,10 @@
   cursor: pointer;
 }
 
+body {
+  background-color: #282c34;
+}
+
 body.menu-open {
   overflow: hidden;
 }
@@ -160,4 +168,8 @@ body.menu-open {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
+}
+
+.no-scroll {
+  overflow: hidden;
 }

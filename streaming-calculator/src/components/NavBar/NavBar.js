@@ -6,6 +6,7 @@ const NavBar = ({
   setSearchText, // Props
 }) => {
   const [searchFieldText, setSearchFieldText] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false); // Nuevo estado para el menú
   const navigate = useNavigate();
 
   // Update search field
@@ -50,7 +51,26 @@ const NavBar = ({
         <button>Iniciar Sesión</button>
       </div>
       <div className="navbar-right">
-        {/* AÑADIR MENU SEMEJANTE JUSTWATCH */}
+        <button
+          className="menu-btn"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {/* Puedes usar un icono aquí */}
+          ☰
+        </button>
+        {menuOpen && (
+          <div className="menu-dropdown">
+            <ul>
+              <li>Configuración</li>
+              <li>Api</li>
+              <li>Aviso Legal</li>
+              <li>FAQ</li>
+              <li>Terms of Use</li>
+              <li>Privacy Policy</li>
+              {/* Añade más plataformas o enlaces aquí */}
+            </ul>
+          </div>
+        )}
       </div>
     </nav>
   );
