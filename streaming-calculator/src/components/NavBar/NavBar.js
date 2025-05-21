@@ -1,41 +1,25 @@
 import React, { useState } from 'react';
-import * as api from '../../api.js';
 import './NavBar.css'
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavBar = ({
-  setMovies, 
-  setCursor, 
-  setPrevCursors, 
-  setHasMore, 
-  setLoading,
+  setSearchText, // Props
 }) => {
-  const [searchFieldText, setSearchText] = useState("");
+  const [searchFieldText, setSearchFieldText] = useState("");
+  const navigate = useNavigate();
 
-  // Clear search text
-      const handleClearSearchText = () => {
-        setSearchText(""); // Vaciar el fieldtext
-      };
-      const handleSearchChange = (event) => {
-        setSearchText(event.target.value);
-      };
-      
-      // Search movies
-      const handleSearchMovies = async () => {
-        if (!searchFieldText.trim()) return; // Avoid empty searchs
-        setLoading(true);
-        const result = await api.getShowsByTitle(searchFieldText);
-        setMovies(result.movies);
-        setHasMore(result.hasMore);
-        setCursor(result.nextCursor);
-        setPrevCursors([]); // Reset cursors
-      
-        setLoading(false);
-        handleClearSearchText();
-      };   
+  // Update search field
+  const handleSearchChange = (event) => {
+    setSearchFieldText(event.target.value);
+  };
 
-
-
-
+  // Buscar películas
+  const handleSearchMovies = () => {
+    if (!searchFieldText.trim()) return;
+    setSearchText(searchFieldText);
+    setSearchFieldText(""); // Clear the input
+    navigate('/search');
+  };
 
   return (
     <nav className="navbar">
@@ -46,21 +30,27 @@ const NavBar = ({
       </div>
       <div className="navbar-center">
         <ul className="nav-links">
-          <li><a href="/home">Inicio</a></li>
-          <li><a href="/see">Ver</a></li>
-          <li><a href="/new">Nuevo</a></li>
-          <li><a href="/popular">Popular</a></li>
+          <li><Link to="/home">Inicio</Link></li>
+          <li><Link to="/see">Descubrir</Link></li>
+          <li><Link to="/new">Nuevo</Link></li>
+          <li><Link to="/popular">Popular</Link></li>
         </ul>
       </div>
       <div>
-        <input className='navbar-searchfield' type='text' placeholder='Buscar película... (sin filtros)' value={searchFieldText} onChange={handleSearchChange}></input>
+        <input
+          className='navbar-searchfield'
+          type='text'
+          placeholder='Buscar película... (sin filtros)'
+          value={searchFieldText}
+          onChange={handleSearchChange}
+        />
         <button onClick={handleSearchMovies}>Buscar</button>
       </div>
       <div>
-        <button >Iniciar Sesión</button>
+        <button>Iniciar Sesión</button>
       </div>
-      <div className="navbar-right" hacer un menu como el de justwatch>
-        
+      <div className="navbar-right">
+        {/* AÑADIR MENU SEMEJANTE JUSTWATCH */}
       </div>
     </nav>
   );
