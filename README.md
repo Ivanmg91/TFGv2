@@ -16,7 +16,7 @@ http://localhost:3000
 ## INFO
 The web app is being hosted with netlify. This is a free hosting service. For update it only need do a git commit.
 Has integrated google analytics and google adsense.
-It use a 2 differents api from rapidapi.com: streaming availability and google api.
+It use a 2 differents api from rapidapi.com: streaming availability and youtube api. This apis use a basic plan, sometimes is necessary use other count to use. 1000 api calls.
 
 ## Pendiente
 - Hacer algo intuitivo para cuando quieres ver peliculas sin filtrarlas por genero...
@@ -34,6 +34,7 @@ It use a 2 differents api from rapidapi.com: streaming availability and google a
 - Q vaya hasta arriba de la pagina al pasar de pagina
 - Al abrir el desplegable con la info de la pelicula un boton de ver ahora q t lleve a los enlaces de suscripcion o metodos de pago de las plataformas donde se puede ver
 - Algunos valores cambian entre peliculas y series como releaseyear y firstairyear, entonces por eso en las series hay informacion q no se muestra.
+- Firebase authentication
 
 
 
