@@ -33,3 +33,20 @@ It use a 2 differents api from rapidapi.com: streaming availability and google a
 - Habra q poner el boton de aplicar fuera del dropdown para q no solo aplique los generos sino tambien todos los demas filtros q faltan por introducir.
 - Q vaya hasta arriba de la pagina al pasar de pagina
 - Al abrir el desplegable con la info de la pelicula un boton de ver ahora q t lleve a los enlaces de suscripcion o metodos de pago de las plataformas donde se puede ver
+- Algunos valores cambian entre peliculas y series como releaseyear y firstairyear, entonces por eso en las series hay informacion q no se muestra.
+
+
+
+
+
+
+
+Usar Capacitor o Cordova
+Ventaja: Puedes empaquetar tu app web (tal cual la tienes) como una app Android (WebView). Solo necesitas compilar tu proyecto (npm run build) y luego integrarlo con Capacitor o Cordova.
+Desventaja: La app será una webview, no una app nativa real, pero para muchas apps es suficiente.
+Pasos básicos con Capacitor:
+Instala Capacitor:
+Compila tu app React:
+Añade la plataforma Android:
+Copia los archivos de build:
+Abre el proyecto en Android Studio:
