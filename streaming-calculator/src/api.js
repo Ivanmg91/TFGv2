@@ -1,7 +1,7 @@
 import * as streamingAvailability from "streaming-availability";
 import './App.js';
 
-const RAPID_API_KEY = "9f046801c3mshfca9ccfbf4cb559p1ac9f9jsnc0130eea4de9";
+const RAPID_API_KEY = "7dd1007cddmshd06f44ea934dde6p117356jsne758d303d1f6";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
   apiKey: RAPID_API_KEY
 }));
@@ -65,6 +65,44 @@ const genreTranslations = {
   "Western": "Occidental"
 };
 
+function obtenerIdiomasDeStreaming(movie) {
+  const audiosSet = new Set();
+
+  Object.values(movie.streamingOptions).forEach(option => {
+    (Array.isArray(option) ? option : [option]).forEach(opt => {
+      if (opt.audios) {
+        opt.audios.forEach(audio => {
+          // Si audio es string, añade directamente
+          if (typeof audio === "string") {
+            audiosSet.add(audio);
+          } else if (audio.language) {
+            // Si es objeto, añade solo el código de idioma
+            audiosSet.add(audio.language);
+          }
+        });
+      }
+    });
+  });
+
+  return {
+    audios: Array.from(audiosSet)
+  };
+}
+
+function obtenerPrimerLightThemeImage(streamingOptions) {
+  if (!streamingOptions) return '';
+  for (const option of Object.values(streamingOptions)) {
+    const opts = Array.isArray(option) ? option : [option];
+    for (const opt of opts) {
+      if (opt.service && opt.service.imageSet && opt.service.imageSet.lightThemeImage) {
+        return opt.service.imageSet.lightThemeImage;
+      }
+    }
+  }
+  return '';
+}
+
+
 export async function getData() {
   const data = await client.showsApi.getShow({
     id: "tt0068646",
@@ -91,15 +129,21 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
   });
 
   const movies = response.shows.map(movie => ({
-    title: movie.title,
+    title: movie.title || "Título no disponible",
     originalTitle: movie.originalTitle || "Título original no disponible",
-    poster: movie.imageSet.verticalPoster.w360, // There are different poster sizes 
+    poster: movie.imageSet?.verticalPoster?.w480 || '',
     horizontalPoster: movie.imageSet.horizontalPoster.w1080,
     horizontalBackDrop: movie.imageSet?.horizontalBackdrop?.w1080 || '',
-    description: movie.overview,
+    overview: movie.overview || 'Sin descripción disponible',
     genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
-    relaseYear: movie.releaseYear,
-    rating: movie.rating,
+    releaseYear: movie.releaseYear || "Año no disponible",
+    directors: movie.directors || movie.creators || [],
+    cast: movie.cast || [],
+    rating: movie.rating || "Sin calificación",
+    runtime: movie.runtime + "min" || "Duración no disponible",
+    streamingOptions: movie.streamingOptions || {},
+    languages: obtenerIdiomasDeStreaming(movie),
+    lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
   }));
 
   return {
@@ -161,12 +205,21 @@ export async function getTopShows(cursor = null) {
   });
 
   const movies = response.map(movie => ({
-    title: movie.title,
-    poster: movie.imageSet.verticalPoster.w360, // There are different poster sizes 
+    title: movie.title || "Título no disponible",
+    originalTitle: movie.originalTitle || "Título original no disponible",
+    poster: movie.imageSet?.verticalPoster?.w480 || '',
     horizontalPoster: movie.imageSet.horizontalPoster.w1080,
     horizontalBackDrop: movie.imageSet?.horizontalBackdrop?.w1080 || '',
-    description: movie.overview,
+    overview: movie.overview || 'Sin descripción disponible',
     genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
+    releaseYear: movie.releaseYear || "Año no disponible",
+    directors: movie.directors || [],
+    cast: movie.cast || [],
+    rating: movie.rating || "Sin calificación",
+    runtime: movie.runtime + "min" || "Duración no disponible",
+    streamingOptions: movie.streamingOptions || {},
+    languages: obtenerIdiomasDeStreaming(movie),
+    lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
   }));
 
   return {
@@ -181,23 +234,25 @@ export async function getShowsByTitle(title, cursor = null) {
     title: title,
     country: "es",
     outputLanguage: "es",
-    cursor: cursor, // Añadir cursor para paginación
+    cursor: cursor,
   });
 
-  const movies = response.map(movie => ({
+  const movies = (response.shows || response).map(movie => ({
     title: movie.title || "Título no disponible",
     originalTitle: movie.originalTitle || "Título original no disponible",
     poster: movie.imageSet?.verticalPoster?.w480 || '',
-    horizontalPoster: movie.imageSet.horizontalPoster.w1080,
+    horizontalPoster: movie.imageSet?.horizontalPoster?.w1080 || '',
     horizontalBackDrop: movie.imageSet?.horizontalBackdrop?.w1080 || '',
-    description: movie.overview || 'Sin descripción disponible',
+    overview: movie.overview || 'Sin descripción disponible',
     genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
     releaseYear: movie.releaseYear || "Año no disponible",
     directors: movie.directors || [],
     cast: movie.cast || [],
     rating: movie.rating || "Sin calificación",
-    runtime: movie.runtime || "Duración no disponible",
+    runtime: (movie.runtime ? movie.runtime + "min" : "Duración no disponible"),
     streamingOptions: movie.streamingOptions || {},
+    languages: obtenerIdiomasDeStreaming(movie),
+    lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
   }));
 
   return {

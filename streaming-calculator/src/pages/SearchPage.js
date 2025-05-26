@@ -13,7 +13,7 @@ function SearchPage({ searchText }) {
   const [selectedGenres] = useState([]);
   const [selectedPlatforms] = useState([]);
   const [selectedShowTypes] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedMovie] = useState(null);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [minRating] = useState(0);
   const [maxRating] = useState(10);
@@ -55,16 +55,10 @@ function SearchPage({ searchText }) {
     setLoading(false);
   }
 
-  const handleCardClick = (movie) => {
-    setSelectedMovie(movie);
-    setIsMenuVisible(true);
-  };
-
   return (
     <div style={{ marginTop: '100px' }}>
       <MoviesGrid
         movies={movies}
-        handleCardClick={handleCardClick}
         hasMore={hasMore}
         loading={loading}
       />

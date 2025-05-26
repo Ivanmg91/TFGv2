@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const MoviesGrid = ({ movies, handleCardClick, hasMore, loading }) => {
+const MoviesGrid = ({ movies, hasMore, loading }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="movie-grid">
       {loading ? (
@@ -13,7 +16,7 @@ const MoviesGrid = ({ movies, handleCardClick, hasMore, loading }) => {
         ))
       ) : movies.length > 0 ? (
         movies.map((movie, index) => (
-          <div className="movie-card" key={index} onClick={() => handleCardClick(movie)}>
+          <div className="movie-card" key={index} onClick={() => navigate('/info', { state: { movie } })}>
             <img src={movie.poster} alt={movie.title} />
             <div className="card-content">
               <h3 className="card-title">{movie.title}</h3>

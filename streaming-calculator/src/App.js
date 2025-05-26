@@ -7,6 +7,7 @@ import NewPage from './pages/NewPage.js';
 import PopularPage from './pages/PopularPage.js';
 import DiscoverPage from './pages/DiscoverPage.js';
 import SearchPage from './pages/SearchPage.js';
+import InfoShowPage from './pages/InfoShowPage.js';
 
 function App() {
   const [searchText, setSearchText] = useState("");
@@ -17,11 +18,12 @@ function App() {
         <NavBar setSearchText={setSearchText} />
         <div className="main-content">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<DiscoverPage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/see" element={<DiscoverPage />} />
             <Route path="/new" element={<NewPage />} />
             <Route path="/popular" element={<PopularPage />} />
+            <Route path="/info" element={<InfoShowPage />} />
             <Route path="/search" element={<SearchPage searchText={searchText} />} />
             {/* ...otras rutas... */}
           </Routes>
