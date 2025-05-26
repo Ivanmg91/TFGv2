@@ -1,10 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { buscarTrailerYouTube } from '../ytApi';
 import './PagesCss/InfoShowPage.css'; // Asegúrate de importar el CSS
 
 function InfoShowPage() {
     const location = useLocation();
     const selectedMovie = location.state?.movie;
+    const [trailerId, setTrailerId] = useState(null);
+
+    useEffect(() => {
+    if (selectedMovie) {
+      buscarTrailerYouTube(selectedMovie.title, selectedMovie.releaseYear)
+        .then(id => setTrailerId(id));
+    }
+  }, [selectedMovie]);
 
     if (!selectedMovie) {
         return <div>No hay información de la película seleccionada.</div>;
@@ -114,16 +123,17 @@ function InfoShowPage() {
                 <p className="info-description">{selectedMovie.overview || 'Descripción no disponible'}</p>
 
                 <h1>TRAILER</h1>
-                <div style={{ marginBottom: '20px' }}>
-                <iframe
-                    width="420"
-                    height="236"
-                    src={`https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(selectedMovie.title + ' trailer ' + selectedMovie.releaseYear)}`}
+                <div className="trailer-container">
+                {trailerId ? (
+                    <iframe
+                    src={`https://www.youtube.com/embed/${trailerId}`}
                     title="Tráiler"
-                    frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                ></iframe>
+                    ></iframe>
+                ) : (
+                    <span>Tráiler no disponible</span>
+                )}
                 </div>
 
                 <h1>CAST</h1>
