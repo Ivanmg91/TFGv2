@@ -14,7 +14,7 @@ function DiscoverPage() {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [selectedShowTypes, setSelectedShowTypes] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedMovie] = useState(null);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [minRating, setMinRating] = useState(0);
   const [maxRating, setMaxRating] = useState(10);
@@ -43,11 +43,6 @@ function DiscoverPage() {
     setLoading(false);
   }
 
-  const handleCardClick = (movie) => {
-    setSelectedMovie(movie);
-    setIsMenuVisible(true);
-  };
-
   return (
     <div>
       <FiltersRow
@@ -75,7 +70,6 @@ function DiscoverPage() {
 
       <MoviesGrid
         movies={movies}
-        handleCardClick={handleCardClick}
         hasMore={hasMore}
         loading={loading}
       />

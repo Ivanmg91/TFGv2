@@ -14,13 +14,13 @@ const PaginationButtons = ({
   selectedPlatforms,
   selectedShowTypes,
   isMenuVisible,
-  setIsMenuVisible,
-  selectedMovie,
+
   sliderValues,
   selectedOrderBy,
   selectedOrderType,
 
 }) => {
+
   // Función para manejar la página siguiente
   const handleNextPage = async () => {
     if (!hasMore) return;
@@ -67,39 +67,6 @@ const PaginationButtons = ({
           Siguiente
         </button>
       </div>
-
-      {/* Menú flotante y superposición */}
-      {isMenuVisible && <div className="overlay" onClick={() => setIsMenuVisible(false)}></div>}
-
-      {isMenuVisible && selectedMovie && (
-        <div className="floating-menu">
-          <button className="close-button" onClick={() => setIsMenuVisible(false)}>
-            X
-          </button>
-          <h2>{selectedMovie.title}</h2>
-          <img src={selectedMovie.horizontalPoster} alt={selectedMovie.title} />
-          <p>Titulo original: {selectedMovie.originalTitle}</p>
-          <p>{selectedMovie.description || 'Descripción no disponible'}</p>
-          <p>
-            Géneros: {Array.isArray(selectedMovie.genres) ? selectedMovie.genres.join(', ') : selectedMovie.genres}
-          </p>
-          <p>Rating: {selectedMovie.rating || 'No disponible'}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-          <p>Fecha de estreno: {selectedMovie.relaseYear}</p>
-        </div>
-      )}
     </>
   );
 };

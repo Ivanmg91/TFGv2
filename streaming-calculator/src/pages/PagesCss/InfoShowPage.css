@@ -1,0 +1,109 @@
+
+
+.info-show-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 60vh;
+  gap: 32px;
+  margin-top: 100px;
+  padding: 0 50px 0 50px;
+  box-sizing: border-box; /* <-- Añade esto */
+}
+
+.info-left {
+  flex: 0 0 65%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.info-left h1 {
+    font-size: 22px;
+  color: rgb(255, 255, 255);
+}
+
+.info-right h1 {
+  font-size: 16px;
+  color: rgb(255, 255, 255);
+}
+
+.info-right p {
+  font-size: 14px;
+  color: rgb(172, 172, 172);
+}
+
+.info-description {
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+  margin-top: 0px;
+  color: rgb(172, 172, 172);
+}
+
+.info-original-title {
+  color: #fff !important;
+  font-size: 32px !important;
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+
+.info-right-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.info-details {
+  font-size: 0.98rem;
+  text-align: left;
+  min-width: 180px;
+  color: #fff;
+  flex: 1;
+}
+
+.info-poster {
+  width: 160px;
+  height: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  margin-bottom: 0;
+}
+
+/* Buttons */
+
+.custom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #232a32;
+  color: #bfc9d4;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-size: 1.1rem;
+  font-family: inherit;
+  cursor: pointer;
+  gap: 8px;
+  transition: background 0.2s;
+  flex: 1; /* Hace que cada botón ocupe el máximo espacio posible */
+}
+
+.custom-btn:hover {
+  background: #2c3540;
+}
+
+.custom-btn-row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-top: 24px;
+  width: 100%;
+}
+
+/* Separation line */
+.info-separation-line {
+  width: 100%;
+  height: 1px;
+  background-color: #2c3540;
+  margin: 24px 0;
+}
