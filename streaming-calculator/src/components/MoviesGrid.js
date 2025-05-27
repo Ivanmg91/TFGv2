@@ -10,20 +10,12 @@ const MoviesGrid = ({ movies, hasMore, loading }) => {
         Array.from({ length: 8 }).map((_, idx) => (
           <div className="skeleton-card" key={idx}>
             <div className="skeleton-poster"></div>
-            <div className="skeleton-title"></div>
-            <div className="skeleton-genres"></div>
           </div>
         ))
       ) : movies.length > 0 ? (
         movies.map((movie, index) => (
-          <div className="movie-card" key={index} onClick={() => navigate('/info', { state: { movie } })}>
+          <div className="movie-card" key={index} onClick={() => {window.scrollTo(0, 0); navigate('/info', { state: { movie } })}}>
             <img src={movie.poster} alt={movie.title} />
-            <div className="card-content">
-              <h3 className="card-title">{movie.title}</h3>
-              <p className="card-genres">
-                {Array.isArray(movie.genres) ? movie.genres.join(', ') : movie.genres}
-              </p>
-            </div>
           </div>
         ))
       ) : (

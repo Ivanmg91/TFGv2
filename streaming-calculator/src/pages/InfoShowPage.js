@@ -1,12 +1,69 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { buscarTrailerYouTube } from '../ytApi';
-import './PagesCss/InfoShowPage.css'; // Asegúrate de importar el CSS
+import * as api from '../api.js';
+import MoviesRow from '../components/MoviesRow.js';
+import './PagesCss/InfoShowPage.css';
 
 function InfoShowPage() {
     const location = useLocation();
     const selectedMovie = location.state?.movie;
     const [trailerId, setTrailerId] = useState(null);
+
+    // Estados para las películas relacionadas
+    const [movies, setMovies] = useState([]);
+    const [setCursor] = useState(null);
+    const [hasMore, setHasMore] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    const genreTranslationsReverse = {
+        "Acción": "Action",
+        "Aventura": "Adventure",
+        "Animación": "Animation",
+        "Comedia": "Comedy",
+        "Crimen": "Crime",
+        "Documental": "Documentary",
+        "Drama": "Drama",
+        "Familiar": "Family",
+        "Fantasía": "Fantasy",
+        "Historia": "History",
+        "Terror": "Horror",
+        "Música": "Music",
+        "Misterio": "Mystery",
+        "Romance": "Romance",
+        "Ciencia ficción": "Science Fiction",
+        "Película de TV": "TV Movie",
+        "Suspenso": "Thriller",
+        "Guerra": "War",
+        "Occidental": "Western"
+    };
+
+    useEffect(() => {
+        if (selectedMovie && selectedMovie.genres && selectedMovie.genres.length > 0) {
+            setLoading(true);
+            // Traduce el primer género al inglés
+            const genreInSpanish = selectedMovie.genres[0];
+            const genreInEnglish = genreTranslationsReverse[genreInSpanish] || genreInSpanish;
+            api.getShowsByFilters(
+                null,
+                [genreInEnglish],
+                [],
+                [],
+                0,
+                10,
+                1900,
+                new Date().getFullYear()
+            ).then(result => {
+                // Filtra para no mostrar la película principal
+                const filtered = result.movies.filter(m => m.title !== selectedMovie.title);
+                setMovies(filtered);
+                setHasMore(result.hasMore);
+                setCursor(result.nextCursor);
+                setLoading(false);
+            }).catch(() => setLoading(false));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedMovie]);
 
     useEffect(() => {
     if (selectedMovie) {
@@ -112,12 +169,36 @@ function InfoShowPage() {
     };
 
     return (
-        <div className="info-show-container">
+        <>  
+            {selectedMovie.horizontalBackDrop && (
+                <div className="backdrop-container">
+                    <img
+                        src={selectedMovie.horizontalBackDrop}
+                        alt="Backdrop"
+                        className="backdrop-image"
+                    />
+                    {/* Título sobre el backdrop */}
+                    <div className="backdrop-title">
+                        <h1>{selectedMovie.title}</h1>
+                    </div>
+                    <div className="backdrop-originaltitle">
+                        <h1>Titulo original: {selectedMovie.originalTitle} ({selectedMovie.releaseYear ? selectedMovie.releaseYear : ''})</h1>
+                    </div>
+                    <div className="backdrop-rating">
+                        <h1>{selectedMovie.rating / 10} / 10</h1>
+                    </div>
+                    <div className="backdrop-overlay"></div>
+                </div>
+            )}
+
+            <div className="info-show-container">
             <div className="info-left">
                 <h1>VER AHORA</h1>
 
 
                 <h1>QUÉ MÁS PODRÍA INTERESARTE</h1>
+
+                <h1>MISMOS GÉNEROS (CAMBIAR)</h1>
 
                 <h1>SINOPSIS</h1>
                 <p className="info-description">{selectedMovie.overview || 'Descripción no disponible'}</p>
@@ -246,6 +327,12 @@ function InfoShowPage() {
                 
             </div>
         </div>
+        <div className="movies-row-fullwidth">
+            <h1>MISMOS GÉNEROS</h1>
+            <MoviesRow movies={movies} hasMore={hasMore} loading={loading} />
+        </div>
+        </>
+        
     );
 }
 

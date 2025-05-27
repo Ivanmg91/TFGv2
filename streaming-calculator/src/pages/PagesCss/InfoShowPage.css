@@ -1,4 +1,72 @@
+.backdrop-container {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    height: 600px;
+    overflow: hidden;
+    z-index: 1;
+}
 
+.backdrop-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.backdrop-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(12, 12, 12, 0) 40%,
+        #17181c 100%
+    );
+    z-index: 2;
+}
+
+.backdrop-title {
+    position: absolute;
+    top: 60%;
+    left: 5%;
+    z-index: 3;
+    color: white;
+    text-shadow: 2px 2px 8px #000;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.backdrop-originaltitle {
+    position: absolute;
+    top: 80%;
+    left: 5%;
+    z-index: 3;
+    text-shadow: 2px 2px 8px #000;
+    font-weight: bold;
+    font-size: 8px;
+    color: rgb(172, 172, 172);
+}
+
+.backdrop-rating {
+    position: absolute;
+    top: 85%;
+    left: 5%;
+    z-index: 3;
+    text-shadow: 2px 2px 8px #000;
+    font-weight: bold;
+    font-size: 8px;
+    color: rgb(172, 172, 172);
+}
+
+.backdrop-container {
+    position: relative;
+}
 
 .info-show-container {
   display: flex;
@@ -8,7 +76,7 @@
   gap: 32px;
   margin-top: 100px;
   padding: 0 50px 0 50px;
-  box-sizing: border-box; /* <-- Añade esto */
+  box-sizing: border-box;
 }
 
 .info-left {
@@ -69,6 +137,21 @@
   margin-bottom: 0;
 }
 
+.movies-row-fullwidth {
+  width: 100%;
+  padding: 0 50px 32px 50px; /* Igual que .info-show-container, añade padding-bottom si quieres separación */
+  box-sizing: border-box;
+  background: transparent; /* O el color de fondo que uses */
+  font-family: inherit;
+  color: #fff;
+}
+
+.movies-row-fullwidth h1 {
+  font-size: 22px; /* Igual que .info-left h1 */
+  color: #fff;
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
 /* Buttons */
 
 .custom-btn {

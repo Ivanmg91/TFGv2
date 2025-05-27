@@ -14,6 +14,64 @@
   padding: 20px;
 }
 
+/* Movies Row */
+.movie-row {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 20px 0;
+  scrollbar-width: none;
+}
+
+.movie-row::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-row-container {
+  position: relative;
+  width: 100%;
+}
+
+.movie-row-shadow {
+  position: absolute;
+  top: 0;
+  width: 60px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  cursor: pointer;
+  transition: background 0.2s;
+  user-select: none;
+}
+
+.movie-row-shadow.right {
+  right: 0;
+  justify-content: flex-end;
+  background: linear-gradient(to left, rgba(23,24,28,0.95) 70%, rgba(23,24,28,0));
+}
+
+.movie-row-shadow.left {
+  left: 0;
+  justify-content: flex-start;
+  background: linear-gradient(to right, rgba(23,24,28,0.95) 70%, rgba(23,24,28,0));
+}
+
+.movie-row-shadow .arrow {
+  font-size: 2rem;
+  color: #fff;
+  margin: 0 10px;
+  pointer-events: none;
+}
+
+/* Ajusta el ancho de las tarjetas para la fila horizontal */
+.movie-card, .skeleton-card {
+  min-width: 220px;
+  max-width: 220px;
+  flex: 0 0 auto;
+}
+
 .movie-poster {
   width: 100%;
   height: auto;
@@ -97,7 +155,6 @@
 
 .skeleton-poster {
   width: 100%;
-  height: 220px;
   background: #cccccc;
   border-radius: 5px;
   margin-bottom: 10px;
