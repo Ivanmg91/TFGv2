@@ -106,7 +106,7 @@
 /* VERSIÓN CON ACORTADOR DE ANUNCIOS*/
 import React, { useEffect, useState } from 'react';
 import './SeeNowList.css';
-import { obtenerAudiosDeOpcion, obtenerSubtitulosDeOpcion } from '../../api.js';
+import { obtenerAudiosDeOpcion,  } from '../../api.js';
 
 const SHRINKME_API_TOKEN = '46a8dfe712411de5f66206b0eec6aa27fe9fdd18';
 

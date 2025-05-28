@@ -51,3 +51,5 @@ Compila tu app React:
 Añade la plataforma Android:
 Copia los archivos de build:
 Abre el proyecto en Android Studio:
+
+acortador de anuncios: https://shrinkme.io/member/dashboard
