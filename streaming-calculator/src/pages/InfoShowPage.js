@@ -4,6 +4,7 @@ import { buscarTrailerYouTube } from '../ytApi';
 import * as api from '../api.js';
 import MoviesRow from '../components/MoviesRow.js';
 import './PagesCss/InfoShowPage.css';
+import SeeNowList from '../components/SeeNowList/SeeNowList.js';
 
 function InfoShowPage() {
     const location = useLocation();
@@ -165,7 +166,8 @@ function InfoShowPage() {
         qya: "Quenya", // Lenguas élficas
         sjn: "Sindarin",
         val: "Valyrio", // Game of Thrones
-        doth: "Dothraki"
+        doth: "Dothraki",
+        wol: "Wolof"
     };
 
     return (
@@ -194,7 +196,7 @@ function InfoShowPage() {
             <div className="info-show-container">
             <div className="info-left">
                 <h1>VER AHORA</h1>
-
+                <SeeNowList streamingOptions={selectedMovie.streamingOptions} selectedMovie={selectedMovie} languageNames={languageNames} />
 
                 <h1>QUÉ MÁS PODRÍA INTERESARTE</h1>
 
@@ -232,7 +234,7 @@ function InfoShowPage() {
             <div className="info-right">
                 <div className="info-right-row">
                     <div className="info-details">
-                        <p className='info-original-title'><strong>{selectedMovie.originalTitle}</strong></p>
+                        <p className='info-original-title'><strong>INFORMACIÓN DE LA PELICULA</strong></p>
                         <p><strong>Calificación:</strong> {selectedMovie.rating / 10 || 'No disponible'}</p>
                         <p><strong>Fecha de estreno:</strong> {selectedMovie.releaseYear ? selectedMovie.releaseYear : 'No disponible'}</p>                    </div>
                     <img className="info-poster" src={selectedMovie.poster} alt={selectedMovie.title} />
