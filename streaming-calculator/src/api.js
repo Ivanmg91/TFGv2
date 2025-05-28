@@ -89,6 +89,37 @@ function obtenerIdiomasDeStreaming(movie) {
   };
 }
 
+export function obtenerAudiosDeOpcion(option) {
+  const audiosSet = new Set();
+  if (option.audios) {
+    option.audios.forEach(audio => {
+      if (typeof audio === "string") {
+        audiosSet.add(audio);
+      } else if (audio.language) {
+        audiosSet.add(audio.language);
+      }
+    });
+  }
+  return Array.from(audiosSet);
+}
+
+export function obtenerSubtitulosDeOpcion(option) {
+  const subsSet = new Set();
+  if (option.subtitles) {
+    option.subtitles.forEach(sub => {
+      // Caso correcto para tu API:
+      if (sub.locale && sub.locale.language) {
+        subsSet.add(sub.locale.language);
+      } else if (typeof sub === "string") {
+        subsSet.add(sub);
+      } else if (sub.language) {
+        subsSet.add(sub.language);
+      }
+    });
+  }
+  return Array.from(subsSet);
+}
+
 function obtenerPrimerLightThemeImage(streamingOptions) {
   if (!streamingOptions) return '';
   for (const option of Object.values(streamingOptions)) {

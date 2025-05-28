@@ -211,10 +211,12 @@
 
 body {
   background-color: #17181c;
+  overflow-x: hidden;
 }
 
 body.menu-open {
   overflow: hidden;
+  overflow-x: hidden;
 }
 
 .overlay {

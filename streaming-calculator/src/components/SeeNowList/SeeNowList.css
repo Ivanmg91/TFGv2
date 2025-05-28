@@ -1,0 +1,125 @@
+.streaming-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #101624;
+  border-radius: 10px;
+  padding: 12px;
+  border: 1.5px solid #ffd600;
+}
+
+.streaming-option-card {
+  display: flex;
+  align-items: center;
+  background: #151c29;
+  border-radius: 8px;
+  padding: 18px 24px;
+  gap: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.streaming-option-logo img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.streaming-option-info {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+}
+.streaming-option-info-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 60px;
+  min-width: 180px;
+}
+
+.streaming-option-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.streaming-option-details {
+  color: #bfc9d4;
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+.tag {
+  background: #232b3e;
+  color: #ffd600;
+  font-weight: bold;
+  font-size: 13px;
+  border-radius: 4px;
+  padding: 2px 7px;
+  display: flex;
+  align-items: center;
+}
+
+.streaming-option-price {
+  margin-top: 2px;
+  color: #fff;
+  font-size: 16px;
+}
+.streaming-option-price strong {
+  font-weight: bold;
+  color: #fff;
+  margin-right: 8px;
+}
+
+.streaming-option-price-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  gap: 2px;
+}
+
+.streaming-option-action {
+  margin-left: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.streaming-option-btn {
+  background: #ffd600;
+  color: #101624;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 18px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.streaming-option-btn:hover {
+  background: #ffe066;
+}
+
+@media (max-width: 700px) {
+  .streaming-option-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 10px;
+  }
+  .streaming-option-action {
+    margin-left: 0;
+  }
+}
