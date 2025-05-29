@@ -1,7 +1,7 @@
 import * as streamingAvailability from "streaming-availability";
 import './App.js';
 
-const RAPID_API_KEY = "9c65834165msh08c6539059f2807p1f88bejsn3299c205e769";
+const RAPID_API_KEY = "2a93185552msh7478f85c38116cdp151c96jsn51123920ba49";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
   apiKey: RAPID_API_KEY
 }));
@@ -177,7 +177,6 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
     languages: obtenerIdiomasDeStreaming(movie),
     lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
   }));
-
   return {
     movies,
     hasMore: response.hasMore,
@@ -248,7 +247,14 @@ export async function getTopShows(cursor = null) {
     directors: movie.directors || movie.creators  || [],
     cast: movie.cast || [],
     rating: movie.rating || "Sin calificación",
-    runtime: movie.runtime + " min" || "Duración no disponible",
+    runtime: movie.runtime
+  ? movie.runtime + " min"
+  : (movie.seasonCount
+      ? `${movie.seasonCount} temporada(s)` + (movie.episodeCount ? `, ${movie.episodeCount} episodio(s)` : '')
+      : (movie.episodeCount
+          ? `${movie.episodeCount} episodio(s)`
+          : "Duración no disponible")
+    ),
     streamingOptions: movie.streamingOptions || {},
     languages: obtenerIdiomasDeStreaming(movie),
     lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
@@ -271,11 +277,11 @@ export async function getShowsByTitle(title, cursor = null) {
 
   const movies = (response.shows || response).map(movie => ({
     title: movie.title || "Título no disponible",
+    overview: movie.overview || 'Sin descripción disponible',
     originalTitle: movie.originalTitle || "Título original no disponible",
     poster: movie.imageSet?.verticalPoster?.w480 || '',
     horizontalPoster: movie.imageSet?.horizontalPoster?.w1080 || '',
     horizontalBackDrop: movie.imageSet?.horizontalBackdrop?.w1080 || '',
-    overview: movie.overview || 'Sin descripción disponible',
     genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
     releaseYear: movie.releaseYear || movie.firstAirYear  || "Año no disponible",
     directors: movie.directors || movie.creators || [],

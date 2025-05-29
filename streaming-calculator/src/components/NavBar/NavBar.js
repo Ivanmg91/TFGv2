@@ -62,6 +62,7 @@ const NavBar = ({
           <div className="menu-dropdown">
             <ul>
               <li>Configuración</li>
+              <li><Link to="/whoweare" className="no-link-style">Quiénes Somos</Link></li>
               <li>Api</li>
               <li>Aviso Legal</li>
               <li>FAQ</li>

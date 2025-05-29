@@ -1,0 +1,33 @@
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #181c23;
+  color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  min-width: 320px;
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+}
+table {
+  width: 100%;
+  margin-top: 1rem;
+}
+td {
+  padding: 0.5rem 1rem;
+}

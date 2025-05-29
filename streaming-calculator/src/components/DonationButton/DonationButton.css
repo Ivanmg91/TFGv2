@@ -1,0 +1,16 @@
+.button {
+    background: '#ffc439';
+    color: '#111';
+    border: 'none';
+    borderRadius: 8;
+    padding: '12px 28px';
+    fontSize: 1;
+    fontWeight: 'bold';
+    cursor: 'pointer';
+}
+
+.image-button {
+    height: 24;
+    marginRight: 8;
+    verticalAlign: 'middle';
+}
