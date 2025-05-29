@@ -8,6 +8,7 @@ import PopularPage from './pages/PopularPage.js';
 import DiscoverPage from './pages/DiscoverPage.js';
 import SearchPage from './pages/SearchPage.js';
 import InfoShowPage from './pages/InfoShowPage.js';
+import WhoWeArePage from './pages/WhoWeArePage.js';
 
 function App() {
   const [searchText, setSearchText] = useState("");
@@ -25,6 +26,7 @@ function App() {
             <Route path="/popular" element={<PopularPage />} />
             <Route path="/info" element={<InfoShowPage />} />
             <Route path="/search" element={<SearchPage searchText={searchText} />} />
+            <Route path="/whoweare" element={<WhoWeArePage />} />
             {/* ...otras rutas... */}
           </Routes>
         </div>

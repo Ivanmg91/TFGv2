@@ -53,3 +53,4 @@ Copia los archivos de build:
 Abre el proyecto en Android Studio:
 
 acortador de anuncios: https://shrinkme.io/member/dashboard
+google analytics: https://analytics.google.com/analytics/web/?hl=es#/p488460761/reports/intelligenthome?params=_u..nav%3Dmaui&collectionId=business-objectives

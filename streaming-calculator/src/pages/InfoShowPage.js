@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { buscarTrailerYouTube } from '../ytApi';
+import { obtenerImagenActorWikipedia } from '../wikiApi';
 import * as api from '../api.js';
 import MoviesRow from '../components/MoviesRow.js';
 import './PagesCss/InfoShowPage.css';
 import SeeNowList from '../components/SeeNowList/SeeNowList.js';
+import DonationButton from '../components/DonationButton/DonationButton.js';
 
 function InfoShowPage() {
     const location = useLocation();
@@ -16,6 +18,8 @@ function InfoShowPage() {
     const [setCursor] = useState(null);
     const [hasMore, setHasMore] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    const [castImages, setCastImages] = useState({});
 
     const genreTranslationsReverse = {
         "Acción": "Action",
@@ -38,6 +42,22 @@ function InfoShowPage() {
         "Guerra": "War",
         "Occidental": "Western"
     };
+
+    useEffect(() => {
+      async function fetchCastImages() {
+        if (!selectedMovie?.cast) return;
+        const images = {};
+        await Promise.all(
+          selectedMovie.cast.slice(0, 8).map(async (actor) => { // Limita a 8 para rendimiento
+            if (!actor) return;
+            const img = await obtenerImagenActorWikipedia(actor);
+            images[actor] = img;
+          })
+        );
+        setCastImages(images);
+      }
+      fetchCastImages();
+    }, [selectedMovie]);
 
     useEffect(() => {
         if (selectedMovie && selectedMovie.genres && selectedMovie.genres.length > 0) {
@@ -203,7 +223,7 @@ function InfoShowPage() {
                 <h1>MISMOS GÉNEROS (CAMBIAR)</h1>
 
                 <h1>SINOPSIS</h1>
-                <p className="info-description">{selectedMovie.overview || 'Descripción no disponible'}</p>
+                <p className="info-description">{selectedMovie?.overview}</p>
 
                 <h1>TRAILER</h1>
                 <div className="trailer-container">
@@ -220,6 +240,30 @@ function InfoShowPage() {
                 </div>
 
                 <h1>CAST</h1>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 24 }}>
+                {selectedMovie.cast && selectedMovie.cast.length > 0 ? (
+                    selectedMovie.cast.slice(0, 8).map(actor => (
+                        <a
+                            key={actor}
+                            href={`https://es.wikipedia.org/wiki/${encodeURIComponent(actor.replace(/ /g, '_'))}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ textDecoration: 'none' }}
+                        >
+                                            <div key={actor} style={{ width: 100, textAlign: 'center' }}>
+                            <img
+                            src={castImages[actor] || 'https://via.placeholder.com/100x140?text=No+Foto'}
+                            alt={actor}
+                            style={{ width: 100, height: 140, objectFit: 'cover', borderRadius: 8, background: '#222' }}
+                            />
+                            <div style={{ marginTop: 8, fontSize: 14, color: '#fff' }}>{actor}</div>
+                        </div>
+                        </a>
+                    ))
+                ) : (
+                    <span style={{ color: '#bfc9d4' }}>No disponible</span>
+                )}
+                </div>
                 <h1>COMENTARIOS</h1>
             </div>
 
@@ -305,7 +349,10 @@ function InfoShowPage() {
                             });
                             return uniquePlatforms.map((option, idx) => (
                                 option.service.imageSet && option.service.imageSet.lightThemeImage ? (
-                                    <div key={option.service.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <div
+                                        key={option.service.id + '-' + (option.type || '') + '-' + (option.link || idx)}
+                                        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                                    >
                                         <a
                                             href={option.link}
                                             target="_blank"
@@ -325,6 +372,11 @@ function InfoShowPage() {
                     ) : (
                         <span style={{ color: '#bfc9d4' }}>No disponible</span>
                     )}
+                </div>
+                <div className='info-separation-line'></div>
+                <h1>DONAR</h1>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', marginTop: 20 }}>
+                    <DonationButton amount="1" label="Donar" />
                 </div>
                 
             </div>

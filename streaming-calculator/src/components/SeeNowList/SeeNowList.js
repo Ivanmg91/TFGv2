@@ -24,7 +24,6 @@
 //   'mubi': 'Desde 9.99 EUR',
 //   'apple': 'Desde 9.99 EUR',
 //   'netflix': 'Desde 6.99 EUR',
-//   'hbo': 'Desde 6.99 EUR',
 // };
 
 // const SeeNowList = ({ streamingOptions, selectedMovie, languageNames }) => {
@@ -106,7 +105,8 @@
 /* VERSIÓN CON ACORTADOR DE ANUNCIOS*/
 import React, { useEffect, useState } from 'react';
 import './SeeNowList.css';
-import { obtenerAudiosDeOpcion,  } from '../../api.js';
+import { obtenerAudiosDeOpcion } from '../../api.js';
+import InfoModal from '../InfoModal/InfoModal.js';
 
 const SHRINKME_API_TOKEN = '46a8dfe712411de5f66206b0eec6aa27fe9fdd18';
 
@@ -132,6 +132,9 @@ const defaultPrices = {
 const SeeNowList = ({ streamingOptions, selectedMovie, languageNames }) => {
   const options = Object.values(streamingOptions || {}).flat();
   const [shortLinks, setShortLinks] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalDetails] = useState({});
+
 
   useEffect(() => {
     // Acorta todos los enlaces al cargar o cambiar las opciones
@@ -165,13 +168,15 @@ const SeeNowList = ({ streamingOptions, selectedMovie, languageNames }) => {
 
   return (
     <div className="streaming-options-list">
+      <InfoModal open={modalOpen} onClose={() => setModalOpen(false)} details={modalDetails} />
       {options.map((option, idx) => {
         const serviceId = option.service?.id?.toLowerCase() || option.service?.name?.toLowerCase();
+        const uniqueKey = `${serviceId}-${option.type || ''}-${option.link || ''}-${idx}`; // <-- añade idx
         const defaultPrice = defaultPrices[serviceId] || '';
         const audios = obtenerAudiosDeOpcion(option);
-
+        
         return (
-          <div className="streaming-option-card" key={option.service?.id || idx}>
+          <div className="streaming-option-card" key={uniqueKey}>
             <div className="streaming-option-logo">
               <img
                 src={option.service?.imageSet?.lightThemeImage}

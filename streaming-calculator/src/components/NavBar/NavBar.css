@@ -96,6 +96,18 @@
   background: #f5f5f5;
 }
 
+/* LINK STYLES */
+.no-link-style {
+  color: inherit;
+  text-decoration: none;
+}
+.no-link-style:visited {
+  color: inherit;
+}
+.no-link-style:hover {
+  text-decoration: underline; /* O quítalo si no quieres subrayado al pasar el ratón */
+}
+
 @media (max-width: 768px) {
   .navbar-center .nav-links {
     display: none;
