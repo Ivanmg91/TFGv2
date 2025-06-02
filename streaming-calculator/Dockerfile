@@ -8,6 +8,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
  
 # Install dependencies
+RUN rm -rf node_modules package-lock.json
 RUN npm install
 RUN npm install streaming-availability
  
