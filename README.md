@@ -8,6 +8,10 @@ Trabajo fin de grado 2DAM
 
 ### Use this comands to install the docker container
 - docker compose build
+
+- rm -rf node_modules package-lock.json
+- npm install
+
 - docker compose up
 
 ### Enter to the terminal url

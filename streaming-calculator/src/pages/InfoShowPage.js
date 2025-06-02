@@ -78,7 +78,7 @@ function InfoShowPage() {
                 [],
                 [],
                 0,
-                50,
+                100,
                 1900,
                 new Date().getFullYear(),
                 null,
@@ -118,7 +118,7 @@ function InfoShowPage() {
                 uniquePlatforms, // Usa todas las plataformas
                 [],
                 0,
-                50,
+                100,
                 1900,
                 new Date().getFullYear(),
                 null,
