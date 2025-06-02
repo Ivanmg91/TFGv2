@@ -74,7 +74,7 @@
   width: 100%;
   min-height: 60vh;
   gap: 32px;
-  margin-top: 100px;
+  margin-top: 10px;
   padding: 0 50px 0 50px;
   box-sizing: border-box;
 }
@@ -87,7 +87,7 @@
 }
 
 .info-left h1 {
-    font-size: 22px;
+  font-size: 22px;
   color: rgb(255, 255, 255);
 }
 
@@ -209,4 +209,9 @@
   height: 100%;
   border: none;
   background: #000;
+}
+
+.spacer {
+  height: 32px; /* O el espacio que quieras */
+  width: 100%;
 }

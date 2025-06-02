@@ -16,16 +16,24 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
   };
 
   useEffect(() => {
-    updateArrows();
-    const el = rowRef.current;
-    if (!el) return;
-    el.addEventListener('scroll', updateArrows);
-    window.addEventListener('resize', updateArrows);
-    return () => {
-      el.removeEventListener('scroll', updateArrows);
-      window.removeEventListener('resize', updateArrows);
-    };
-  }, [movies, loading]);
+  const scrollToStart = () => {
+    if (rowRef.current) rowRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+  };
+
+  updateArrows();
+  const el = rowRef.current;
+  if (!el) return;
+
+  el.addEventListener('scroll', updateArrows);
+  window.addEventListener('resize', updateArrows);
+  window.addEventListener('scrollAllRowsToStart', scrollToStart); // <-- Añade el listener aquí
+
+  return () => {
+    el.removeEventListener('scroll', updateArrows);
+    window.removeEventListener('resize', updateArrows);
+    window.removeEventListener('scrollAllRowsToStart', scrollToStart); // <-- Y lo quitas aquí
+  };
+}, [movies, loading]);
 
   const scrollRight = () => {
     if (rowRef.current) {
@@ -55,10 +63,19 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
           ))
         ) : movies.length > 0 ? (
           movies.map((movie, index) => (
-            <div className="movie-card" key={index} onClick={() => {window.scrollTo(0, 0); navigate('/info', { state: { movie } })}}>
-              <img src={movie.poster} alt={movie.title} />
-            </div>
-          ))
+          <div
+            className="movie-card"
+            key={index}
+            onClick={() => {
+              window.scrollTo(0, 0);
+              // Emitir evento global para que todas las filas hagan scroll al inicio
+              window.dispatchEvent(new Event('scrollAllRowsToStart'));
+              navigate('/info', { state: { movie } });
+            }}
+          >
+            <img src={movie.poster} alt={movie.title} />
+          </div>
+))
         ) : (
           <p>No se encontraron resultados.</p>
         )}

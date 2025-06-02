@@ -29,6 +29,7 @@ function DiscoverPage() {
   const [selectedOrderBy, setSelectedOrderBy] = useState();
   const [selectedOrderType, setSelectedOrderType] = useState();
   const [loading, setLoading] = useState(true);
+  const [selectedAndOr, setSelectedAndOr] = useState();
 
   useEffect(() => {
     fetchInitialMovies();
@@ -66,6 +67,7 @@ function DiscoverPage() {
         setSelectedOrderBy={setSelectedOrderBy}
         setSelectedOrderType={setSelectedOrderType}
         setLoading={setLoading}
+        setSelectedAndOr={setSelectedAndOr}
       />
 
       <MoviesGrid
@@ -98,6 +100,7 @@ function DiscoverPage() {
         setSelectedOrdeyBy={setSelectedOrderBy}
         selectedOrderType={selectedOrderType}
         setSelectedOrdeyType={setSelectedOrderType}
+        selectedAndOr={selectedAndOr}
       />
     </div>
   );

@@ -105,7 +105,7 @@
 /* VERSIÓN CON ACORTADOR DE ANUNCIOS*/
 import React, { useEffect, useState } from 'react';
 import './SeeNowList.css';
-import { obtenerAudiosDeOpcion } from '../../api.js';
+import { obtenerAudiosDeOpcion, obtenerSubtitulosDeOpcion } from '../../api.js';
 import InfoModal from '../InfoModal/InfoModal.js';
 
 const SHRINKME_API_TOKEN = '46a8dfe712411de5f66206b0eec6aa27fe9fdd18';
@@ -115,7 +115,6 @@ const typeTranslations = {
   rent: 'Alquilar',
   buy: 'Comprar',
   free: 'Gratis',
-  addon: 'Suscripción',
 };
 const defaultPrices = {
   'disney': 'Desde 5,99 EUR',
@@ -133,7 +132,7 @@ const SeeNowList = ({ streamingOptions, selectedMovie, languageNames }) => {
   const options = Object.values(streamingOptions || {}).flat();
   const [shortLinks, setShortLinks] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalDetails] = useState({});
+  const [modalDetails, setModalDetails] = useState({});
 
 
   useEffect(() => {
@@ -167,65 +166,82 @@ const SeeNowList = ({ streamingOptions, selectedMovie, languageNames }) => {
   }
 
   return (
-    <div className="streaming-options-list">
-      <InfoModal open={modalOpen} onClose={() => setModalOpen(false)} details={modalDetails} />
-      {options.map((option, idx) => {
-        const serviceId = option.service?.id?.toLowerCase() || option.service?.name?.toLowerCase();
-        const uniqueKey = `${serviceId}-${option.type || ''}-${option.link || ''}-${idx}`; // <-- añade idx
-        const defaultPrice = defaultPrices[serviceId] || '';
-        const audios = obtenerAudiosDeOpcion(option);
-        
-        return (
-          <div className="streaming-option-card" key={uniqueKey}>
-            <div className="streaming-option-logo">
-              <img
-                src={option.service?.imageSet?.lightThemeImage}
-                alt={option.service?.name || 'Logo'}
-                width={60}
-                height={60}
-                style={{ objectFit: 'contain', borderRadius: 8 }}
-              />
-            </div>
-            <div className="streaming-option-info">
-              <div className="streaming-option-info-col">
-                <div className="streaming-option-tags">
-                  <span className="tag">CC</span>
-                  <span className="tag">HD</span>
-                  {option.age && <span className="tag">{option.age}</span>}
-                </div>
-                <div className="streaming-option-details">
-                  <span>{selectedMovie.runtime}</span> {audios.length > 0 ? audios.map(code => languageNames[code] || code).join(', ') : 'No disponible'}
-                  <br />
-                </div>
+  <div className="streaming-options-list">
+    <InfoModal open={modalOpen} onClose={() => setModalOpen(false)} details={modalDetails} />
+    {options.map((option, idx) => {
+      const serviceId = option.addon?.id?.toLowerCase() || option.service?.id?.toLowerCase() || option.service?.name?.toLowerCase();
+      const uniqueKey = `${serviceId}-${option.type || ''}-${option.link || ''}-${idx}`;
+      const defaultPrice = defaultPrices[serviceId] || '';
+      const audios = obtenerAudiosDeOpcion(option);
+
+      // Prepara los detalles para el modal
+      const modalInfo = {
+        title: selectedMovie.title,
+        platform: option.addon?.name || option.service?.name || '',
+        runtime: selectedMovie.runtime,
+        quality: option.quality || 'HD',
+        audio: audios.length > 0 ? audios.map(code => languageNames[code] || code).join(', ') : 'No disponible',
+        subs: (obtenerSubtitulosDeOpcion(option).map(code => languageNames[code] || code).join(', ')) || 'No disponible',
+        audioTech: option.audioTech || 'No disponible',
+      };
+
+      return (
+        <div className="streaming-option-card" key={uniqueKey}>
+          <div className="streaming-option-logo">
+            <img
+              src={option.addon?.imageSet?.lightThemeImage || option.service?.imageSet?.lightThemeImage}
+              alt={option.service?.name || 'Logo'}
+              width={60}
+              height={60}
+              style={{ objectFit: 'contain', borderRadius: 8 }}
+            />
+          </div>
+          <div className="streaming-option-info">
+            <div className="streaming-option-info-col">
+              <div className="streaming-option-tags">
+                <span className="tag" style={{cursor:'pointer'}} onClick={() => { setModalDetails(modalInfo); setModalOpen(true); }}>CC</span>
+                <span className="tag" style={{cursor:'pointer'}} onClick={() => { setModalDetails(modalInfo); setModalOpen(true); }}>HD</span>
+                {option.age && <span className="tag">{option.age}</span>}
               </div>
-              <div className="streaming-option-price-center">
-                {typeTranslations[option.type] || option.type}
-                <div>
-                  {
-                    option.price?.formatted ||
-                    option.displayPrice?.formatted ||
-                    (option.price?.amount && option.price?.currency
-                      ? `${option.price.amount} ${option.price.currency}`
-                      : defaultPrice)
-                  }
-                </div>
-              </div>
-            </div>
-            <div className="streaming-option-action">
-              <a
-                href={shortLinks[idx] || option.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="streaming-option-btn"
+              <div
+                className="streaming-option-details"
+                style={{cursor:'pointer'}}
+                onClick={() => { setModalDetails(modalInfo); setModalOpen(true); }}
               >
-                ▶ Ver ahora
-              </a>
+                <span>{selectedMovie.runtime}</span> {audios.length > 0 
+                ? audios.slice(0, 2).map(code => languageNames[code] || code).join(', ') + (audios.length > 2 ? '...' : '') 
+                : 'No disponible'}
+                <br />
+              </div>
+            </div>
+            <div className="streaming-option-price-center">
+              {option.addon?.name || typeTranslations[option.type] || option.type}
+              <div>
+                {
+                  option.price?.formatted ||
+                  option.displayPrice?.formatted ||
+                  (option.price?.amount && option.price?.currency
+                    ? `${option.price.amount} ${option.price.currency}`
+                    : defaultPrice)
+                }
+              </div>
             </div>
           </div>
-        );
-      })}
-    </div>
-  );
+          <div className="streaming-option-action">
+            <a
+              href={shortLinks[idx] || option.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="streaming-option-btn"
+            >
+              ▶ Ver ahora
+            </a>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+);
 };
 
 export default SeeNowList;

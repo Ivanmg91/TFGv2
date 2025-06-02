@@ -35,7 +35,8 @@ It use a 2 differents api from rapidapi.com: streaming availability and youtube 
 - Al abrir el desplegable con la info de la pelicula un boton de ver ahora q t lleve a los enlaces de suscripcion o metodos de pago de las plataformas donde se puede ver
 - Algunos valores cambian entre peliculas y series como releaseyear y firstairyear, entonces por eso en las series hay informacion q no se muestra.
 - Firebase authentication
-
+- Base de datos + apartado de favoritos de alguna manera con la base de datso
+- Hacer q al volver para atras (flecha arriba izquierda) no vuelva a buscar y mantenga las peliculas q estaban
 
 
 

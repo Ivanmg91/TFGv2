@@ -33,8 +33,9 @@ const NavBar = ({
         <ul className="nav-links">
           <li><Link to="/home">Inicio</Link></li>
           <li><Link to="/see">Descubrir</Link></li>
-          <li><Link to="/new">Nuevo</Link></li>
           <li><Link to="/popular">Popular</Link></li>
+          <li><Link to="/new">Nuevo</Link></li>
+          {/* Cambiar a Favoritoos el de nuevo */}
         </ul>
       </div>
       <div>

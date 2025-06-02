@@ -16,7 +16,7 @@ const InfoModal = ({ open, onClose, details }) => {
             </tr>
             <tr>
               <td>Calidad</td>
-              <td>{details.quality}</td>
+              <td>{details.quality.toUpperCase()}</td>
             </tr>
             <tr>
               <td>Idioma del audio</td>
@@ -25,10 +25,6 @@ const InfoModal = ({ open, onClose, details }) => {
             <tr>
               <td>Idioma de los subtítulos</td>
               <td>{details.subs}</td>
-            </tr>
-            <tr>
-              <td>Tecnología de audio</td>
-              <td>{details.audioTech}</td>
             </tr>
           </tbody>
         </table>

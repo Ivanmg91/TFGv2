@@ -25,6 +25,7 @@ const FiltersRow = ({
   setSelectedOrderBy,
   setSelectedOrderType,
   setLoading,
+  setSelectedAndOr
 }) => {
   const actualYear = new Date().getFullYear();
   
@@ -68,6 +69,11 @@ const FiltersRow = ({
       const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-genres"]:checked');
       const selected = Array.from(checkboxes).map((checkbox) => checkbox.value);
       setSelectedGenres(selected); // Se borran los q estaban en la lista
+
+      // Actualizar la lista de géneros seleccionados
+      const andOrChecked = document.querySelector('input[type="checkbox"][name="dropdown-andor"]').checked;
+      const genresRelation = andOrChecked ? "and" : "or";
+      setSelectedAndOr(genresRelation);
   
       // Actualizar la lista de plataformas seleccionadas
       const checkboxesPlatforms = document.querySelectorAll('input[type="checkbox"][name="dropdown-platforms"]:checked');
@@ -93,7 +99,7 @@ const FiltersRow = ({
       setPrevCursors([]);
     
       // Obtener las películas con los filtros aplicados desde la primera página
-      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, orderByOption, orderByType);
+      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, orderByOption, orderByType, genresRelation);
       setMovies(result.movies);
       setHasMore(result.hasMore);
       setCursor(result.nextCursor);
@@ -110,12 +116,21 @@ const FiltersRow = ({
       handleResetSliders();
       handleClearOrderBy();
       handleClearOrderType();
+      handleClearAndOr();
     }
 
 
     // Clear showtypes
     const handleClearShowTypes = () => {
       const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-showtype"]:checked');
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = false; // Desmarcar cada checkbox
+      });
+    };
+
+    // Clear showtypes
+    const handleClearAndOr = () => {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-andor"]:checked');
       checkboxes.forEach((checkbox) => {
         checkbox.checked = false; // Desmarcar cada checkbox
       });
@@ -374,6 +389,11 @@ const FiltersRow = ({
               <label class="dropdown-option">
                 <input type="checkbox" name="dropdown-genres" value="western" /*al pulsar el boton hace handleclearfilters q los borra de la lista y como no estan en la lista de selectedgenres los desmarca*//>
                 Western
+              </label>
+
+              <label class="dropdown-option">
+                <input type="checkbox" name="dropdown-andor" value="and" />
+                Que incluya todos los seleccionados?
               </label> 
 
               <button onClick={handleClearGenres}>

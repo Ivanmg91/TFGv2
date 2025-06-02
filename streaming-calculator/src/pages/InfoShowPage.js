@@ -15,33 +15,16 @@ function InfoShowPage() {
 
     // Estados para las películas relacionadas
     const [movies, setMovies] = useState([]);
-    const [setCursor] = useState(null);
+    // const [setCursor] = useState(null);
     const [hasMore, setHasMore] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const [castImages, setCastImages] = useState({});
 
-    const genreTranslationsReverse = {
-        "Acción": "Action",
-        "Aventura": "Adventure",
-        "Animación": "Animation",
-        "Comedia": "Comedy",
-        "Crimen": "Crime",
-        "Documental": "Documentary",
-        "Drama": "Drama",
-        "Familiar": "Family",
-        "Fantasía": "Fantasy",
-        "Historia": "History",
-        "Terror": "Horror",
-        "Música": "Music",
-        "Misterio": "Mystery",
-        "Romance": "Romance",
-        "Ciencia ficción": "Science Fiction",
-        "Película de TV": "TV Movie",
-        "Suspenso": "Thriller",
-        "Guerra": "War",
-        "Occidental": "Western"
-    };
+    const [platformMovies, setPlatformMovies] = useState([]);
+    const [platformLoading, setPlatformLoading] = useState(true);
+
+    
 
     useEffect(() => {
       async function fetchCastImages() {
@@ -60,30 +43,94 @@ function InfoShowPage() {
     }, [selectedMovie]);
 
     useEffect(() => {
+        const genreTranslationsReverse = {
+            "Acción": "action",
+            "Aventura": "adventure",
+            "Animación": "animation",
+            "Comedia": "comedy",
+            "Crimen": "crime",
+            "Documental": "documentary",
+            "Drama": "drama",
+            "Familiar": "family",
+            "Fantasía": "fantasy",
+            "Historia": "history",
+            "Terror": "horror",
+            "Música": "music",
+            "Misterio": "mystery",
+            "Romance": "romance",
+            "Ciencia ficción": "scifi",
+            "Película de TV": "tv_movie",
+            "Suspenso": "thriller",
+            "Guerra": "war",
+            "Occidental": "western"
+        };
+
         if (selectedMovie && selectedMovie.genres && selectedMovie.genres.length > 0) {
             setLoading(true);
-            // Traduce el primer género al inglés
-            const genreInSpanish = selectedMovie.genres[0];
-            const genreInEnglish = genreTranslationsReverse[genreInSpanish] || genreInSpanish;
+            // Traduce todos los géneros al código que espera la API
+            const genresInEnglish = selectedMovie.genres
+                .map(g => genreTranslationsReverse[g] || g)
+                .filter(Boolean);
+
             api.getShowsByFilters(
                 null,
-                [genreInEnglish],
+                genresInEnglish, // Usa todos los géneros
                 [],
                 [],
                 0,
-                10,
+                50,
                 1900,
-                new Date().getFullYear()
+                new Date().getFullYear(),
+                null,
+                null,
+                "or"
             ).then(result => {
                 // Filtra para no mostrar la película principal
-                const filtered = result.movies.filter(m => m.title !== selectedMovie.title);
+                let filtered = result.movies.filter(m => m.title !== selectedMovie.title);
+                filtered = filtered.sort(() => Math.random() - 0.5);
                 setMovies(filtered);
                 setHasMore(result.hasMore);
-                setCursor(result.nextCursor);
                 setLoading(false);
             }).catch(() => setLoading(false));
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedMovie]);
+
+    useEffect(() => {
+        async function fetchPlatformMovies() {
+            if (!selectedMovie?.streamingOptions) return;
+            setPlatformLoading(true);
+            // Obtén los IDs de las plataformas
+            const platformIds = Object.values(selectedMovie.streamingOptions)
+                .flat()
+                .map(opt => opt.service?.id)
+                .filter(Boolean);
+
+            const uniquePlatforms = Array.from(new Set(platformIds));
+            if (uniquePlatforms.length === 0) {
+                setPlatformMovies([]);
+                setPlatformLoading(false);
+                return;
+            }
+
+            const result = await api.getShowsByFilters(
+                null,
+                [],
+                uniquePlatforms, // Usa todas las plataformas
+                [],
+                0,
+                50,
+                1900,
+                new Date().getFullYear(),
+                null,
+                null,
+                "or"
+            );
+            let filtered = result.movies.filter(m => m.title !== selectedMovie.title);
+            filtered = filtered.sort(() => Math.random() - 0.5);
+            setPlatformMovies(filtered);
+            setPlatformLoading(false);
+        }
+        fetchPlatformMovies();
     }, [selectedMovie]);
 
     useEffect(() => {
@@ -187,7 +234,8 @@ function InfoShowPage() {
         sjn: "Sindarin",
         val: "Valyrio", // Game of Thrones
         doth: "Dothraki",
-        wol: "Wolof"
+        wol: "Wolof",
+        nob: "Noruego Bokmål"
     };
 
     return (
@@ -218,12 +266,12 @@ function InfoShowPage() {
                 <h1>VER AHORA</h1>
                 <SeeNowList streamingOptions={selectedMovie.streamingOptions} selectedMovie={selectedMovie} languageNames={languageNames} />
 
-                <h1>QUÉ MÁS PODRÍA INTERESARTE</h1>
-
-                <h1>MISMOS GÉNEROS (CAMBIAR)</h1>
-
+                <div className="spacer"></div>
+        
                 <h1>SINOPSIS</h1>
                 <p className="info-description">{selectedMovie?.overview}</p>
+
+                <div className="spacer"></div>
 
                 <h1>TRAILER</h1>
                 <div className="trailer-container">
@@ -239,7 +287,9 @@ function InfoShowPage() {
                 )}
                 </div>
 
-                <h1>CAST</h1>
+                <div className="spacer"></div>
+
+                <h1>ACTORES</h1>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 24 }}>
                 {selectedMovie.cast && selectedMovie.cast.length > 0 ? (
                     selectedMovie.cast.slice(0, 8).map(actor => (
@@ -264,6 +314,9 @@ function InfoShowPage() {
                     <span style={{ color: '#bfc9d4' }}>No disponible</span>
                 )}
                 </div>
+
+                <div className="spacer"></div>
+                
                 <h1>COMENTARIOS</h1>
             </div>
 
@@ -382,9 +435,20 @@ function InfoShowPage() {
             </div>
         </div>
         <div className="movies-row-fullwidth">
-            <h1>MISMOS GÉNEROS</h1>
+        <h1>MISMOS GÉNEROS</h1>
             <MoviesRow movies={movies} hasMore={hasMore} loading={loading} />
         </div>
+
+        <div className="movies-row-fullwidth">
+        <h1>DE LA MISMA PLATAFORMA</h1>
+            <MoviesRow movies={platformMovies} hasMore={false} loading={platformLoading} />
+        </div>
+
+        <div className="movies-row-fullwidth">
+            <h1>MISMOS GÉNEROS (cambiar)</h1>
+            <MoviesRow movies={movies} hasMore={hasMore} loading={loading} />
+        </div>
+
         </>
         
     );
