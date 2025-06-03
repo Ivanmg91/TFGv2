@@ -9,6 +9,7 @@ import DiscoverPage from './pages/DiscoverPage.js';
 import SearchPage from './pages/SearchPage.js';
 import InfoShowPage from './pages/InfoShowPage.js';
 import WhoWeArePage from './pages/WhoWeArePage.js';
+import RegisterPage from './pages/RegisterPage.js';
 
 function App() {
   const [searchText, setSearchText] = useState("");
@@ -27,6 +28,7 @@ function App() {
             <Route path="/info" element={<InfoShowPage />} />
             <Route path="/search" element={<SearchPage searchText={searchText} />} />
             <Route path="/whoweare" element={<WhoWeArePage />} />
+            <Route path="/register" element={<RegisterPage />} />
             {/* ...otras rutas... */}
           </Routes>
         </div>

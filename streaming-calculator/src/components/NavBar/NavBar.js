@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import './NavBar.css'
+import { useState, useEffect } from 'react';
+import './NavBar.css';
 import { Link, useNavigate } from 'react-router-dom';
+import { auth } from '../../firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 const NavBar = ({
   setSearchText, // Props
@@ -8,6 +10,14 @@ const NavBar = ({
   const [searchFieldText, setSearchFieldText] = useState("");
   const [menuOpen, setMenuOpen] = useState(false); // Nuevo estado para el menú
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Update search field
   const handleSearchChange = (event) => {
@@ -20,6 +30,12 @@ const NavBar = ({
     setSearchText(searchFieldText);
     setSearchFieldText(""); // Clear the input
     navigate('/search');
+  };
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+    setUser(null);
+    navigate('/home');
   };
 
   return (
@@ -49,7 +65,16 @@ const NavBar = ({
         <button onClick={handleSearchMovies}>Buscar</button>
       </div>
       <div>
-        <button>Iniciar Sesión</button>
+        {user ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span>{user.email}</span>
+            <button onClick={handleSignOut}>Cerrar sesión</button>
+          </div>
+        ) : (
+          <button>
+            <Link to="/register" className="no-link-style">Iniciar Sesión</Link>
+          </button>
+        )}
       </div>
       <div className="navbar-right">
         <button
@@ -69,7 +94,6 @@ const NavBar = ({
               <li>FAQ</li>
               <li>Terms of Use</li>
               <li>Privacy Policy</li>
-              {/* Añade más plataformas o enlaces aquí */}
             </ul>
           </div>
         )}

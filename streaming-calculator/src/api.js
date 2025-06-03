@@ -1,7 +1,7 @@
 import * as streamingAvailability from "streaming-availability";
 import './App.js';
 
-const RAPID_API_KEY = "2a93185552msh7478f85c38116cdp151c96jsn51123920ba49";
+const RAPID_API_KEY = "c2ae628862msh56405d4a3642873p1fa1d3jsn5e40e40dce50";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
   apiKey: RAPID_API_KEY
 }));
@@ -174,10 +174,18 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
     directors: movie.directors || movie.creators || [],
     cast: movie.cast || [],
     rating: movie.rating || "Sin calificación",
-    runtime: movie.runtime + " min" || "Duración no disponible",
+    runtime: (typeof movie.runtime === "number" && movie.runtime > 0)
+  ? movie.runtime + " min"
+  : (movie.seasonCount
+      ? `${movie.seasonCount} temporada(s)` + (movie.episodeCount ? `, ${movie.episodeCount} episodio(s)` : '')
+      : (movie.episodeCount
+          ? `${movie.episodeCount} episodio(s)`
+          : "Duración no disponible")
+    ),
     streamingOptions: movie.streamingOptions || {},
     languages: obtenerIdiomasDeStreaming(movie),
     lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
+    showType: movie.showType,
   }));
   return {
     movies,
@@ -249,7 +257,7 @@ export async function getTopShows(cursor = null) {
     directors: movie.directors || movie.creators  || [],
     cast: movie.cast || [],
     rating: movie.rating || "Sin calificación",
-    runtime: movie.runtime
+    runtime: (typeof movie.runtime === "number" && movie.runtime > 0)
   ? movie.runtime + " min"
   : (movie.seasonCount
       ? `${movie.seasonCount} temporada(s)` + (movie.episodeCount ? `, ${movie.episodeCount} episodio(s)` : '')
@@ -260,6 +268,7 @@ export async function getTopShows(cursor = null) {
     streamingOptions: movie.streamingOptions || {},
     languages: obtenerIdiomasDeStreaming(movie),
     lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
+    showType: movie.showType,
   }));
 
   return {
@@ -289,7 +298,7 @@ export async function getShowsByTitle(title, cursor = null) {
     directors: movie.directors || movie.creators || [],
     cast: movie.cast || [],
     rating: movie.rating || "Sin calificación",
-    runtime: movie.runtime
+    runtime: (typeof movie.runtime === "number" && movie.runtime > 0)
   ? movie.runtime + " min"
   : (movie.seasonCount
       ? `${movie.seasonCount} temporada(s)` + (movie.episodeCount ? `, ${movie.episodeCount} episodio(s)` : '')
@@ -300,6 +309,7 @@ export async function getShowsByTitle(title, cursor = null) {
     streamingOptions: movie.streamingOptions || {},
     languages: obtenerIdiomasDeStreaming(movie),
     lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
+    showType: movie.showType,
   }));
 
   return {

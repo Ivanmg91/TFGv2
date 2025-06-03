@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { buscarTrailerYouTube } from '../ytApi';
-import { obtenerImagenActorWikipedia } from '../wikiApi';
+import { buscarTrailerYouTube } from '../ytApi.js';
+import { obtenerImagenActorWikipedia } from '../wikiApi.js';
 import * as api from '../api.js';
 import MoviesRow from '../components/MoviesRow.js';
 import './PagesCss/InfoShowPage.css';
@@ -24,7 +24,8 @@ function InfoShowPage() {
     const [platformMovies, setPlatformMovies] = useState([]);
     const [platformLoading, setPlatformLoading] = useState(true);
 
-    
+    const [yearMovies, setYearMovies] = useState([]);
+    const [yearLoading, setYearLoading] = useState(true);
 
     useEffect(() => {
       async function fetchCastImages() {
@@ -43,93 +44,119 @@ function InfoShowPage() {
     }, [selectedMovie]);
 
     useEffect(() => {
-        const genreTranslationsReverse = {
-            "Acción": "action",
-            "Aventura": "adventure",
-            "Animación": "animation",
-            "Comedia": "comedy",
-            "Crimen": "crime",
-            "Documental": "documentary",
-            "Drama": "drama",
-            "Familiar": "family",
-            "Fantasía": "fantasy",
-            "Historia": "history",
-            "Terror": "horror",
-            "Música": "music",
-            "Misterio": "mystery",
-            "Romance": "romance",
-            "Ciencia ficción": "scifi",
-            "Película de TV": "tv_movie",
-            "Suspenso": "thriller",
-            "Guerra": "war",
-            "Occidental": "western"
-        };
+    const genreTranslationsReverse = {
+        "Acción": "action",
+        "Aventura": "adventure",
+        "Animación": "animation",
+        "Comedia": "comedy",
+        "Crimen": "crime",
+        "Documental": "documentary",
+        "Drama": "drama",
+        "Familiar": "family",
+        "Fantasía": "fantasy",
+        "Historia": "history",
+        "Terror": "horror",
+        "Música": "music",
+        "Misterio": "mystery",
+        "Romance": "romance",
+        "Ciencia ficción": "scifi",
+        "Película de TV": "tv_movie",
+        "Suspenso": "thriller",
+        "Guerra": "war",
+        "Occidental": "western"
+    };
 
+    async function fetchMoviesByGenres() {
         if (selectedMovie && selectedMovie.genres && selectedMovie.genres.length > 0) {
             setLoading(true);
-            // Traduce todos los géneros al código que espera la API
             const genresInEnglish = selectedMovie.genres
                 .map(g => genreTranslationsReverse[g] || g)
                 .filter(Boolean);
 
-            api.getShowsByFilters(
-                null,
-                genresInEnglish, // Usa todos los géneros
-                [],
-                [],
-                0,
-                100,
-                1900,
-                new Date().getFullYear(),
-                null,
-                null,
-                "or"
-            ).then(result => {
-                // Filtra para no mostrar la película principal
-                let filtered = result.movies.filter(m => m.title !== selectedMovie.title);
-                filtered = filtered.sort(() => Math.random() - 0.5);
-                setMovies(filtered);
-                setHasMore(result.hasMore);
-                setLoading(false);
-            }).catch(() => setLoading(false));
+            try {
+                const result = await api.getShowsByFilters(
+                    null,
+                    genresInEnglish, // Todos los géneros juntos
+                    [],
+                    [],
+                    0,
+                    100,
+                    1900,
+                    new Date().getFullYear(),
+                    null,
+                    null,
+                    "and" // <-- Cambia a "and"
+                );
+                // Elimina duplicados y la película principal
+                const uniqueMovies = Array.from(
+                    new Map(
+                        result.movies
+                            .filter(m => m.title !== selectedMovie.title)
+                            .map(m => [m.title, m])
+                    ).values()
+                );
+                setMovies(uniqueMovies.sort(() => Math.random() - 0.5));
+            } catch (error) {
+                console.error(`Error buscando películas para los géneros:`, error);
+                setMovies([]);
+            }
+            setHasMore(false);
+            setLoading(false);
         }
+    }
+        fetchMoviesByGenres();
     }, [selectedMovie]);
 
     useEffect(() => {
-        async function fetchPlatformMovies() {
-            if (!selectedMovie?.streamingOptions) return;
-            setPlatformLoading(true);
-            // Obtén los IDs de las plataformas
-            const platformIds = Object.values(selectedMovie.streamingOptions)
-                .flat()
-                .map(opt => opt.service?.id)
-                .filter(Boolean);
+    async function fetchPlatformMovies() {
+        if (!selectedMovie?.streamingOptions) return;
+        setPlatformLoading(true);
 
-            const uniquePlatforms = Array.from(new Set(platformIds));
-            if (uniquePlatforms.length === 0) {
-                setPlatformMovies([]);
-                setPlatformLoading(false);
-                return;
-            }
+        // Obtén los IDs de las plataformas
+        const platformIds = Object.values(selectedMovie.streamingOptions)
+            .flat()
+            .map(opt => opt.service?.id)
+            .filter(Boolean);
 
-            const result = await api.getShowsByFilters(
-                null,
-                [],
-                uniquePlatforms, // Usa todas las plataformas
-                [],
-                0,
-                100,
-                1900,
-                new Date().getFullYear(),
-                null,
-                null,
-                "or"
-            );
-            let filtered = result.movies.filter(m => m.title !== selectedMovie.title);
-            filtered = filtered.sort(() => Math.random() - 0.5);
-            setPlatformMovies(filtered);
+        const uniquePlatforms = Array.from(new Set(platformIds));
+        if (uniquePlatforms.length === 0) {
+            setPlatformMovies([]);
             setPlatformLoading(false);
+            return;
         }
+
+        let allMovies = [];
+        for (const platformId of uniquePlatforms) {
+            try {
+                const result = await api.getShowsByFilters(
+                    null,
+                    [],
+                    [platformId], // Solo una plataforma por petición
+                    [],
+                    0,
+                    100,
+                    1900,
+                    new Date().getFullYear(),
+                    null,
+                    null,
+                    "or"
+                );
+                allMovies = allMovies.concat(result.movies);
+            } catch (error) {
+                console.error(`Error buscando películas para la plataforma ${platformId}:`, error);
+            }
+        }
+        // Elimina duplicados y la película principal
+        const uniqueMovies = Array.from(
+            new Map(
+                allMovies
+                    .filter(m => m.title !== selectedMovie.title)
+                    .map(m => [m.title, m])
+            ).values()
+        );
+        setPlatformMovies(uniqueMovies.sort(() => Math.random() - 0.5));
+        setPlatformLoading(false);
+    }
         fetchPlatformMovies();
     }, [selectedMovie]);
 
@@ -139,6 +166,46 @@ function InfoShowPage() {
         .then(id => setTrailerId(id));
     }
   }, [selectedMovie]);
+
+  useEffect(() => {
+    async function fetchYearMovies() {
+        if (!selectedMovie?.releaseYear) {
+            setYearMovies([]);
+            setYearLoading(false);
+            return;
+        }
+        setYearLoading(true);
+        try {
+            const result = await api.getShowsByFilters(
+                null,
+                [],
+                [],
+                [],
+                0,
+                100,
+                selectedMovie.releaseYear,
+                selectedMovie.releaseYear,
+                null,
+                null,
+                "or"
+            );
+            // Elimina la película principal y duplicados
+            const uniqueMovies = Array.from(
+                new Map(
+                    result.movies
+                        .filter(m => m.title !== selectedMovie.title)
+                        .map(m => [m.title, m])
+                ).values()
+            );
+            setYearMovies(uniqueMovies.sort(() => Math.random() - 0.5));
+        } catch (error) {
+            console.error("Error buscando películas del mismo año:", error);
+            setYearMovies([]);
+        }
+        setYearLoading(false);
+    }
+    fetchYearMovies();
+}, [selectedMovie]);
 
     if (!selectedMovie) {
         return <div>No hay información de la película seleccionada.</div>;
@@ -331,7 +398,7 @@ function InfoShowPage() {
             <div className="info-right">
                 <div className="info-right-row">
                     <div className="info-details">
-                        <p className='info-original-title'><strong>INFORMACIÓN DE LA PELICULA</strong></p>
+                        <p className='info-original-title'><strong>INFORMACIÓN DE LA {selectedMovie.showType === "series" ? "SERIE" : "PELICULA"}</strong></p>
                         <p><strong>Calificación:</strong> {selectedMovie.rating / 10 || 'No disponible'}</p>
                         <p><strong>Fecha de estreno:</strong> {selectedMovie.releaseYear ? selectedMovie.releaseYear : 'No disponible'}</p>                    </div>
                     <img className="info-poster" src={selectedMovie.poster} alt={selectedMovie.title} />
@@ -445,8 +512,8 @@ function InfoShowPage() {
         </div>
 
         <div className="movies-row-fullwidth">
-            <h1>MISMOS GÉNEROS (cambiar)</h1>
-            <MoviesRow movies={movies} hasMore={hasMore} loading={loading} />
+        <h1>DEL MISMO AÑO</h1>
+            <MoviesRow movies={yearMovies} hasMore={false} loading={yearLoading} />
         </div>
 
         </>

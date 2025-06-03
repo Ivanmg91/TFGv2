@@ -11,6 +11,7 @@ COPY package.json package-lock.json ./
 RUN rm -rf node_modules package-lock.json
 RUN npm install
 RUN npm install streaming-availability
+RUN npm install firebase
  
 # Copy the rest of your application files
 COPY . .
