@@ -17,7 +17,7 @@ function getBackendUrl() {
     return "https://zany-space-dollop-v6p6pr749rpj2xjgq-4000.app.github.dev";
   }
   // Por defecto, producción
-  return "https://TU_BACKEND_PRODUCCION";
+  return "https://tfgv2.onrender.com";
 }
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || getBackendUrl();
