@@ -11,7 +11,7 @@ function getBackendUrl() {
     return "http://localhost:4000";
   }
   if (hostname.includes("netlify.app")) {
-    return "https://TU_BACKEND_PRODUCCION"; // Cambia por tu backend real en producción
+    return "https://tfgv2.onrender.com"; // Cambia por tu backend real en producción
   }
   if (hostname.includes("app.github.dev")) {
     return "https://zany-space-dollop-v6p6pr749rpj2xjgq-4000.app.github.dev";

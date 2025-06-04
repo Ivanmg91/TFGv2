@@ -61,3 +61,5 @@ acortador de anuncios: https://shrinkme.io/member/dashboard
 google analytics: https://analytics.google.com/analytics/web/?hl=es#/p488460761/reports/intelligenthome?params=_u..nav%3Dmaui&collectionId=business-objectives
 firebase: https://console.firebase.google.com/project/tfgv2-c4f8a/overview?hl=es-419
 aiven: https://console.aiven.io/account/a53a3f24dafd/project/tfgv2/services/mysql-2dd7e983/overview
+
+NECESARIO INICIAR RENDER PARA Q EL TEMA DE USUARIOS FUNCIONE SIEMPRE
