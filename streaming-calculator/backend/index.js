@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./db');
@@ -26,7 +27,7 @@ app.post('/api/usuarios', async (req, res) => {
 });
 
 // Puerto
-const PORT = 4000;
+const PORT = process.env.DB_PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Servidor backend escuchando en http://localhost:${PORT}`);
 });
