@@ -11,20 +11,21 @@ app.use(express.json());
 
 // Ruta para registrar usuario
 app.post('/api/usuarios', async (req, res) => {
-  try {
-    const { firebase_uid, nombre } = req.body;
-    if (!firebase_uid || !nombre) {
+  try {    
+    const { firebase_uid, nombre, email } = req.body;
+    if (!firebase_uid || !nombre || !email) {
       return res.status(400).json({ error: 'Faltan datos' });
     }
-    const fecha_creacion = new Date().toISOString();
-    const query = 'INSERT INTO usuarios (firebase_uid, nombre, fecha_creacion) VALUES (?, ?, ?)';
-    const [result] = await pool.execute(query, [firebase_uid, nombre, fecha_creacion]);
-    res.status(201).json({ id: result.insertId, firebase_uid, nombre, fecha_creacion });
+    const fecha_creacion = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const query = 'INSERT INTO usuarios (firebase_uid, nombre, email, fecha_creacion) VALUES (?, ?, ?, ?)';
+    const [result] = await pool.execute(query, [firebase_uid, nombre, email, fecha_creacion]);
+    res.status(201).json({ id: result.insertId, firebase_uid, nombre, email, fecha_creacion });
   } catch (error) {
     console.error('Error en el endpoint /api/usuarios:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
 
 // Puerto
 const PORT = process.env.DB_PORT || 4000;

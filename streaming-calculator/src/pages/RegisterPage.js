@@ -14,7 +14,7 @@ function getBackendUrl() {
     return "https://tfgv2.onrender.com"; // Cambia por tu backend real en producción
   }
   if (hostname.includes("app.github.dev")) {
-    return "https://zany-space-dollop-v6p6pr749rpj2xjgq-4000.app.github.dev";
+    return "https://tfgv2.onrender.com";
   }
   // Por defecto, producción
   return "https://tfgv2.onrender.com";
@@ -46,6 +46,7 @@ function RegisterPage() {
         body: JSON.stringify({
           firebase_uid,
           nombre,
+          email
         }),
       });
 

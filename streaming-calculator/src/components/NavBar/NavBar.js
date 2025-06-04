@@ -67,7 +67,7 @@ const NavBar = ({
       <div>
         {user ? (
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span>{user.email}</span>
+            <span>{user.name}</span>
             <button onClick={handleSignOut}>Cerrar sesión</button>
           </div>
         ) : (
