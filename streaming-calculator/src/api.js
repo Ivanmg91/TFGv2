@@ -1,7 +1,7 @@
 import * as streamingAvailability from "streaming-availability";
 import './App.js';
 
-const RAPID_API_KEY = "c2ae628862msh56405d4a3642873p1fa1d3jsn5e40e40dce50";
+const RAPID_API_KEY = "8a8b283431mshef5bc9da2289a66p1f771ajsnec84c74c8509";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
   apiKey: RAPID_API_KEY
 }));
@@ -163,6 +163,7 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
   });
 
   const movies = response.shows.map(movie => ({
+    id: movie.id,
     title: movie.title || "Título no disponible",
     originalTitle: movie.originalTitle || "Título original no disponible",
     poster: movie.imageSet?.verticalPoster?.w480 || '',
@@ -246,6 +247,7 @@ export async function getTopShows(cursor = null) {
   });
 
   const movies = response.map(movie => ({
+    id: movie.id,
     title: movie.title || "Título no disponible",
     originalTitle: movie.originalTitle || "Título original no disponible",
     poster: movie.imageSet?.verticalPoster?.w480 || '',
@@ -287,6 +289,7 @@ export async function getShowsByTitle(title, cursor = null) {
   });
 
   const movies = (response.shows || response).map(movie => ({
+    id: movie.id,
     title: movie.title || "Título no disponible",
     overview: movie.overview || 'Sin descripción disponible',
     originalTitle: movie.originalTitle || "Título original no disponible",

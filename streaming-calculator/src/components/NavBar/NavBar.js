@@ -67,7 +67,8 @@ const NavBar = ({
       <div>
         {user ? (
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span>{user.name}</span>
+            {/* DEBERIA MOSTRAR EL NOMBRE DE USUARIO */}
+            <span>{user.email}</span> 
             <button onClick={handleSignOut}>Cerrar sesión</button>
           </div>
         ) : (

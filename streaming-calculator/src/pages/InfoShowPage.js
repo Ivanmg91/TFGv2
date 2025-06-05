@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { buscarTrailerYouTube } from '../ytApi.js';
 import { obtenerImagenActorWikipedia } from '../wikiApi.js';
+import { auth } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import * as api from '../api.js';
 import MoviesRow from '../components/MoviesRow.js';
 import './PagesCss/InfoShowPage.css';
@@ -26,6 +28,85 @@ function InfoShowPage() {
 
     const [yearMovies, setYearMovies] = useState([]);
     const [yearLoading, setYearLoading] = useState(true);
+
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [userId, setUserId] = useState(null);
+
+    function getBackendUrl() {
+        const hostname = window.location.hostname;
+        if (hostname.includes("localhost")) {
+            return "http://localhost:4000";
+        }
+        if (hostname.includes("netlify.app")) {
+            return "https://tfgv2.onrender.com";
+        }
+        if (hostname.includes("app.github.dev")) {
+            return "https://tfgv2.onrender.com";
+        }
+        // Por defecto, producción
+        return "https://tfgv2.onrender.com";
+    }
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || getBackendUrl();
+    
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser && selectedMovie) {
+            try {
+                console.log(currentUser.uid)
+                const  = await fetch(`${backendUrl}/api/usuarios/${curreresntUser.uid}`);
+                if (res.ok) {
+                const data = await res.json();
+                setUserId(data.id);
+                // Comprobar si es favorito
+                const favRes = await fetch(`${backendUrl}/api/favoritos/${data.id}/${selectedMovie.id}`);
+                const favData = await favRes.json();
+                setIsFavorite(favData.favorito);
+                }
+            } catch (err) {
+                setUserId(null);
+                setIsFavorite(false);
+            }
+            } else {
+            setUserId(null);
+            setIsFavorite(false);
+            }
+        });
+        return () => unsubscribe();
+        }, [selectedMovie]);
+
+    const handleToggleFavorite = async () => {
+    console.log("userId:", userId, "selectedMovie.id:", selectedMovie?.id);
+
+        if (!userId || !selectedMovie) return;
+        if (isFavorite) {
+            // Quitar de favoritos
+            const res = await fetch(`${backendUrl}/api/favoritos`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
+            });
+            if (res.ok) setIsFavorite(false);
+        } else {
+            // Añadir a favoritos
+            const res = await fetch(`${backendUrl}/api/favoritos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                usuario_id: userId,
+                show_id: selectedMovie.id,
+                titulo: selectedMovie.title,
+                descripcion: selectedMovie.overview,
+                anio: selectedMovie.releaseYear,
+            }),
+            });
+            if (res.ok) setIsFavorite(true);
+        }
+    };
+
+
+
+
 
     useEffect(() => {
       async function fetchCastImages() {
@@ -414,7 +495,7 @@ function InfoShowPage() {
                 </div>
 
                 <div className='custom-btn-row'>
-                    <button className="custom-btn">
+                    <button className="custom-btn" style={{ color: isFavorite ? 'red' : 'white' }} onClick={handleToggleFavorite}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z"/></svg>
                         Favorito
                     </button>

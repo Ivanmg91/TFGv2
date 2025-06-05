@@ -63,3 +63,49 @@ firebase: https://console.firebase.google.com/project/tfgv2-c4f8a/overview?hl=es
 aiven: https://console.aiven.io/account/a53a3f24dafd/project/tfgv2/services/mysql-2dd7e983/overview
 
 NECESARIO INICIAR RENDER PARA Q EL TEMA DE USUARIOS FUNCIONE SIEMPRE
+
+1. usuarios
+id (PK, autoincremental)
+firebase_uid (string, notnull, unique)
+nombre (string)
+email (string)
+fecha_creacion (datetime)
+
+2. peliculas
+id (PK, autoincremental)
+show_id(string)
+titulo (string)
+descripcion (text)
+anio (int)
+
+3. favoritos
+id (PK, autoincremental)
+usuario_id (FK a usuarios.id)
+pelicula_id (FK a peliculas.id)
+fecha_agregado (datetime)
+
+4. vistos
+id (PK, autoincremental)
+usuario_id (FK a usuarios.id)
+pelicula_id (FK a peliculas.id)
+fecha_visto (datetime)
+
+5. likes_dislikes
+id (PK, autoincremental)
+usuario_id (FK a usuarios.id)
+pelicula_id (FK a peliculas.id)
+tipo (enum: 'like', 'dislike')
+fecha (datetime)
+
+6. comentarios
+id (PK, autoincremental)
+usuario_id (FK a usuarios.id)
+pelicula_id (FK a peliculas.id)
+comentario (text)
+fecha (datetime)
+
+Borrar todas las columnas
+> DELETE FROM usuarios;
+
+Resetear el id
+> ALTER TABLE usuarios AUTO_INCREMENT = 1;

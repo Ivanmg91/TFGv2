@@ -46,7 +46,7 @@ function RegisterPage() {
         body: JSON.stringify({
           firebase_uid,
           nombre,
-          email
+          email,
         }),
       });
 
