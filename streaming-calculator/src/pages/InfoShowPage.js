@@ -32,6 +32,45 @@ function InfoShowPage() {
     const [isFavorite, setIsFavorite] = useState(false);
     const [userId, setUserId] = useState(null);
 
+    const [comentarios, setComentarios] = useState([]);
+
+    const [showCommentForm, setShowCommentForm] = useState(false);
+    const [nuevoComentario, setNuevoComentario] = useState("");
+    const [comentarioError, setComentarioError] = useState("");
+
+    const handleEnviarComentario = async () => {
+    if (!userId || !selectedMovie?.id || !nuevoComentario.trim()) {
+        setComentarioError("El comentario no puede estar vacío.");
+        return;
+    }
+    try {
+        const res = await fetch(`${backendUrl}/api/comentarios`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            usuario_id: userId,
+            show_id: selectedMovie.id,
+            comentario: nuevoComentario.trim(),
+        }),
+        });
+        if (res.ok) {
+        setNuevoComentario("");
+        setShowCommentForm(false);
+        setComentarioError("");
+        // Recargar comentarios
+        const resComentarios = await fetch(`${backendUrl}/api/comentarios/${selectedMovie.id}`);
+        if (resComentarios.ok) {
+            const data = await resComentarios.json();
+            setComentarios(data);
+        }
+        } else {
+        setComentarioError("Error al enviar el comentario.");
+        }
+    } catch (err) {
+        setComentarioError("Error al enviar el comentario.");
+    }
+    };
+
     function getBackendUrl() {
         const hostname = window.location.hostname;
         if (hostname.includes("localhost")) {
@@ -47,14 +86,29 @@ function InfoShowPage() {
         return "https://tfgv2.onrender.com";
     }
     const backendUrl = process.env.REACT_APP_BACKEND_URL || getBackendUrl();
-    
+
+    useEffect(() => {
+        async function fetchComentarios() {
+            if (!selectedMovie?.id) return;
+            try {
+            const res = await fetch(`${backendUrl}/api/comentarios/${selectedMovie.id}`);
+            if (res.ok) {
+                const data = await res.json();
+                setComentarios(data);
+            }
+            } catch (err) {
+            setComentarios([]);
+            }
+        }
+        fetchComentarios();
+    }, [selectedMovie]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser && selectedMovie) {
             try {
                 console.log(currentUser.uid)
-                const  = await fetch(`${backendUrl}/api/usuarios/${curreresntUser.uid}`);
+                const res = await fetch(`${backendUrl}/api/usuarios/${currentUser.uid}`);
                 if (res.ok) {
                 const data = await res.json();
                 setUserId(data.id);
@@ -465,7 +519,60 @@ function InfoShowPage() {
 
                 <div className="spacer"></div>
                 
-                <h1>COMENTARIOS</h1>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <h1 style={{ margin: 0 }}>COMENTARIOS</h1>
+                {userId && (
+                    <button
+                    style={{
+                        background: "#222",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "50%",
+                        width: 32,
+                        height: 32,
+                        fontSize: 22,
+                        cursor: "pointer",
+                        lineHeight: "32px",
+                        padding: 0,
+                        marginLeft: 8
+                    }}
+                    title="Añadir comentario"
+                    onClick={() => setShowCommentForm((v) => !v)}
+                    >+</button>
+                )}
+                </div>
+                {showCommentForm && (
+                <div style={{ margin: "12px 0" }}>
+                    <textarea
+                    value={nuevoComentario}
+                    onChange={e => setNuevoComentario(e.target.value)}
+                    rows={3}
+                    style={{ width: "100%", borderRadius: 6, padding: 8, resize: "vertical" }}
+                    placeholder="Escribe tu comentario..."
+                    />
+                    <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                    <button onClick={handleEnviarComentario} style={{ background: "#4caf50", color: "#fff", border: "none", borderRadius: 4, padding: "6px 16px" }}>
+                        Enviar
+                    </button>
+                    <button onClick={() => { setShowCommentForm(false); setComentarioError(""); }} style={{ background: "#888", color: "#fff", border: "none", borderRadius: 4, padding: "6px 16px" }}>
+                        Cancelar
+                    </button>
+                    </div>
+                    {comentarioError && <div style={{ color: "red", marginTop: 4 }}>{comentarioError}</div>}
+                </div>
+                )}
+                <div>
+                {comentarios.length === 0 ? (
+                    <p style={{ color: "#bfc9d4" }}>No hay comentarios aún.</p>
+                ) : (
+                    comentarios.map((c, idx) => (
+                    <div key={idx} style={{ marginBottom: 12, background: "#222", padding: 10, borderRadius: 8 }}>
+                        <strong>{c.nombre}</strong> <span style={{ color: "#888", fontSize: 12 }}>{new Date(c.fecha).toLocaleString()}</span>
+                        <div>{c.comentario}</div>
+                    </div>
+                    ))
+                )}
+                </div>
             </div>
 
 

@@ -108,7 +108,56 @@ app.get('/api/usuarios/:firebase_uid', async (req, res) => {
   }
 });
 
+// Obtener comentarios de una película por show_id
+app.get('/api/comentarios/:show_id', async (req, res) => {
+  try {
+    const { show_id } = req.params;
+    // Busca el id interno de la película
+    const [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
+    if (pelicula.length === 0) return res.json([]); // Sin comentarios si no existe la película
+    const pelicula_id = pelicula[0].id;
+    // Saca los comentarios y el nombre del usuario
+    const [comentarios] = await pool.execute(
+      `SELECT c.comentario, c.fecha, u.nombre 
+       FROM comentarios c 
+       JOIN usuarios u ON c.usuario_id = u.id 
+       WHERE c.pelicula_id = ? 
+       ORDER BY c.fecha DESC`,
+      [pelicula_id]
+    );
+    res.json(comentarios);
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
+app.post('/api/comentarios', async (req, res) => {
+  try {
+    const { usuario_id, show_id, comentario } = req.body;
+    if (!usuario_id || !show_id || !comentario) {
+      return res.status(400).json({ error: 'Faltan datos' });
+    }
+    // Busca o inserta la película si no existe
+    let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
+    let pelicula_id;
+    if (pelicula.length === 0) {
+      const [result] = await pool.execute(
+        'INSERT INTO peliculas (show_id, titulo, descripcion, anio) VALUES (?, ?, ?, ?)',
+        [show_id, '', '', null]
+      );
+      pelicula_id = result.insertId;
+    } else {
+      pelicula_id = pelicula[0].id;
+    }
+    await pool.execute(
+      'INSERT INTO comentarios (usuario_id, pelicula_id, comentario, fecha) VALUES (?, ?, ?, NOW())',
+      [usuario_id, pelicula_id, comentario]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
 
 
