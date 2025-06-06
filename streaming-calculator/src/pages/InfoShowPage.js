@@ -101,7 +101,7 @@ function InfoShowPage() {
             }
         }
         fetchComentarios();
-    }, [selectedMovie]);
+    }, [selectedMovie, backendUrl]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -127,7 +127,7 @@ function InfoShowPage() {
             }
         });
         return () => unsubscribe();
-        }, [selectedMovie]);
+        }, [selectedMovie, backendUrl]);
 
     const handleToggleFavorite = async () => {
     console.log("userId:", userId, "selectedMovie.id:", selectedMovie?.id);
@@ -561,17 +561,40 @@ function InfoShowPage() {
                     {comentarioError && <div style={{ color: "red", marginTop: 4 }}>{comentarioError}</div>}
                 </div>
                 )}
-                <div>
-                {comentarios.length === 0 ? (
-                    <p style={{ color: "#bfc9d4" }}>No hay comentarios aún.</p>
-                ) : (
-                    comentarios.map((c, idx) => (
-                    <div key={idx} style={{ marginBottom: 12, background: "#222", padding: 10, borderRadius: 8 }}>
-                        <strong>{c.nombre}</strong> <span style={{ color: "#888", fontSize: 12 }}>{new Date(c.fecha).toLocaleString()}</span>
-                        <div>{c.comentario}</div>
-                    </div>
-                    ))
-                )}
+                <div
+                    style={{
+                        display: "flex",
+                        overflowX: "auto",
+                        gap: 16,
+                        padding: "8px 0",
+                        marginBottom: 24,
+                        scrollbarWidth: "thin"
+                    }}
+                    >
+                    {comentarios.length === 0 ? (
+                        <div style={{ color: "#bfc9d4", minWidth: 250, textAlign: "center" }}>No hay comentarios aún.</div>
+                    ) : (
+                        comentarios.map((c, idx) => (
+                        <div
+                            key={idx}
+                            style={{
+                            minWidth: 250,
+                            maxWidth: 300,
+                            background: "#222",
+                            padding: 14,
+                            borderRadius: 10,
+                            boxShadow: "0 2px 8px #0004",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 8,
+                            color: "#fff"
+                            }}>
+                            <div style={{ fontWeight: "bold", fontSize: 16 }}>{c.nombre}</div>
+                            <div style={{ color: "#888", fontSize: 12 }}>{new Date(c.fecha).toLocaleString()}</div>
+                            <div style={{ fontSize: 15 }}>{c.comentario}</div>
+                        </div>
+                        ))
+                    )}
                 </div>
             </div>
 

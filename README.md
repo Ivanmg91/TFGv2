@@ -109,3 +109,5 @@ Borrar todas las columnas
 
 Resetear el id
 > ALTER TABLE usuarios AUTO_INCREMENT = 1;
+
+para mostrar las peliculas favoritas puedo hacer q no muestre como el grid sino una linea con informacion de la pelicual sacada de la base de datos asi me ahorro todas las llamadas a la api q eso supondria.
