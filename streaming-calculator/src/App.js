@@ -10,6 +10,7 @@ import SearchPage from './pages/SearchPage.js';
 import InfoShowPage from './pages/InfoShowPage.js';
 import WhoWeArePage from './pages/WhoWeArePage.js';
 import RegisterPage from './pages/RegisterPage.js';
+import LoginPage from './pages/LoginPage.js';
 
 function App() {
   const [searchText, setSearchText] = useState("");
@@ -29,6 +30,7 @@ function App() {
             <Route path="/search" element={<SearchPage searchText={searchText} />} />
             <Route path="/whoweare" element={<WhoWeArePage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
             {/* ...otras rutas... */}
           </Routes>
         </div>

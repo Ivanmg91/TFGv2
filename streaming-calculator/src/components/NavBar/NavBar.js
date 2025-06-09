@@ -11,6 +11,8 @@ const NavBar = ({
   const [menuOpen, setMenuOpen] = useState(false); // Nuevo estado para el menú
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [authMenuOpen, setAuthMenuOpen] = useState(false); // Nuevo estado para el menú de autenticación
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -67,14 +69,53 @@ const NavBar = ({
       <div>
         {user ? (
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            {/* DEBERIA MOSTRAR EL NOMBRE DE USUARIO */}
-            <span>{user.email}</span> 
+            <span>{user.email}</span>
             <button onClick={handleSignOut}>Cerrar sesión</button>
           </div>
         ) : (
-          <button>
-            <Link to="/register" className="no-link-style">Iniciar Sesión</Link>
-          </button>
+          <div style={{ position: "relative", display: "inline-block" }}>
+            <button onClick={() => setAuthMenuOpen((open) => !open)}>
+              Iniciar Sesión
+            </button>
+            {authMenuOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "110%",
+                  right: 0,
+                  background: "#222",
+                  border: "1px solid #444",
+                  borderRadius: 8,
+                  boxShadow: "0 2px 8px #0004",
+                  zIndex: 100,
+                  padding: 12,
+                  minWidth: 160,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                }}
+              >
+                <button
+                  style={{ width: "100%" }}
+                  onClick={() => {
+                    setAuthMenuOpen(false);
+                    navigate("/login");
+                  }}
+                >
+                  Iniciar Sesión
+                </button>
+                <button
+                  style={{ width: "100%" }}
+                  onClick={() => {
+                    setAuthMenuOpen(false);
+                    navigate("/register");
+                  }}
+                >
+                  Registrarse
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
       <div className="navbar-right">

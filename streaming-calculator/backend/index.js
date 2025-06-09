@@ -91,6 +91,73 @@ app.get('/api/favoritos/:usuario_id/:show_id', async (req, res) => {
   }
 });
 
+// Vistos
+app.post('/api/vistos', async (req, res) => {
+  try {
+    const { usuario_id, show_id, titulo, descripcion, anio } = req.body;
+    if (!usuario_id || !show_id) {
+      return res.status(400).json({ error: 'Faltan datos' });
+    }
+    // Search or insert the movie if it does not exist
+    let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
+    let pelicula_id;
+    if (pelicula.length === 0) {
+      const [result] = await pool.execute(
+        'INSERT INTO peliculas (show_id, titulo, descripcion, anio) VALUES (?, ?, ?, ?)',
+        [show_id, titulo, descripcion, anio]
+      );
+      pelicula_id = result.insertId;
+    } else {
+      pelicula_id = pelicula[0].id;
+    }
+    // add vistos if it does not already exist
+    await pool.execute(
+      'INSERT IGNORE INTO vistos (usuario_id, pelicula_id, fecha_agregado) VALUES (?, ?, NOW())',
+      [usuario_id, pelicula_id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// quit visto
+app.delete('/api/vistos', async (req, res) => {
+  try {
+    const { usuario_id, show_id } = req.body;
+    if (!usuario_id || !show_id) {
+      return res.status(400).json({ error: 'Faltan datos' });
+    }
+    let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
+    if (pelicula.length === 0) return res.json({ success: false });
+    await pool.execute(
+      'DELETE FROM vistos WHERE usuario_id = ? AND pelicula_id = ?',
+      [usuario_id, pelicula[0].id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// check if is visto
+app.get('/api/vistos/:usuario_id/:show_id', async (req, res) => {
+  try {
+    const { usuario_id, show_id } = req.params;
+    let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
+    if (pelicula.length === 0) return res.json({ visto: false });
+    let [vist] = await pool.execute(
+      'SELECT * FROM vistos WHERE usuario_id = ? AND pelicula_id = ?',
+      [usuario_id, pelicula[0].id]
+    );
+    res.json({ visto: vist.length > 0 });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
+
 // Obtener usuario por firebase_uid
 app.get('/api/usuarios/:firebase_uid', async (req, res) => {
   try {

@@ -61,8 +61,26 @@ function RegisterPage() {
     setError(null);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      navigate("/see"); // <-- Redirige a descubrir
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const firebase_uid = user.uid;
+      const nombre = user.displayName || ""; // Maybe is not available
+      const email = user.email;
+
+      // Guardar usuario en tu base de datos
+      await fetch(`${backendUrl}/api/usuarios`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firebase_uid,
+          nombre,
+          email,
+        }),
+      });
+
+      navigate("/see");
     } catch (err) {
       setError(err.message);
     }
