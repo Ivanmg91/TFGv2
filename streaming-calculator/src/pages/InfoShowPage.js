@@ -29,6 +29,7 @@ function InfoShowPage() {
     const [yearMovies, setYearMovies] = useState([]);
     const [yearLoading, setYearLoading] = useState(true);
 
+    const [isWatched, setIsWatched] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [userId, setUserId] = useState(null);
 
@@ -37,6 +38,10 @@ function InfoShowPage() {
     const [showCommentForm, setShowCommentForm] = useState(false);
     const [nuevoComentario, setNuevoComentario] = useState("");
     const [comentarioError, setComentarioError] = useState("");
+
+    const [likeStatus, setLikeStatus] = useState(null); // 'like', 'dislike' o null
+    const [likeCount, setLikeCount] = useState(0);
+    const [dislikeCount, setDislikeCount] = useState(0);
 
     const handleEnviarComentario = async () => {
     if (!userId || !selectedMovie?.id || !nuevoComentario.trim()) {
@@ -107,7 +112,6 @@ function InfoShowPage() {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser && selectedMovie) {
             try {
-                console.log(currentUser.uid)
                 const res = await fetch(`${backendUrl}/api/usuarios/${currentUser.uid}`);
                 if (res.ok) {
                 const data = await res.json();
@@ -116,18 +120,88 @@ function InfoShowPage() {
                 const favRes = await fetch(`${backendUrl}/api/favoritos/${data.id}/${selectedMovie.id}`);
                 const favData = await favRes.json();
                 setIsFavorite(favData.favorito);
+
+                // Comprobar si es visto
+                const vistoRes = await fetch(`${backendUrl}/api/vistos/${data.id}/${selectedMovie.id}`);
+                const vistoData = await vistoRes.json();
+                setIsWatched(vistoData.visto);
+
+                const likesRes = await fetch(`${backendUrl}/api/likes/${data.id}/${selectedMovie.id}`);
+                const likesData = await likesRes.json();
+                setLikeStatus(likesData.user); // like dislike nul
+                setLikeCount(likesData.likes);
+                setDislikeCount(likesData.dislikes);
+
                 }
             } catch (err) {
                 setUserId(null);
                 setIsFavorite(false);
+                setIsWatched(false);
             }
             } else {
             setUserId(null);
             setIsFavorite(false);
+            setIsWatched(false);
             }
         });
         return () => unsubscribe();
-        }, [selectedMovie, backendUrl]);
+    }, [selectedMovie, backendUrl]);
+
+    const handleLike = async () => {
+        if (!userId || !selectedMovie) return;
+        if (likeStatus === 'like') {
+            // Quitar like
+            const res = await fetch(`${backendUrl}/api/likes`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
+            });
+            if (res.ok) {
+            setLikeStatus(null);
+            setLikeCount(likeCount - 1);
+            }
+        } else {
+            // Poner like (y quitar dislike si lo hay)
+            const res = await fetch(`${backendUrl}/api/likes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id, tipo: 'like' }),
+            });
+            if (res.ok) {
+            setLikeStatus('like');
+            setLikeCount(likeStatus === 'dislike' ? likeCount + 1 : likeCount + 1);
+            setDislikeCount(likeStatus === 'dislike' ? dislikeCount - 1 : dislikeCount);
+            }
+        }
+        };
+
+        const handleDislike = async () => {
+        if (!userId || !selectedMovie) return;
+        if (likeStatus === 'dislike') {
+            // Quitar dislike
+            const res = await fetch(`${backendUrl}/api/likes`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
+            });
+            if (res.ok) {
+            setLikeStatus(null);
+            setDislikeCount(dislikeCount - 1);
+            }
+        } else {
+            // Poner dislike (y quitar like si lo hay)
+            const res = await fetch(`${backendUrl}/api/likes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id, tipo: 'dislike' }),
+            });
+            if (res.ok) {
+            setLikeStatus('dislike');
+            setDislikeCount(likeStatus === 'like' ? dislikeCount + 1 : dislikeCount + 1);
+            setLikeCount(likeStatus === 'like' ? likeCount - 1 : likeCount);
+            }
+        }
+    };
 
     const handleToggleFavorite = async () => {
     console.log("userId:", userId, "selectedMovie.id:", selectedMovie?.id);
@@ -158,6 +232,32 @@ function InfoShowPage() {
         }
     };
 
+    const handleToggleWatched = async () => {
+        if (!userId || !selectedMovie) return;
+        if (isWatched) {
+            // Quitar de vistos
+            const res = await fetch(`${backendUrl}/api/vistos`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
+            });
+            if (res.ok) setIsWatched(false);
+        } else {
+            // Añadir a vistos
+            const res = await fetch(`${backendUrl}/api/vistos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                usuario_id: userId,
+                show_id: selectedMovie.id,
+                titulo: selectedMovie.title || "",
+                descripcion: selectedMovie.overview || "",
+                anio: selectedMovie.releaseYear || null,
+            }),
+            });
+            if (res.ok) setIsWatched(true);
+        }
+    };
 
 
 
@@ -615,12 +715,13 @@ function InfoShowPage() {
                     <img className="info-poster" src={selectedMovie.poster} alt={selectedMovie.title} />
                 </div>
                 <div className='custom-btn-row'>
-                    <button className="custom-btn">
+                    <button className="custom-btn" style={{ color: likeStatus === 'like' ? '#4cafef' : 'white' }} onClick={handleLike} disabled={!userId}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z"/></svg>
-                        2k
+                        {likeCount}
                     </button>
-                    <button className="custom-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg>                        2k
+                    <button className="custom-btn" style={{ color: likeStatus === 'dislike' ? '#e74c3c' : 'white' }} onClick={handleDislike} disabled={!userId}>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg>
+                        {dislikeCount}
                 </button>
                 </div>
 
@@ -629,7 +730,7 @@ function InfoShowPage() {
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="m480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z"/></svg>
                         Favorito
                     </button>
-                    <button className="custom-btn">
+                    <button className="custom-btn" style={{ color: isWatched ? 'blue' : 'white' }} onClick={handleToggleWatched}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
                         Visto
                 </button>

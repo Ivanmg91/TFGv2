@@ -45,7 +45,7 @@ function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const firebase_uid = user.uid;
-      const nombre = user.displayName || "";
+      const nombre = user.displayName || "NO DEFINIDO";
       const email = user.email;
 
       // Check user in bbdd

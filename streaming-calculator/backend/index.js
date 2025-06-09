@@ -12,10 +12,11 @@ app.use(express.json());
 // Ruta para registrar usuario
 app.post('/api/usuarios', async (req, res) => {
   try {    
-    const { firebase_uid, nombre, email } = req.body;
-    if (!firebase_uid || !nombre || !email) {
+    let { firebase_uid, nombre, email } = req.body;
+    if (!firebase_uid || !email) {
       return res.status(400).json({ error: 'Faltan datos' });
     }
+    if (!nombre) nombre = "Usuario"; // Valor por defecto si no hay nombre
     const fecha_creacion = new Date().toISOString().slice(0, 19).replace("T", " ");
     const query = 'INSERT INTO usuarios (firebase_uid, nombre, email, fecha_creacion) VALUES (?, ?, ?, ?)';
     const [result] = await pool.execute(query, [firebase_uid, nombre, email, fecha_creacion]);
@@ -112,7 +113,7 @@ app.post('/api/vistos', async (req, res) => {
     }
     // add vistos if it does not already exist
     await pool.execute(
-      'INSERT IGNORE INTO vistos (usuario_id, pelicula_id, fecha_agregado) VALUES (?, ?, NOW())',
+      'INSERT IGNORE INTO vistos (usuario_id, pelicula_id, fecha_visto) VALUES (?, ?, NOW())',
       [usuario_id, pelicula_id]
     );
     res.json({ success: true });
@@ -156,6 +157,85 @@ app.get('/api/vistos/:usuario_id/:show_id', async (req, res) => {
   }
 });
 
+// Añadir o cambiar like/dislike
+app.post('/api/likes', async (req, res) => {
+  try {
+    const { usuario_id, show_id, tipo } = req.body;
+    if (!usuario_id || !show_id || !['like', 'dislike'].includes(tipo)) {
+      return res.status(400).json({ error: 'Faltan datos o tipo inválido' });
+    }
+    // Busca o inserta la película si no existe
+    let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
+    let pelicula_id;
+    if (pelicula.length === 0) {
+      const [result] = await pool.execute(
+        'INSERT INTO peliculas (show_id, titulo, descripcion, anio) VALUES (?, ?, ?, ?)',
+        [show_id, '', '', null]
+      );
+      pelicula_id = result.insertId;
+    } else {
+      pelicula_id = pelicula[0].id;
+    }
+    // Elimina like/dislike anterior
+    await pool.execute(
+      'DELETE FROM likes_dislikes WHERE usuario_id = ? AND pelicula_id = ?',
+      [usuario_id, pelicula_id]
+    );
+    // Inserta el nuevo like/dislike
+    await pool.execute(
+      'INSERT INTO likes_dislikes (usuario_id, pelicula_id, tipo, fecha) VALUES (?, ?, ?, NOW())',
+      [usuario_id, pelicula_id, tipo]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error en /api/likes:', error); // <--- AÑADE ESTO
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// quit like dislike
+app.delete('/api/likes', async (req, res) => {
+  try {
+    const { usuario_id, show_id } = req.body;
+    if (!usuario_id || !show_id) {
+      return res.status(400).json({ error: 'Faltan datos' });
+    }
+    let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
+    if (pelicula.length === 0) return res.json({ success: false });
+    await pool.execute(
+      'DELETE FROM likes_dislikes WHERE usuario_id = ? AND pelicula_id = ?',
+      [usuario_id, pelicula[0].id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+//  get likes or dislikes 
+app.get('/api/likes/:usuario_id/:show_id', async (req, res) => {
+  try {
+    const { usuario_id, show_id } = req.params;
+    let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
+    if (pelicula.length === 0) return res.json({ likes: 0, dislikes: 0, user: null });
+    const pelicula_id = pelicula[0].id;
+    const [[{ likes }]] = await pool.execute(
+      "SELECT COUNT(*) as likes FROM likes_dislikes WHERE pelicula_id = ? AND tipo = 'like'",
+      [pelicula_id]
+    );
+    const [[{ dislikes }]] = await pool.execute(
+      "SELECT COUNT(*) as dislikes FROM likes_dislikes WHERE pelicula_id = ? AND tipo = 'dislike'",
+      [pelicula_id]
+    );
+    const [userLike] = await pool.execute(
+      "SELECT tipo FROM likes_dislikes WHERE usuario_id = ? AND pelicula_id = ?",
+      [usuario_id, pelicula_id]
+    );
+    res.json({ likes, dislikes, user: userLike[0]?.tipo || null });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
 
 // Obtener usuario por firebase_uid
