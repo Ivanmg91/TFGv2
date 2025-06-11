@@ -81,6 +81,8 @@
 
 .info-left {
   flex: 0 0 65%;
+  max-width: 900px;   /* O el ancho máximo que uses para MoviesRow */
+  min-width: 0;       /* ¡Clave para evitar que los hijos estiren el padre! */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

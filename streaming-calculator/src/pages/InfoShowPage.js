@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import { buscarTrailerYouTube } from '../ytApi.js';
 import { obtenerImagenActorWikipedia } from '../wikiApi.js';
@@ -9,6 +10,7 @@ import MoviesRow from '../components/MoviesRow.js';
 import './PagesCss/InfoShowPage.css';
 import SeeNowList from '../components/SeeNowList/SeeNowList.js';
 import DonationButton from '../components/DonationButton/DonationButton.js';
+import CommentsRow from '../components/CommentsRow/CommentsRow.js';
 
 function InfoShowPage() {
     const location = useLocation();
@@ -42,6 +44,14 @@ function InfoShowPage() {
     const [likeStatus, setLikeStatus] = useState(null); // 'like', 'dislike' o null
     const [likeCount, setLikeCount] = useState(0);
     const [dislikeCount, setDislikeCount] = useState(0);
+
+    const [showLoginPopup, setShowLoginPopup] = useState(false);
+    const navigate = useNavigate();
+
+    const requireLogin = () => {
+        setShowLoginPopup(true);
+    };
+
 
     const handleEnviarComentario = async () => {
     if (!userId || !selectedMovie?.id || !nuevoComentario.trim()) {
@@ -148,6 +158,10 @@ function InfoShowPage() {
     }, [selectedMovie, backendUrl]);
 
     const handleLike = async () => {
+        if (!userId || !selectedMovie) {
+            requireLogin();
+            return;
+        }
         if (!userId || !selectedMovie) return;
         if (likeStatus === 'like') {
             // Quitar like
@@ -176,35 +190,43 @@ function InfoShowPage() {
         };
 
         const handleDislike = async () => {
-        if (!userId || !selectedMovie) return;
-        if (likeStatus === 'dislike') {
-            // Quitar dislike
-            const res = await fetch(`${backendUrl}/api/likes`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
-            });
-            if (res.ok) {
-            setLikeStatus(null);
-            setDislikeCount(dislikeCount - 1);
+            if (!userId || !selectedMovie) {
+                requireLogin();
+                return;
             }
-        } else {
-            // Poner dislike (y quitar like si lo hay)
-            const res = await fetch(`${backendUrl}/api/likes`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id, tipo: 'dislike' }),
-            });
-            if (res.ok) {
-            setLikeStatus('dislike');
-            setDislikeCount(likeStatus === 'like' ? dislikeCount + 1 : dislikeCount + 1);
-            setLikeCount(likeStatus === 'like' ? likeCount - 1 : likeCount);
+            if (!userId || !selectedMovie) return;
+            if (likeStatus === 'dislike') {
+                // Quitar dislike
+                const res = await fetch(`${backendUrl}/api/likes`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
+                });
+                if (res.ok) {
+                setLikeStatus(null);
+                setDislikeCount(dislikeCount - 1);
+                }
+            } else {
+                // Poner dislike (y quitar like si lo hay)
+                const res = await fetch(`${backendUrl}/api/likes`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id, tipo: 'dislike' }),
+                });
+                if (res.ok) {
+                setLikeStatus('dislike');
+                setDislikeCount(likeStatus === 'like' ? dislikeCount + 1 : dislikeCount + 1);
+                setLikeCount(likeStatus === 'like' ? likeCount - 1 : likeCount);
+                }
             }
-        }
-    };
+        };
 
     const handleToggleFavorite = async () => {
-    console.log("userId:", userId, "selectedMovie.id:", selectedMovie?.id);
+        if (!userId || !selectedMovie) {
+            requireLogin();
+            return;
+        }
+        console.log("userId:", userId, "selectedMovie.id:", selectedMovie?.id);
 
         if (!userId || !selectedMovie) return;
         if (isFavorite) {
@@ -233,6 +255,10 @@ function InfoShowPage() {
     };
 
     const handleToggleWatched = async () => {
+        if (!userId || !selectedMovie) {
+            requireLogin();
+            return;
+        }
         if (!userId || !selectedMovie) return;
         if (isWatched) {
             // Quitar de vistos
@@ -618,83 +644,28 @@ function InfoShowPage() {
                 </div>
 
                 <div className="spacer"></div>
-                
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <h1 style={{ margin: 0 }}>COMENTARIOS</h1>
-                {userId && (
-                    <button
-                    style={{
-                        background: "#222",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "50%",
-                        width: 32,
-                        height: 32,
-                        fontSize: 22,
-                        cursor: "pointer",
-                        lineHeight: "32px",
-                        padding: 0,
-                        marginLeft: 8
-                    }}
-                    title="Añadir comentario"
-                    onClick={() => setShowCommentForm((v) => !v)}
-                    >+</button>
-                )}
-                </div>
-                {showCommentForm && (
-                <div style={{ margin: "12px 0" }}>
-                    <textarea
-                    value={nuevoComentario}
-                    onChange={e => setNuevoComentario(e.target.value)}
-                    rows={3}
-                    style={{ width: "100%", borderRadius: 6, padding: 8, resize: "vertical" }}
-                    placeholder="Escribe tu comentario..."
-                    />
-                    <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                    <button onClick={handleEnviarComentario} style={{ background: "#4caf50", color: "#fff", border: "none", borderRadius: 4, padding: "6px 16px" }}>
-                        Enviar
-                    </button>
-                    <button onClick={() => { setShowCommentForm(false); setComentarioError(""); }} style={{ background: "#888", color: "#fff", border: "none", borderRadius: 4, padding: "6px 16px" }}>
-                        Cancelar
-                    </button>
-                    </div>
-                    {comentarioError && <div style={{ color: "red", marginTop: 4 }}>{comentarioError}</div>}
-                </div>
-                )}
-                <div
-                    style={{
-                        display: "flex",
-                        overflowX: "auto",
-                        gap: 16,
-                        padding: "8px 0",
-                        marginBottom: 24,
-                        scrollbarWidth: "thin"
-                    }}
-                    >
-                    {comentarios.length === 0 ? (
-                        <div style={{ color: "#bfc9d4", minWidth: 250, textAlign: "center" }}>No hay comentarios aún.</div>
-                    ) : (
-                        comentarios.map((c, idx) => (
-                        <div
-                            key={idx}
+
+                <div style={{ display: "flex", alignItems: "center", gap: 8, }}>
+                    <h1 style={{ margin: 0 }}>COMENTARIOS</h1>
+                        {userId && (
+                            <button
                             style={{
-                            minWidth: 250,
-                            maxWidth: 300,
-                            background: "#222",
-                            padding: 14,
-                            borderRadius: 10,
-                            boxShadow: "0 2px 8px #0004",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 8,
-                            color: "#fff"
-                            }}>
-                            <div style={{ fontWeight: "bold", fontSize: 16 }}>{c.nombre}</div>
-                            <div style={{ color: "#888", fontSize: 12 }}>{new Date(c.fecha).toLocaleString()}</div>
-                            <div style={{ fontSize: 15 }}>{c.comentario}</div>
-                        </div>
-                        ))
-                    )}
+                                background: "#222",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: "50%",
+                                width: 32,
+                                height: 32,
+                                fontSize: 22,
+                                cursor: "pointer",
+                                lineHeight: "32px",
+                                padding: 0,
+                                marginLeft: 8
+                            }}
+                            title="Añadir comentario"
+                            onClick={() => setShowCommentForm((v) => !v)}
+                            >+</button>
+                        )}
                 </div>
             </div>
 
@@ -715,11 +686,11 @@ function InfoShowPage() {
                     <img className="info-poster" src={selectedMovie.poster} alt={selectedMovie.title} />
                 </div>
                 <div className='custom-btn-row'>
-                    <button className="custom-btn" style={{ color: likeStatus === 'like' ? '#4cafef' : 'white' }} onClick={handleLike} disabled={!userId}>
+                    <button className="custom-btn" style={{ color: likeStatus === 'like' ? '#4cafef' : 'white' }} onClick={handleLike}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z"/></svg>
                         {likeCount}
                     </button>
-                    <button className="custom-btn" style={{ color: likeStatus === 'dislike' ? '#e74c3c' : 'white' }} onClick={handleDislike} disabled={!userId}>
+                    <button className="custom-btn" style={{ color: likeStatus === 'dislike' ? '#e74c3c' : 'white' }} onClick={handleDislike}>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M240-840h440v520L400-40l-50-50q-7-7-11.5-19t-4.5-23v-14l44-174H120q-32 0-56-24t-24-56v-80q0-7 2-15t4-15l120-282q9-20 30-34t44-14Zm360 80H240L120-480v80h360l-54 220 174-174v-406Zm0 406v-406 406Zm80 34v-80h120v-360H680v-80h200v520H680Z"/></svg>
                         {dislikeCount}
                 </button>
@@ -813,6 +784,34 @@ function InfoShowPage() {
                 
             </div>
         </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    
+                </div>
+                    {showCommentForm && (
+                    <div style={{ margin: "12px 0" }}>
+                        <textarea
+                        value={nuevoComentario}
+                        onChange={e => setNuevoComentario(e.target.value)}
+                        rows={3}
+                        style={{ width: "100%", borderRadius: 6, padding: 8, resize: "vertical" }}
+                        placeholder="Escribe tu comentario..."
+                        />
+                        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                        <button onClick={handleEnviarComentario} style={{ background: "#4caf50", color: "#fff", border: "none", borderRadius: 4, padding: "6px 16px" }}>
+                            Enviar
+                        </button>
+                        <button onClick={() => { setShowCommentForm(false); setComentarioError(""); }} style={{ background: "#888", color: "#fff", border: "none", borderRadius: 4, padding: "6px 16px" }}>
+                            Cancelar
+                        </button>
+                        </div>
+                        {comentarioError && <div style={{ color: "red", marginTop: 4 }}>{comentarioError}</div>}
+                    </div>
+                    )}
+                    <div style={{ padding: "0 50px" }}>
+                        <CommentsRow comentarios={comentarios} />
+                    </div>
+
         <div className="movies-row-fullwidth">
         <h1>MISMOS GÉNEROS</h1>
             <MoviesRow movies={movies} hasMore={hasMore} loading={loading} />
@@ -827,6 +826,54 @@ function InfoShowPage() {
         <h1>DEL MISMO AÑO</h1>
             <MoviesRow movies={yearMovies} hasMore={false} loading={yearLoading} />
         </div>
+
+        {showLoginPopup && (
+                <div style={{
+                    position: "fixed",
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    background: "rgba(0,0,0,0.6)",
+                    zIndex: 9999,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}>
+                    <div style={{
+                        background: "#232a32",
+                        color: "#fff",
+                        borderRadius: 12,
+                        padding: 32,
+                        minWidth: 300,
+                        boxShadow: "0 4px 24px #000a",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: 16
+                    }}>
+                    <h2 style={{margin: 0}}>¡Necesitas iniciar sesión!</h2>
+                    <p style={{margin: 0, textAlign: "center"}}>Debes estar logueado para usar esta función.</p>
+                    <div style={{display: "flex", gap: 12, marginTop: 12}}>
+                        <button
+                            style={{padding: "8px 18px", borderRadius: 6, border: "none", background: "#4cafef", color: "#fff", fontWeight: "bold", cursor: "pointer"}}
+                            onClick={() => { setShowLoginPopup(false); navigate("/login"); }}
+                        >
+                            Iniciar sesión
+                        </button>
+                        <button
+                            style={{padding: "8px 18px", borderRadius: 6, border: "none", background: "#4caf50", color: "#fff", fontWeight: "bold", cursor: "pointer"}}
+                            onClick={() => { setShowLoginPopup(false); navigate("/register"); }}
+                        >
+                            Registrarse
+                        </button>
+                    </div>
+                    <button
+                        style={{marginTop: 8, background: "none", color: "#fff", border: "none", cursor: "pointer", fontSize: 18}}
+                        onClick={() => setShowLoginPopup(false)}
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        )}
 
         </>
         
