@@ -5,7 +5,7 @@ export async function buscarTrailerYouTube(titulo, anio) {
   const options = {
     method: 'GET',
     headers: {
-      'X-RapidAPI-Key': 'ff628fa887msh18b5e36286ba75ep1c3b69jsn05dacc0e1bb7', // Sustituye por tu clave de RapidAPI
+      'X-RapidAPI-Key': 'c9e67ed7f2msh012b6cfa63a93d8p1ec0c9jsnc20c93383fd8', // Sustituye por tu clave de RapidAPI
       'X-RapidAPI-Host': 'youtube138.p.rapidapi.com'
     }
   };

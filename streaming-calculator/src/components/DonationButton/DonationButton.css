@@ -1,16 +1,22 @@
 .button {
-    background: '#ffc439';
-    color: '#111';
-    border: 'none';
-    borderRadius: 8;
-    padding: '12px 28px';
-    fontSize: 1;
-    fontWeight: 'bold';
-    cursor: 'pointer';
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    border-radius: 0.5rem;         /* Antes: 8px */
+    padding: 0.75rem 1.75rem;      /* Antes: 12px 28px */
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.button:hover {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
 }
 
 .image-button {
-    height: 24;
-    marginRight: 8;
-    verticalAlign: 'middle';
+    height: 1.5rem;                /* Antes: 24px */
+    margin-right: 0.5rem;          /* Antes: 8px */
+    vertical-align: middle;
 }

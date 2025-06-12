@@ -4,14 +4,14 @@
 }
 
 .main-content {
-  margin-top: 100px; /* Ajusta según la altura real del navbar */
+  margin-top: 6.25rem; /* Antes: 100px */
 }
 
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(5, 1fr); /* 5 columnas fijas */
+  gap: 1.5rem;
+  padding: 1.25rem 6rem;
 }
 
 /* Movies Row */
@@ -19,8 +19,8 @@
   display: flex;
   flex-direction: row;
   overflow-x: auto;
-  gap: 20px;
-  padding: 20px 0;
+  gap: 1.25rem; /* Antes: 20px */
+  padding: 1.25rem 0; /* Antes: 20px 0 */
   scrollbar-width: none;
 }
 
@@ -36,7 +36,7 @@
 .movie-row-shadow {
   position: absolute;
   top: 0;
-  width: 60px;
+  width: 3.75rem; /* Antes: 60px */
   height: 100%;
   display: flex;
   align-items: center;
@@ -49,55 +49,57 @@
 .movie-row-shadow.right {
   right: 0;
   justify-content: flex-end;
-  background: linear-gradient(to left, rgba(23,24,28,0.95) 70%, rgba(23,24,28,0));
+  background: linear-gradient(to left, var(--md-sys-color-surface) 70%, rgba(23,24,28,0));
 }
 
 .movie-row-shadow.left {
   left: 0;
   justify-content: flex-start;
-  background: linear-gradient(to right, rgba(23,24,28,0.95) 70%, rgba(23,24,28,0));
+  background: linear-gradient(to right, var(--md-sys-color-surface) 70%, rgba(23,24,28,0));
 }
 
 .movie-row-shadow .arrow {
   font-size: 2rem;
-  color: #fff;
-  margin: 0 10px;
+  color: var(--md-sys-color-on-surface);
+  margin: 0 0.63rem; /* Antes: 10px */
   pointer-events: none;
 }
 
 /* Ajusta el ancho de las tarjetas para la fila horizontal */
 .movie-card, .skeleton-card {
-  min-width: 220px;
-  max-width: 220px;
+  min-width: 20rem;
+  max-width: 20rem;
+  min-height: 22rem;
   flex: 0 0 auto;
 }
 
 .movie-poster {
   width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 0.63rem; /* Antes: 10px */
 }
 
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  margin: 20px 0;
+  gap: 1.25rem; /* Antes: 20px */
+  margin: 1.25rem 0; /* Antes: 20px 0 */
 }
 
 .pagination button {
-  background-color: #61dafb;
-  color: #282c34;
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
   border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 16px;
+  padding: 0.63rem 1.25rem; /* Antes: 10px 20px */
+  border-radius: 0.5rem; /* Antes: 8px */
+  font-size: 1rem; /* Antes: 16px */
   cursor: pointer;
 }
 
 .pagination button:disabled {
-  background-color: #ccc;
+  background-color: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-on-surface-variant);
   cursor: not-allowed;
 }
 
@@ -105,68 +107,72 @@
 
 .movie-card {
   position: relative;
-  border-radius: 14px;
+  border-radius: 0.88rem; /* Antes: 14px */
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 10px 10px 60px #bebebe;
+  box-shadow: 0 0.25rem 0.5rem var(--md-sys-color-shadow, rgba(0,0,0,0.2)); /* Antes: 0 4px 8px */
+  background: var(--md-sys-color-surface);
 }
 
 .movie-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-0.31rem); /* Antes: -5px */
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2); /* Antes: 0 4px 8px */
 }
 
 .movie-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 5px;
+  border-radius: 0.31rem; /* Antes: 5px */
 }
 
 .movie-card h3 {
-  font-size: 16px;
-  color: #ffffff;
-  margin: 10px 0 5px;
+  font-size: 1rem; /* Antes: 16px */
+  color: var(--md-sys-color-on-surface);
+  margin: 0.63rem 0 0.31rem; /* Antes: 10px 0 5px */
   text-align: center;
 }
 
 .movie-card p {
-  font-size: 14px;
-  color: #666;
+  font-size: 0.88rem; /* Antes: 14px */
+  color: var(--md-sys-color-on-surface-variant);
   text-align: center;
-  margin-top: 5px;
+  margin-top: 0.31rem; /* Antes: 5px */
 }
+
 
 /* Skeleton loading cards */
 .skeleton-card {
-  background: #e0e0e0;
-  border-radius: 14px;
-  min-height: 320px;
+  border-radius: 0.88rem; /* Antes: 14px */
+  min-width: 20rem;
+  max-width: 20rem;
+  min-height: 28rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   animation: pulse 1.5s infinite;
-  box-shadow: 10px 10px 60px #bebebe;
+  background: var(--md-sys-color-surface-variant);
+  box-shadow: 0 0.25rem 0.5rem var(--md-sys-color-shadow, rgba(0,0,0,0.2)); /* Antes: 0 4px 8px */
 }
 
 .skeleton-poster {
   width: 100%;
-  background: #cccccc;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  background: var(--md-sys-color-surface-container);
+  border-radius: 0.31rem; /* Antes: 5px */
+  margin-bottom: 0.63rem; /* Antes: 10px */
 }
 
 .skeleton-title,
 .skeleton-genres {
   width: 80%;
-  height: 18px;
-  background: #cccccc;
-  border-radius: 4px;
-  margin: 8px 0;
+  height: 1.13rem; /* Antes: 18px */
+  background: var(--md-sys-color-surface-container);
+  border-radius: 0.25rem; /* Antes: 4px */
+  margin: 0.5rem 0; /* Antes: 8px 0 */
 }
 
 @keyframes pulse {
@@ -185,32 +191,34 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  padding: 1.25rem; /* Antes: 20px */
+  box-shadow: 0 0.25rem 0.5rem var(--md-sys-color-shadow, rgba(0,0,0,0.2)); /* Antes: 0 4px 8px */
   z-index: 1000;
-  border-radius: 8px;
+  border-radius: 0.5rem; /* Antes: 8px */
   overflow-y: auto;
 }
 
 .floating-menu img {
   max-width: 100%;
   height: auto;
-  margin-bottom: 10px;
+  margin-bottom: 0.63rem; /* Antes: 10px */
 }
 
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0.63rem; /* Antes: 10px */
+  right: 0.63rem; /* Antes: 10px */
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 1rem; /* Antes: 16px */
   cursor: pointer;
 }
 
 body {
-  background-color: #17181c;
+  background-color: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
   overflow-x: hidden;
 }
 

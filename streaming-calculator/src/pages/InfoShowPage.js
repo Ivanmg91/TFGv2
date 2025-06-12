@@ -567,9 +567,9 @@ function InfoShowPage() {
     };
 
     return (
-        <>  
+        < >  
             {selectedMovie.horizontalBackDrop && (
-                <div className="backdrop-container">
+                <div className="backdrop-container" >
                     <img
                         src={selectedMovie.horizontalBackDrop}
                         alt="Backdrop"
@@ -808,7 +808,7 @@ function InfoShowPage() {
                         {comentarioError && <div style={{ color: "red", marginTop: 4 }}>{comentarioError}</div>}
                     </div>
                     )}
-                    <div style={{ padding: "0 50px" }}>
+                    <div style={{ padding: "0 6rem" }}>
                         <CommentsRow comentarios={comentarios} />
                     </div>
 

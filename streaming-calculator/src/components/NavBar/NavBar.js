@@ -8,10 +8,10 @@ const NavBar = ({
   setSearchText, // Props
 }) => {
   const [searchFieldText, setSearchFieldText] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false); // Nuevo estado para el menú
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [authMenuOpen, setAuthMenuOpen] = useState(false); // Nuevo estado para el menú de autenticación
+  const [authMenuOpen, setAuthMenuOpen] = useState(false);
 
 
   useEffect(() => {
@@ -43,20 +43,20 @@ const NavBar = ({
   return (
     <nav className="navbar">
       <div className="navbar-left">
-        <a href="/" className="logo">
-          Streaming Calculator
+        <a href="/" className="logo" style={{ display: "flex", alignItems: "center" }}>
+          <img src="/logo.png" alt="Logo" />
         </a>
       </div>
       <div className="navbar-center">
         <ul className="nav-links">
           <li><Link to="/home">Inicio</Link></li>
           <li><Link to="/see">Descubrir</Link></li>
-          <li><Link to="/popular">Popular</Link></li>
-          <li><Link to="/new">Nuevo</Link></li>
-          {/* Cambiar a Favoritoos el de nuevo */}
+          <li><Link to="/recommendations">Recomendaciones</Link></li>
+          <li>Favoritas</li>
+          <li><Link to="/new">Escoger Plataforma</Link></li>
         </ul>
       </div>
-      <div>
+      <div className="navbar-right">
         <input
           className='navbar-searchfield'
           type='text'
@@ -65,8 +65,6 @@ const NavBar = ({
           onChange={handleSearchChange}
         />
         <button onClick={handleSearchMovies}>Buscar</button>
-      </div>
-      <div>
         {user ? (
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <span>{user.email}</span>
@@ -117,13 +115,10 @@ const NavBar = ({
             )}
           </div>
         )}
-      </div>
-      <div className="navbar-right">
         <button
           className="menu-btn"
           onClick={() => setMenuOpen((open) => !open)}
         >
-          {/* Puedes usar un icono aquí */}
           ☰
         </button>
         {menuOpen && (

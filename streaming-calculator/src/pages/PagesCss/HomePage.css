@@ -1,0 +1,39 @@
+.homepage-container {
+  margin-top: 6vw; /* Más flexible que 85px */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 80vh;
+  padding: 0 16rem;
+}
+
+.homepage-logo {
+  width: min(500px, 40vw);
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 0; /* Sin espacio extra debajo del logo */
+  background: none;
+}
+
+.homepage-description {
+  max-width: 90vw;
+  width: 100%;
+  background: var(--md-sys-color-surface-variant, #223);
+  color: var(--md-sys-color-on-surface, #fff);
+  padding: 2rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 12px var(--md-sys-color-shadow, #0002);
+  text-align: center;
+  margin-top: 0.5rem; /* Añade un pequeño espacio arriba */
+}
+.homepage-description h1 {
+  margin-bottom: 1rem;
+  color: var(--md-sys-color-primary, #64aaff);
+  font-size: 2rem;
+}
+
+.homepage-description p.highlight {
+  margin-top: 1.2rem;
+  color: var(--md-sys-color-on-surface-variant, #bfc9d4);
+  font-size: 1.1em;
+}   

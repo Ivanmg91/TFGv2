@@ -1,5 +1,5 @@
 .rating-slider {
-  width: 200px;
+  width: 14rem; /* Antes: 200px */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -8,10 +8,11 @@
 
 .rating-slider label {
   font-weight: 500;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem; /* Antes: 8px */
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: var(--md-sys-color-on-surface);
 }
 
 .rating-slider input[type="range"] {
@@ -20,60 +21,60 @@
   padding: 0;
   box-sizing: border-box;
   background: transparent;
-  accent-color: #1976d2;
-  height: 28px;
+  accent-color: var(--md-sys-color-primary);
+  height: 2rem; /* Antes: 28px */
 }
 
 /* Webkit (Chrome, Safari, Edge) */
 .rating-slider input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 1.2rem;   /* Antes: 18px */
+  height: 1.2rem;  /* Antes: 18px */
   border-radius: 50%;
-  background: #1976d2;
+  background: var(--md-sys-color-primary);
   cursor: pointer;
-  border: 2px solid #fff;
-  box-shadow: 0 0 2px #0003;
-  margin-top: -7px;
+  border: 0.13rem solid var(--md-sys-color-on-primary, #fff); /* Antes: 2px */
+  box-shadow: 0 0 0.13rem #0003; /* Antes: 2px */
+  margin-top: -0.45rem; /* Ajuste proporcional a la altura del track */
 }
 
 .rating-slider input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px;
-  background: #ccc;
-  border-radius: 2px;
+  height: 0.25rem; /* Antes: 4px */
+  background: var(--md-sys-color-outline-variant, #ccc);
+  border-radius: 0.13rem; /* Antes: 2px */
 }
 
 /* Firefox */
 .rating-slider input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 1.2rem;
+  height: 1.2rem;
   border-radius: 50%;
-  background: #1976d2;
+  background: var(--md-sys-color-primary);
   cursor: pointer;
-  border: 2px solid #fff;
+  border: 0.13rem solid var(--md-sys-color-on-primary, #fff);
 }
 
 .rating-slider input[type="range"]::-moz-range-track {
-  height: 4px;
-  background: #ccc;
-  border-radius: 2px;
+  height: 0.25rem;
+  background: var(--md-sys-color-outline-variant, #ccc);
+  border-radius: 0.13rem;
 }
 
 /* IE/Edge */
 .rating-slider input[type="range"]::-ms-thumb {
-  width: 18px;
-  height: 18px;
+  width: 1.2rem;
+  height: 1.2rem;
   border-radius: 50%;
-  background: #1976d2;
+  background: var(--md-sys-color-primary);
   cursor: pointer;
-  border: 2px solid #fff;
+  border: 0.13rem solid var(--md-sys-color-on-primary, #fff);
 }
 
 .rating-slider input[type="range"]::-ms-fill-lower,
 .rating-slider input[type="range"]::-ms-fill-upper {
-  background: #ccc;
-  border-radius: 2px;
+  background: var(--md-sys-color-outline-variant, #ccc);
+  border-radius: 0.13rem;
 }
 
 .rating-slider input[type="range"]:focus {
@@ -83,4 +84,12 @@
 .rating-slider input[type="range"] {
   padding: 0;
   background: transparent;
+}
+
+@media (max-width: 600px) {
+  .rating-slider {
+    width: 90vw;
+    min-width: 8rem;
+    max-width: 98vw;
+  }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function NewPage() {
+function RecommendationsPage() {
   return (
     <div style={{ marginTop: '100px' }}>
       <h1>Vaya... Parece que todavía no hay nada</h1>
@@ -9,4 +9,4 @@ function NewPage() {
   );
 }
 
-export default NewPage;
+export default RecommendationsPage;

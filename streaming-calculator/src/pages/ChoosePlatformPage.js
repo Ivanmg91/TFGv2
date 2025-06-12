@@ -1,6 +1,6 @@
 import React from 'react';
 
-function PopularPage() {
+function ChoosePlatformPage() {
   return (
     <div style={{ marginTop: '100px' }}>
       <h1>Vaya... Parece que todavía no hay nada</h1>
@@ -9,4 +9,4 @@ function PopularPage() {
   );
 }
 
-export default PopularPage;
+export default ChoosePlatformPage;

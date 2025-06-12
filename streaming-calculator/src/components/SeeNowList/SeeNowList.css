@@ -1,28 +1,28 @@
 .streaming-options-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  background: #101624;
-  border-radius: 10px;
-  padding: 12px;
-  border: 1.5px solid #ffd600;
+  gap: 1rem; /* Antes: 16px */
+  background: var(--md-sys-color-surface);
+  border-radius: 0.63rem; /* Antes: 10px */
+  padding: 0.75rem; /* Antes: 12px */
+  border: 0.09rem solid var(--md-sys-color-primary); /* Antes: 1.5px */
 }
 
 .streaming-option-card {
   display: flex;
   align-items: center;
-  background: #151c29;
-  border-radius: 8px;
-  padding: 18px 24px;
-  gap: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  background: var(--md-sys-color-surface-variant);
+  border-radius: 0.5rem; /* Antes: 8px */
+  padding: 1.13rem 1.5rem; /* Antes: 18px 24px */
+  gap: 1.5rem; /* Antes: 24px */
+  box-shadow: 0 0.13rem 0.5rem var(--md-sys-color-shadow, rgba(0,0,0,0.08)); /* Antes: 0 2px 8px */
 }
 
 .streaming-option-logo img {
-  width: 60px;
-  height: 60px;
+  width: 3.75rem; /* Antes: 60px */
+  height: 3.75rem; /* Antes: 60px */
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 0.5rem; /* Antes: 8px */
 }
 
 .streaming-option-info {
@@ -30,49 +30,49 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 24px;
+  gap: 1.5rem; /* Antes: 24px */
 }
 .streaming-option-info-col {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 60px;
-  min-width: 180px;
+  height: 3.75rem; /* Antes: 60px */
+  min-width: 11.25rem; /* Antes: 180px */
 }
 
 .streaming-option-tags {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: 0.38rem; /* Antes: 6px */
+  margin-bottom: 0.25rem; /* Antes: 4px */
 }
 
 .streaming-option-details {
-  color: #bfc9d4;
-  font-size: 15px;
-  margin-top: 4px;
+  color: var(--md-sys-color-on-surface-variant, #bfc9d4);
+  font-size: 0.94rem; /* Antes: 15px */
+  margin-top: 0.25rem; /* Antes: 4px */
 }
 
 .tag {
-  background: #232b3e;
-  color: #ffd600;
+  background: var(--md-sys-color-primary-container, #232b3e);
+  color: var(--md-sys-color-primary, #ffd600);
   font-weight: bold;
-  font-size: 13px;
-  border-radius: 4px;
-  padding: 2px 7px;
+  font-size: 0.81rem; /* Antes: 13px */
+  border-radius: 0.25rem; /* Antes: 4px */
+  padding: 0.13rem 0.44rem; /* Antes: 2px 7px */
   display: flex;
   align-items: center;
 }
 
 .streaming-option-price {
-  margin-top: 2px;
-  color: #fff;
-  font-size: 16px;
+  margin-top: 0.13rem; /* Antes: 2px */
+  color: var(--md-sys-color-on-surface, #fff);
+  font-size: 1rem; /* Antes: 16px */
 }
 .streaming-option-price strong {
   font-weight: bold;
-  color: #fff;
-  margin-right: 8px;
+  color: var(--md-sys-color-on-surface, #fff);
+  margin-right: 0.5rem; /* Antes: 8px */
 }
 
 .streaming-option-price-center {
@@ -80,44 +80,44 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 120px;
-  color: #fff;
-  font-size: 16px;
+  min-width: 7.5rem; /* Antes: 120px */
+  color: var(--md-sys-color-on-surface, #fff);
+  font-size: 1rem; /* Antes: 16px */
   font-weight: bold;
-  gap: 2px;
+  gap: 0.13rem; /* Antes: 2px */
 }
 
 .streaming-option-action {
-  margin-left: 32px;
+  margin-left: 2rem; /* Antes: 32px */
   display: flex;
   align-items: center;
 }
 
 .streaming-option-btn {
-  background: #ffd600;
-  color: #101624;
+  background: var(--md-sys-color-primary, #ffd600);
+  color: var(--md-sys-color-on-primary, #101624);
   font-weight: bold;
   border: none;
-  border-radius: 8px;
-  padding: 12px 28px;
-  font-size: 18px;
+  border-radius: 0.5rem; /* Antes: 8px */
+  padding: 0.75rem 1.75rem; /* Antes: 12px 28px */
+  font-size: 1.13rem; /* Antes: 18px */
   cursor: pointer;
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem; /* Antes: 8px */
   transition: background 0.2s;
 }
 .streaming-option-btn:hover {
-  background: #ffe066;
+  background: var(--md-sys-color-primary-container, #ffe066);
 }
 
 @media (max-width: 700px) {
   .streaming-option-card {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
-    padding: 14px 10px;
+    gap: 0.75rem; /* Antes: 12px */
+    padding: 0.88rem 0.63rem; /* Antes: 14px 10px */
   }
   .streaming-option-action {
     margin-left: 0;

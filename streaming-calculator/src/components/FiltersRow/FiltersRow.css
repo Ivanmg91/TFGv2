@@ -1,24 +1,38 @@
 /*Filters style*/
 
 .filters {
-  background-color: #b6b6b6;
-  color: #333;
-  padding: 10px;
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  padding: 0.7rem 2vw;      /* Antes: 10px */
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.13rem 0.26rem rgba(0, 0, 0, 0.1); /* Antes: 0 2px 4px */
   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.filters-row {
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;             /* Antes: 12px */
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 0 auto;
+  padding: 0.5rem 0;        /* Antes: 8px 0 */
 }
 
 /*Dropdown menu*/
 .dropbutton {
-  background-color: #b6b6b6;
-  color: #333;
-  padding: 10px;
-  border-radius: 8px;
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  padding: 0.7rem 1.2rem;   /* Antes: 10px */
+  border-radius: 0.5rem;    /* Antes: 8px */
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.13rem 0.26rem rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--md-sys-color-outline-variant);
 }
 
 /* The container <div> - needed to position the dropdown content */
@@ -31,38 +45,58 @@
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #b6b6b6;
-  width: 220px;;
+  background-color: var(--md-sys-color-surface);
+  width: 18vw;              /* Antes: 220px */
   overflow: hidden;
-  padding: 10px;
+  padding: 0.7rem 1rem;     /* Antes: 10px */
   box-sizing: border-box;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 0.5rem 1rem 0px rgba(0,0,0,0.2);
   z-index: 1;
+  border: 1px solid var(--md-sys-color-outline-variant);
 }
-
 
 /* Dropdown Options*/
 .dropdown-option {
   display: inline-flex;
   align-items: center;
-  gap: 8px; /* Espacio entre el checkbox y el texto */
-  color: black;
+  gap: 0.5rem;              /* Antes: 8px */
+  color: var(--md-sys-color-on-surface);
   text-decoration: none;
 }
 
 /* Links inside the dropdown */
 .dropdown-content input {
-  color: rgb(204, 0, 0);
-  padding: 12px 16px;
+  color: var(--md-sys-color-primary);
+  padding: 0.8rem 1.1rem;   /* Antes: 12px 16px */
   text-decoration: none;
   display: block;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:hover {
+  background-color: var(--md-sys-color-surface-variant);
+}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
+.dropdown:hover .dropbtn {
+  background-color: var(--md-sys-color-surface-variant);
+}
+
+@media (max-width: 600px) {
+  .filters-row {
+    gap: 0.4rem;
+    padding: 0.3rem 0;
+  }
+  .dropdown-content {
+    width: 80vw;
+    min-width: 120px;
+    max-width: 95vw;
+    padding: 0.5rem 0.5rem;
+  }
+  .dropbutton {
+    padding: 0.5rem 0.7rem;
+  }
+}
