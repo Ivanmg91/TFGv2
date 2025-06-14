@@ -65,41 +65,42 @@ const FiltersRow = ({
     const handleApplyFilters = async () => {
       setLoading(true);    
 
-      // Actualizar la lista de géneros seleccionados
+      // Update genres list
       const checkboxes = document.querySelectorAll('input[type="checkbox"][name="dropdown-genres"]:checked');
       const selected = Array.from(checkboxes).map((checkbox) => checkbox.value);
-      setSelectedGenres(selected); // Se borran los q estaban en la lista
+      setSelectedGenres(selected); // Those that were on the list are deleted
 
-      // Actualizar la lista de géneros seleccionados
+      // Update andor, It is to know if you want them to contain all the genres or some
       const andOrChecked = document.querySelector('input[type="checkbox"][name="dropdown-andor"]').checked;
       const genresRelation = andOrChecked ? "and" : "or";
       setSelectedAndOr(genresRelation);
   
-      // Actualizar la lista de plataformas seleccionadas
+      // update platforms list
       const checkboxesPlatforms = document.querySelectorAll('input[type="checkbox"][name="dropdown-platforms"]:checked');
       const selectedPlatforms = Array.from(checkboxesPlatforms).map((checkbox) => checkbox.value);
       setSelectedPlatforms(selectedPlatforms);
   
-      // Actualizar la lista de showtypes seleccionados
+      // Update showtype list
       const checkboxesShowTypes = document.querySelectorAll('input[type="checkbox"][name="dropdown-showtype"]:checked');
       const selectedShowTypes = Array.from(checkboxesShowTypes).map((checkbox) => checkbox.value);
       setSelectedShowTypes(selectedShowTypes);
 
-      // Almacenar valor ordenar por
+      // update orderby
       const orderByOption = document.querySelector('input[type="radio"][name="dropdown-orderby"]:checked')?.value || null;
       setSelectedOrderBy(orderByOption);
 
-      // Almacenar valor typo de orden
+      // update ordertype (asc or desc)
       const orderByType = document.querySelector('input[type="radio"][name="dropdown-ordertype"]:checked')?.value || null;
       setSelectedOrderType(orderByType);
 
-      // Restablecer el estado para comenzar desde la primera página
+      // Reset status to start from first page
       setCursor(null);
       setMovies([]);
       setPrevCursors([]);
     
-      // Obtener las películas con los filtros aplicados desde la primera página
-      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes, sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, orderByOption, orderByType, genresRelation);
+      // Get shows with filters. Api call
+      const result = await api.getShowsByFilters(null, selected, selectedPlatforms, selectedShowTypes,
+        sliderValues.minRating * 10, sliderValues.maxRating * 10, sliderValues.minRelase, sliderValues.maxRelase, orderByOption, orderByType, genresRelation);
       setMovies(result.movies);
       setHasMore(result.hasMore);
       setCursor(result.nextCursor);

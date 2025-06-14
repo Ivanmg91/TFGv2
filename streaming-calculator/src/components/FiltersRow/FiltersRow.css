@@ -1,15 +1,5 @@
 /*Filters style*/
 
-.filters {
-  background-color: var(--md-sys-color-surface);
-  color: var(--md-sys-color-on-surface);
-  padding: 0.7rem 2vw;      /* Antes: 10px */
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 0.13rem 0.26rem rgba(0, 0, 0, 0.1); /* Antes: 0 2px 4px */
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
 .filters-row {
   width: 100vw;
   max-width: 100vw;
@@ -19,8 +9,18 @@
   gap: 0.75rem;             /* Antes: 12px */
   justify-content: center;
   align-items: center;
-  margin: 0 auto 0 auto;
   padding: 0.5rem 0;        /* Antes: 8px 0 */
+    margin-bottom: 1rem; 
+}
+
+.filters {
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  padding: 0.7rem 2vw;      /* Antes: 10px */
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 0.13rem 0.26rem rgba(0, 0, 0, 0.1); /* Antes: 0 2px 4px */
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 /*Dropdown menu*/

@@ -27,14 +27,14 @@ app.post('/api/usuarios', async (req, res) => {
   }
 });
 
-// Añadir favorito
+// add favorito
 app.post('/api/favoritos', async (req, res) => {
   try {
     const { usuario_id, show_id, titulo, descripcion, anio } = req.body;
     if (!usuario_id || !show_id) {
       return res.status(400).json({ error: 'Faltan datos' });
     }
-    // Busca o inserta la película si no existe
+    //  search or insert show if not exists
     let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
     let pelicula_id;
     if (pelicula.length === 0) {
@@ -46,7 +46,7 @@ app.post('/api/favoritos', async (req, res) => {
     } else {
       pelicula_id = pelicula[0].id;
     }
-    // Añade a favoritos si no existe ya
+    // add to favoritos if not exists
     await pool.execute(
       'INSERT IGNORE INTO favoritos (usuario_id, pelicula_id, fecha_agregado) VALUES (?, ?, NOW())',
       [usuario_id, pelicula_id]
@@ -57,7 +57,7 @@ app.post('/api/favoritos', async (req, res) => {
   }
 });
 
-// Quitar favorito
+// quit favorito
 app.delete('/api/favoritos', async (req, res) => {
   try {
     const { usuario_id, show_id } = req.body;
@@ -157,14 +157,14 @@ app.get('/api/vistos/:usuario_id/:show_id', async (req, res) => {
   }
 });
 
-// Añadir o cambiar like/dislike
+// add or change like/dislike
 app.post('/api/likes', async (req, res) => {
   try {
     const { usuario_id, show_id, tipo } = req.body;
     if (!usuario_id || !show_id || !['like', 'dislike'].includes(tipo)) {
       return res.status(400).json({ error: 'Faltan datos o tipo inválido' });
     }
-    // Busca o inserta la película si no existe
+    // search or insert show if not exist
     let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
     let pelicula_id;
     if (pelicula.length === 0) {
@@ -176,19 +176,19 @@ app.post('/api/likes', async (req, res) => {
     } else {
       pelicula_id = pelicula[0].id;
     }
-    // Elimina like/dislike anterior
+    // delete anterior like/dislike 
     await pool.execute(
       'DELETE FROM likes_dislikes WHERE usuario_id = ? AND pelicula_id = ?',
       [usuario_id, pelicula_id]
     );
-    // Inserta el nuevo like/dislike
+    // insert new like/dislike
     await pool.execute(
       'INSERT INTO likes_dislikes (usuario_id, pelicula_id, tipo, fecha) VALUES (?, ?, ?, NOW())',
       [usuario_id, pelicula_id, tipo]
     );
     res.json({ success: true });
   } catch (error) {
-    console.error('Error en /api/likes:', error); // <--- AÑADE ESTO
+    console.error('Error en /api/likes:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });

@@ -157,6 +157,7 @@ function InfoShowPage() {
         return () => unsubscribe();
     }, [selectedMovie, backendUrl]);
 
+    // Control like
     const handleLike = async () => {
         if (!userId || !selectedMovie) {
             requireLogin();
@@ -164,30 +165,30 @@ function InfoShowPage() {
         }
         if (!userId || !selectedMovie) return;
         if (likeStatus === 'like') {
-            // Quitar like
+            // Quit like
             const res = await fetch(`${backendUrl}/api/likes`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
             });
             if (res.ok) {
-            setLikeStatus(null);
-            setLikeCount(likeCount - 1);
+                setLikeStatus(null);
+                setLikeCount(likeCount - 1);
             }
         } else {
-            // Poner like (y quitar dislike si lo hay)
+            // Put like (and quit dislike)
             const res = await fetch(`${backendUrl}/api/likes`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id, tipo: 'like' }),
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id, tipo: 'like' }),
             });
             if (res.ok) {
-            setLikeStatus('like');
-            setLikeCount(likeStatus === 'dislike' ? likeCount + 1 : likeCount + 1);
-            setDislikeCount(likeStatus === 'dislike' ? dislikeCount - 1 : dislikeCount);
+                setLikeStatus('like');
+                setLikeCount(likeStatus === 'dislike' ? likeCount + 1 : likeCount + 1);
+                setDislikeCount(likeStatus === 'dislike' ? dislikeCount - 1 : dislikeCount);
             }
         }
-        };
+    };
 
         const handleDislike = async () => {
             if (!userId || !selectedMovie) {
@@ -221,38 +222,39 @@ function InfoShowPage() {
             }
         };
 
-    const handleToggleFavorite = async () => {
-        if (!userId || !selectedMovie) {
-            requireLogin();
-            return;
-        }
-        console.log("userId:", userId, "selectedMovie.id:", selectedMovie?.id);
+        // control like
+        const handleToggleFavorite = async () => {
+            if (!userId || !selectedMovie) {
+                requireLogin();
+                return;
+            }
+            console.log("userId:", userId, "selectedMovie.id:", selectedMovie?.id);
 
-        if (!userId || !selectedMovie) return;
-        if (isFavorite) {
-            // Quitar de favoritos
-            const res = await fetch(`${backendUrl}/api/favoritos`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
-            });
-            if (res.ok) setIsFavorite(false);
-        } else {
-            // Añadir a favoritos
-            const res = await fetch(`${backendUrl}/api/favoritos`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                usuario_id: userId,
-                show_id: selectedMovie.id,
-                titulo: selectedMovie.title,
-                descripcion: selectedMovie.overview,
-                anio: selectedMovie.releaseYear,
-            }),
-            });
-            if (res.ok) setIsFavorite(true);
-        }
-    };
+            if (!userId || !selectedMovie) return;
+            if (isFavorite) {
+                // Quit favorite
+                const res = await fetch(`${backendUrl}/api/favoritos`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario_id: userId, show_id: selectedMovie.id }),
+                });
+                if (res.ok) setIsFavorite(false);
+            } else {
+                // add to favoritos
+                const res = await fetch(`${backendUrl}/api/favoritos`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        usuario_id: userId,
+                        show_id: selectedMovie.id,
+                        titulo: selectedMovie.title,
+                        descripcion: selectedMovie.overview,
+                        anio: selectedMovie.releaseYear,
+                    }),
+                });
+                if (res.ok) setIsFavorite(true);
+            }
+        };
 
     const handleToggleWatched = async () => {
         if (!userId || !selectedMovie) {

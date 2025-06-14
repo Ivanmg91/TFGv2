@@ -143,11 +143,13 @@ export async function getData() {
   return data.title;
 }
 
-export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = [], minRating = 0, maxRatin = 10, minRelase = 1900, maxRelase = actualYear, orderBy, orderType, genresRelation = "or") {
+// Get shows using filters
+export async function getShowsByFilters(cursor = null, selectedGenres = [], selectedPlatforms = [], selectedShowTypes = [],
+   minRating = 0, maxRatin = 10, minRelase = 1900, maxRelase = actualYear, orderBy, orderType, genresRelation = "or") {
+    // Making the search
   const response = await client.showsApi.searchShowsByFilters({
     country: "es",
     genres: selectedGenres,
-    //orderBy: "popularity_1year", // Editar
     cursor: cursor,
     catalogs: selectedPlatforms,
     showType: selectedShowTypes.length === 1 ? selectedShowTypes : null,
@@ -162,6 +164,7 @@ export async function getShowsByFilters(cursor = null, selectedGenres = [], sele
 
   });
 
+  // obtaining the result
   const movies = response.shows.map(movie => ({
     id: movie.id,
     title: movie.title || "Título no disponible",
@@ -267,6 +270,49 @@ export async function getTopShows(cursor = null) {
           ? `${movie.episodeCount} episodio(s)`
           : "Duración no disponible")
     ),
+    streamingOptions: movie.streamingOptions || {},
+    languages: obtenerIdiomasDeStreaming(movie),
+    lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),
+    showType: movie.showType,
+  }));
+
+  return {
+    movies,
+    hasMore: response.hasMore,
+    nextCursor: response.nextCursor,
+  };
+}
+
+export async function getTopShowsNoRandom(service, showType, cursor = null) {
+  const response = await client.showsApi.getTopShows({
+    country: "es",
+    cursor: cursor,
+    outputLanguage: "es",
+    service: service,
+    showType: showType,
+  });
+
+  const movies = response.map(movie => ({
+    id: movie.id,
+    title: movie.title || "Título no disponible",
+    originalTitle: movie.originalTitle || "Título original no disponible",
+    poster: movie.imageSet?.verticalPoster?.w480 || '',
+    horizontalPoster: movie.imageSet.horizontalPoster.w1080,
+    horizontalBackDrop: movie.imageSet?.horizontalBackdrop?.w1080 || '',
+    overview: movie.overview || 'Sin descripción disponible',
+    genres: movie.genres.map(genre => genreTranslations[genre.name] || genre.name),
+    releaseYear: movie.releaseYear || movie.firstAirYear  || "Año no disponible",
+    directors: movie.directors || movie.creators  || [],
+    cast: movie.cast || [],
+    rating: movie.rating || "Sin calificación",
+    runtime: (typeof movie.runtime === "number" && movie.runtime > 0)
+      ? movie.runtime + " min"
+      : (movie.seasonCount
+          ? `${movie.seasonCount} temporada(s)` + (movie.episodeCount ? `, ${movie.episodeCount} episodio(s)` : '')
+          : (movie.episodeCount
+              ? `${movie.episodeCount} episodio(s)`
+              : "Duración no disponible")
+        ),
     streamingOptions: movie.streamingOptions || {},
     languages: obtenerIdiomasDeStreaming(movie),
     lightThemeImage: obtenerPrimerLightThemeImage(movie.streamingOptions),

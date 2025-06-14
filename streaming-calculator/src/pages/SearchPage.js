@@ -29,6 +29,7 @@ function SearchPage({ searchText }) {
   const [selectedOrderType, setSelectedOrderType] = useState();
   const [loading, setLoading] = useState(true);
 
+  // if textfield is not empty search with title else show top shows
   useEffect(() => {
     if (searchText && searchText.trim()) {
       fetchMoviesBySearch(searchText);
@@ -37,6 +38,7 @@ function SearchPage({ searchText }) {
     }
   }, [searchText]);
 
+  // function for search with title
   async function fetchMoviesBySearch(text) {
     setLoading(true);
     const result = await api.getShowsByTitle(text);
@@ -46,6 +48,7 @@ function SearchPage({ searchText }) {
     setLoading(false);
   }
 
+  // fetch first shows
   async function fetchInitialMovies() {
     setLoading(true);
     const result = await api.getTopShows();
