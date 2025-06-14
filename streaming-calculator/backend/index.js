@@ -30,7 +30,7 @@ app.post('/api/usuarios', async (req, res) => {
 // add favorito
 app.post('/api/favoritos', async (req, res) => {
   try {
-    const { usuario_id, show_id, titulo, descripcion, anio } = req.body;
+    const { usuario_id, show_id, titulo, descripcion, anio, poster } = req.body;
     if (!usuario_id || !show_id) {
       return res.status(400).json({ error: 'Faltan datos' });
     }
@@ -39,12 +39,17 @@ app.post('/api/favoritos', async (req, res) => {
     let pelicula_id;
     if (pelicula.length === 0) {
       const [result] = await pool.execute(
-        'INSERT INTO peliculas (show_id, titulo, descripcion, anio) VALUES (?, ?, ?, ?)',
-        [show_id, titulo, descripcion, anio]
+        'INSERT INTO peliculas (show_id, titulo, descripcion, anio, poster) VALUES (?, ?, ?, ?, ?)',
+        [show_id, titulo, descripcion, anio, poster]
       );
       pelicula_id = result.insertId;
     } else {
       pelicula_id = pelicula[0].id;
+      // Si ya existe, actualiza el poster si está vacío o es diferente
+      await pool.execute(
+        'UPDATE peliculas SET poster = ? WHERE id = ?',
+        [poster, pelicula_id]
+      );
     }
     // add to favoritos if not exists
     await pool.execute(
@@ -306,6 +311,23 @@ app.post('/api/comentarios', async (req, res) => {
   }
 });
 
+// get for favoritosmodal
+app.get('/api/favoritos/:usuario_id', async (req, res) => {
+  try {
+    const { usuario_id } = req.params;
+    const [rows] = await pool.execute(
+      `SELECT f.*, p.titulo, p.anio, p.poster, p.show_id
+       FROM favoritos f
+       JOIN peliculas p ON f.pelicula_id = p.id
+       WHERE f.usuario_id = ?
+       ORDER BY f.fecha_agregado DESC`,
+      [usuario_id]
+    );
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
 
 

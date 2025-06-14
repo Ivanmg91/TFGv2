@@ -228,8 +228,6 @@ function InfoShowPage() {
                 requireLogin();
                 return;
             }
-            console.log("userId:", userId, "selectedMovie.id:", selectedMovie?.id);
-
             if (!userId || !selectedMovie) return;
             if (isFavorite) {
                 // Quit favorite
@@ -250,6 +248,7 @@ function InfoShowPage() {
                         titulo: selectedMovie.title,
                         descripcion: selectedMovie.overview,
                         anio: selectedMovie.releaseYear,
+                        poster: selectedMovie.horizontalPoster
                     }),
                 });
                 if (res.ok) setIsFavorite(true);

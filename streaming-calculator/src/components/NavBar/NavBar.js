@@ -3,6 +3,7 @@ import './NavBar.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import FavoritosModal from '../FavoritosModal/FavoritosModal.js';
 
 const NavBar = ({
   setSearchText, // Props
@@ -12,11 +13,21 @@ const NavBar = ({
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [authMenuOpen, setAuthMenuOpen] = useState(false);
-
+  const [showFavoritos, setShowFavoritos] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+    if (currentUser) {
+      // Obtén el id interno del usuario
+      fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000'}/api/usuarios/${currentUser.uid}`)
+        .then(res => res.json())
+        .then(data => setUserId(data.id))
+        .catch(() => setUserId(null));
+      } else {
+        setUserId(null);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -52,7 +63,12 @@ const NavBar = ({
           <li><Link to="/home">Inicio</Link></li>
           <li><Link to="/see">Descubrir</Link></li>
           <li><Link to="/recommendations">Recomendaciones</Link></li>
-          <li>Favoritas</li>
+          <li>
+            <button style={{ background: "none", border: "none", color: "#fff", cursor: "pointer" }} onClick={() => setShowFavoritos(true)}>
+              Favoritas
+            </button>
+          </li>
+          {showFavoritos && <FavoritosModal userId={userId} visible={showFavoritos} onClose={() => setShowFavoritos(false)} />}
           <li><Link to="/new">Escoger Plataforma</Link></li>
         </ul>
       </div>
