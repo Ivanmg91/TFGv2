@@ -52,18 +52,20 @@ function InfoShowPage() {
 
 
     useEffect(() => {
+        let isMounted = true;
         async function fetchMovieById() {
-            if (!selectedMovie && showId) {
+            if (showId) {
                 try {
                     const movie = await api.getShowById(showId);
-                    setSelectedMovie(movie);
+                    if (isMounted) setSelectedMovie(movie);
                 } catch (error) {
-                    setSelectedMovie(null);
+                    if (isMounted) setSelectedMovie(null);
                 }
             }
         }
         fetchMovieById();
-    }, [showId, selectedMovie]);
+        return () => { isMounted = false; };
+    }, [showId]);
 
     const requireLogin = () => {
         setShowLoginPopup(true);
@@ -174,6 +176,16 @@ function InfoShowPage() {
         return () => unsubscribe();
     }, [selectedMovie, backendUrl]);
 
+    useEffect(() => {
+    function handleFavoritoEliminado(e) {
+        if (selectedMovie && e.detail.show_id === selectedMovie.id) {
+        setIsFavorite(false);
+        }
+    }
+    window.addEventListener('favorito-eliminado', handleFavoritoEliminado);
+    return () => window.removeEventListener('favorito-eliminado', handleFavoritoEliminado);
+    }, [selectedMovie]);
+
     // Control like
     const handleLike = async () => {
         if (!userId || !selectedMovie) {
@@ -262,8 +274,14 @@ function InfoShowPage() {
                     titulo: selectedMovie.title,
                     descripcion: selectedMovie.overview,
                     anio: selectedMovie.releaseYear,
-                    poster: selectedMovie.horizontalPoster // <-- aquí usas horizontalPoster
-                };
+                    poster: selectedMovie.horizontalPoster,
+                    plataformas: selectedMovie.streamingOptions
+                        ? Object.values(selectedMovie.streamingOptions)
+                            .flat()
+                            .map(opt => opt.service?.name)
+                            .filter(Boolean)
+                        : []
+                    };
                 console.log("Enviando favorito:", favoritoPayload); // <-- AÑADE ESTE LOG
                 const res = await fetch(`${backendUrl}/api/favoritos`, {
                     method: 'POST',

@@ -30,28 +30,28 @@ app.post('/api/usuarios', async (req, res) => {
 // add favorito
 app.post('/api/favoritos', async (req, res) => {
   try {
-    const { usuario_id, show_id, titulo, descripcion, anio, poster } = req.body;
+    const { usuario_id, show_id, titulo, descripcion, anio, poster, plataformas } = req.body;
     if (!usuario_id || !show_id) {
       return res.status(400).json({ error: 'Faltan datos' });
     }
-    //  search or insert show if not exists
+    // Busca o inserta la película
     let [pelicula] = await pool.execute('SELECT id FROM peliculas WHERE show_id = ?', [show_id]);
     let pelicula_id;
     if (pelicula.length === 0) {
       const [result] = await pool.execute(
-        'INSERT INTO peliculas (show_id, titulo, descripcion, anio, poster) VALUES (?, ?, ?, ?, ?)',
-        [show_id, titulo, descripcion, anio, poster]
+        'INSERT INTO peliculas (show_id, titulo, descripcion, anio, poster, plataformas) VALUES (?, ?, ?, ?, ?, ?)',
+        [show_id, titulo, descripcion, anio, poster, plataformas ? plataformas.join(',') : null]
       );
       pelicula_id = result.insertId;
     } else {
       pelicula_id = pelicula[0].id;
-      // Si ya existe, actualiza el poster si está vacío o es diferente
+      // Actualiza poster y plataformas si es necesario
       await pool.execute(
-        'UPDATE peliculas SET poster = ? WHERE id = ?',
-        [poster, pelicula_id]
+        'UPDATE peliculas SET poster = ?, plataformas = ? WHERE id = ?',
+        [poster, plataformas ? plataformas.join(',') : null, pelicula_id]
       );
     }
-    // add to favoritos if not exists
+    // Añade a favoritos si no existe
     await pool.execute(
       'INSERT IGNORE INTO favoritos (usuario_id, pelicula_id, fecha_agregado) VALUES (?, ?, NOW())',
       [usuario_id, pelicula_id]
@@ -316,19 +316,23 @@ app.get('/api/favoritos/:usuario_id', async (req, res) => {
   try {
     const { usuario_id } = req.params;
     const [rows] = await pool.execute(
-      `SELECT f.*, p.titulo, p.anio, p.poster, p.show_id
+      `SELECT f.*, p.titulo, p.anio, p.poster, p.show_id, p.plataformas
        FROM favoritos f
        JOIN peliculas p ON f.pelicula_id = p.id
        WHERE f.usuario_id = ?
        ORDER BY f.fecha_agregado DESC`,
       [usuario_id]
     );
-    res.json(rows);
+    // Convierte plataformas a array
+    const favoritos = rows.map(fav => ({
+      ...fav,
+      plataformas: fav.plataformas ? fav.plataformas.split(',').map(p => p.trim()) : []
+    }));
+    res.json({ favoritos });
   } catch (error) {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
-
 
 
 

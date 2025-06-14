@@ -55,7 +55,7 @@ const NavBar = ({
     <nav className="navbar">
       <div className="navbar-left">
         <a href="/" className="logo" style={{ display: "flex", alignItems: "center" }}>
-          <img src="/logo.png" alt="Logo" />
+          <img src="/originallogo.png" alt="Logo" />
         </a>
       </div>
       <div className="navbar-center">
@@ -64,12 +64,16 @@ const NavBar = ({
           <li><Link to="/see">Descubrir</Link></li>
           <li><Link to="/recommendations">Recomendaciones</Link></li>
           <li>
-            <button style={{ background: "none", border: "none", color: "#fff", cursor: "pointer" }} onClick={() => setShowFavoritos(true)}>
+            <span
+              className="navbar-favoritas-link no-link-style"
+              onClick={() => setShowFavoritos(true)}
+              style={{ cursor: "pointer" }}
+            >
               Favoritas
-            </button>
+            </span>
           </li>
           {showFavoritos && <FavoritosModal userId={userId} visible={showFavoritos} onClose={() => setShowFavoritos(false)} />}
-          <li><Link to="/new">Escoger Plataforma</Link></li>
+          <li><Link to="/chooseplatform">Escoger Plataforma</Link></li>
         </ul>
       </div>
       <div className="navbar-right">

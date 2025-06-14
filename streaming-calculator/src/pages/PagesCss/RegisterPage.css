@@ -1,0 +1,90 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: var(--md-sys-color-background, #0a141e);
+}
+
+.register-logo {
+  margin-bottom: 2.5rem;
+  height: 20rem;
+  width: auto;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--md-sys-color-surface, #232a32);
+  padding: 3.5rem 2.5rem 2.5rem 2.5rem;
+  border-radius: 2rem;
+  box-shadow: 0 8px 32px #000a;
+  min-width: 500px;
+  max-width: 95vw;
+}
+
+@media (max-width: 500px) {
+  .register-form {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+  }
+  .register-logo {
+    height: 3.5rem;
+  }
+}
+
+.register-title {
+  color: var(--md-sys-color-on-surface, #fff);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.register-textfield {
+  width: 100%;
+  max-width: 340px;
+  padding: 8px 16px;
+  border-radius: 24px;
+  border: 1.5px solid var(--md-sys-color-outline, #4cafef);
+  background: var(--md-sys-color-surface, #232a32);
+  color: var(--md-sys-color-on-surface, #fff);
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 8px #0002;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.register-textfield:focus {
+  border: 2px solid var(--md-sys-color-primary, #64aaff);
+  box-shadow: 0 0 0 2px var(--md-sys-color-primary, #64aaff33);
+}
+
+.register-google-btn {
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: 0 0.13rem 0.26rem rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+}
+
+.register-google-btn:hover {
+  background-color: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-primary);
+  border: 1.5px solid var(--md-sys-color-primary);
+}
