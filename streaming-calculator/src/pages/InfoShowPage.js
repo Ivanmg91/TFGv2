@@ -14,7 +14,7 @@ import CommentsRow from '../components/CommentsRow/CommentsRow.js';
 
 function InfoShowPage() {
     const location = useLocation();
-    const selectedMovie = location.state?.movie;
+    const [selectedMovie, setSelectedMovie] = useState(location.state?.movie || null);
     const [trailerId, setTrailerId] = useState(null);
 
     // Estados para las películas relacionadas
@@ -47,6 +47,23 @@ function InfoShowPage() {
 
     const [showLoginPopup, setShowLoginPopup] = useState(false);
     const navigate = useNavigate();
+
+    const showId = location.state?.show_id || location.state?.movie?.id;
+
+
+    useEffect(() => {
+        async function fetchMovieById() {
+            if (!selectedMovie && showId) {
+                try {
+                    const movie = await api.getShowById(showId);
+                    setSelectedMovie(movie);
+                } catch (error) {
+                    setSelectedMovie(null);
+                }
+            }
+        }
+        fetchMovieById();
+    }, [showId, selectedMovie]);
 
     const requireLogin = () => {
         setShowLoginPopup(true);
@@ -239,17 +256,19 @@ function InfoShowPage() {
                 if (res.ok) setIsFavorite(false);
             } else {
                 // add to favoritos
+                const favoritoPayload = {
+                    usuario_id: userId,
+                    show_id: selectedMovie.id,
+                    titulo: selectedMovie.title,
+                    descripcion: selectedMovie.overview,
+                    anio: selectedMovie.releaseYear,
+                    poster: selectedMovie.horizontalPoster // <-- aquí usas horizontalPoster
+                };
+                console.log("Enviando favorito:", favoritoPayload); // <-- AÑADE ESTE LOG
                 const res = await fetch(`${backendUrl}/api/favoritos`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        usuario_id: userId,
-                        show_id: selectedMovie.id,
-                        titulo: selectedMovie.title,
-                        descripcion: selectedMovie.overview,
-                        anio: selectedMovie.releaseYear,
-                        poster: selectedMovie.horizontalPoster
-                    }),
+                    body: JSON.stringify(favoritoPayload),
                 });
                 if (res.ok) setIsFavorite(true);
             }

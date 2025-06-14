@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // <-- Importa useNavigate
+import "./FavoritosModal.css";
 
 const FavoritosModal = ({ userId, visible, onClose }) => {
   const [favoritos, setFavoritos] = useState([]);
-  const [confirmDelete, setConfirmDelete] = useState(null); // id del favorito a borrar
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const navigate = useNavigate(); // <-- Hook para navegar
 
   useEffect(() => {
     if (!visible || !userId) return;
-    // Llama a tu backend para obtener los favoritos del usuario
-    fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000'}/api/favoritos/${userId}`)
-      .then(res => res.json())
-      .then(data => setFavoritos(data))
-      .catch(() => setFavoritos([]));
-  }, [visible, userId]);
+    fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://tfgv2.onrender.com'}/api/favoritos/${userId}`)
+        .then(res => res.json())
+        .then(data => {
+        setFavoritos(data);
+        })
+        .catch(() => setFavoritos([]));
+    }, [visible, userId]);
 
   const handleDelete = async (fav) => {
-    // Llama a tu backend para borrar el favorito
-    await fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000'}/api/favoritos`, {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://tfgv2.onrender.com'}/api/favoritos`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ usuario_id: userId, show_id: fav.show_id }),
@@ -27,38 +30,41 @@ const FavoritosModal = ({ userId, visible, onClose }) => {
   if (!visible) return null;
 
   return (
-    <div style={{
-      position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
-      background: "rgba(0,0,0,0.7)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center"
-    }}>
-      <div style={{
-        background: "#232a32", borderRadius: 16, padding: 32, minWidth: 600, maxWidth: "90vw",
-        maxHeight: "80vh", overflowY: "auto", boxShadow: "0 4px 24px #000a"
-      }}>
-        <h2 style={{ color: "#fff", textAlign: "center" }}>Tus Favoritos</h2>
-        <button onClick={onClose} style={{
-          position: "absolute", top: 24, right: 36, background: "none", color: "#fff", border: "none", fontSize: 28, cursor: "pointer"
-        }}>×</button>
-        <div style={{
-          display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 24
-        }}>
-          {favoritos.length === 0 && <div style={{ color: "#fff", gridColumn: "1/3", textAlign: "center" }}>No tienes favoritos.</div>}
+    <div className="favoritos-modal-overlay">
+      <div className="favoritos-modal-content">
+        <h2 className="favoritos-modal-title">Tus Favoritos</h2>
+        <button className="favoritos-modal-close" onClick={onClose}>×</button>
+        <div className="favoritos-modal-grid">
+          {favoritos.length === 0 && (
+            <div className="favoritos-modal-empty">
+              No tienes favoritos.
+            </div>
+          )}
           {favoritos.map(fav => (
-            <div key={fav.show_id} style={{
-              display: "flex", alignItems: "center", background: "#1a2027", borderRadius: 12, padding: 12, gap: 16
-            }}>
+            <div
+              key={fav.show_id}
+              className="favoritos-modal-card"
+              onClick={() => {
+                onClose();
+                navigate('/info', { state: { show_id: fav.show_id } });
+                }}
+              style={{ cursor: "pointer" }}
+            >
               <img
                 src={fav.poster}
                 alt={fav.titulo}
-                style={{ width: 180, height: 100, objectFit: "cover", borderRadius: 8, background: "#222" }}
+                className="favoritos-modal-img"
               />
-              <div style={{ flex: 1, color: "#fff" }}>
-                <div style={{ fontWeight: "bold", fontSize: 16 }}>{fav.titulo}</div>
-                <div style={{ fontSize: 13, color: "#bfc9d4" }}>{fav.anio}</div>
+              <div style={{ flex: 1 }}>
+                <div className="favoritos-modal-card-title">{fav.titulo}</div>
+                <div className="favoritos-modal-card-year">{fav.anio}</div>
               </div>
               <button
-                style={{ background: "none", border: "none", cursor: "pointer" }}
-                onClick={() => setConfirmDelete(fav)}
+                className="favoritos-modal-like-btn"
+                onClick={e => {
+                  e.stopPropagation();
+                  setConfirmDelete(fav);
+                }}
                 title="Eliminar de favoritos"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#e74c3c">
@@ -69,22 +75,16 @@ const FavoritosModal = ({ userId, visible, onClose }) => {
           ))}
         </div>
         {confirmDelete && (
-          <div style={{
-            position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
-            background: "rgba(0,0,0,0.5)", zIndex: 10000, display: "flex", alignItems: "center", justifyContent: "center"
-          }}>
-            <div style={{
-              background: "#232a32", color: "#fff", borderRadius: 12, padding: 32, minWidth: 300, boxShadow: "0 4px 24px #000a",
-              display: "flex", flexDirection: "column", alignItems: "center", gap: 16
-            }}>
+          <div className="favoritos-modal-confirm-overlay">
+            <div className="favoritos-modal-confirm-content">
               <h3>¿Eliminar de favoritos?</h3>
               <div style={{ display: "flex", gap: 16 }}>
                 <button
-                  style={{ background: "#e74c3c", color: "#fff", border: "none", borderRadius: 6, padding: "8px 18px", fontWeight: "bold", cursor: "pointer" }}
+                  className="favoritos-modal-confirm-btn"
                   onClick={() => handleDelete(confirmDelete)}
                 >Eliminar</button>
                 <button
-                  style={{ background: "#888", color: "#fff", border: "none", borderRadius: 6, padding: "8px 18px", fontWeight: "bold", cursor: "pointer" }}
+                  className="favoritos-modal-cancel-btn"
                   onClick={() => setConfirmDelete(null)}
                 >Cancelar</button>
               </div>

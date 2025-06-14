@@ -1,7 +1,7 @@
 import * as streamingAvailability from "streaming-availability";
 import './App.js';
 
-const RAPID_API_KEY = "c9e67ed7f2msh012b6cfa63a93d8p1ec0c9jsnc20c93383fd8";
+const RAPID_API_KEY = "23a087e865msh24b5530ee4ccf2dp1c50b3jsn8521212f4dcb";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
   apiKey: RAPID_API_KEY
 }));
@@ -365,5 +365,39 @@ export async function getShowsByTitle(title, cursor = null) {
     movies,
     hasMore: response.hasMore,
     nextCursor: response.nextCursor,
+  };
+}
+
+export async function getShowById(id) {
+  const response = await client.showsApi.getShow({
+    id,
+    country: "es",
+    outputLanguage: "es"
+  });
+  return {
+    id: response.id,
+    title: response.title || "Título no disponible",
+    originalTitle: response.originalTitle || "Título original no disponible",
+    poster: response.imageSet?.verticalPoster?.w480 || '',
+    horizontalPoster: response.imageSet?.horizontalPoster?.w1080 || '',
+    horizontalBackDrop: response.imageSet?.horizontalBackdrop?.w1080 || '',
+    overview: response.overview || 'Sin descripción disponible',
+    genres: response.genres.map(genre => genreTranslations[genre.name] || genre.name),
+    releaseYear: response.releaseYear || response.firstAirYear || "Año no disponible",
+    directors: response.directors || response.creators || [],
+    cast: response.cast || [],
+    rating: response.rating || "Sin calificación",
+    runtime: (typeof response.runtime === "number" && response.runtime > 0)
+      ? response.runtime + " min"
+      : (response.seasonCount
+          ? `${response.seasonCount} temporada(s)` + (response.episodeCount ? `, ${response.episodeCount} episodio(s)` : '')
+          : (response.episodeCount
+              ? `${response.episodeCount} episodio(s)`
+              : "Duración no disponible")
+        ),
+    streamingOptions: response.streamingOptions || {},
+    languages: obtenerIdiomasDeStreaming(response),
+    lightThemeImage: obtenerPrimerLightThemeImage(response.streamingOptions),
+    showType: response.showType,
   };
 }

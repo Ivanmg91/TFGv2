@@ -21,7 +21,7 @@ const NavBar = ({
     setUser(currentUser);
     if (currentUser) {
       // Obtén el id interno del usuario
-      fetch(`${process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000'}/api/usuarios/${currentUser.uid}`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://tfgv2.onrender.com'}/api/usuarios/${currentUser.uid}`)
         .then(res => res.json())
         .then(data => setUserId(data.id))
         .catch(() => setUserId(null));
