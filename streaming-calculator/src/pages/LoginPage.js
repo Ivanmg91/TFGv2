@@ -2,25 +2,9 @@ import { useState } from "react";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import "../App.css";
+import "./PagesCss/LoginPage.css";
 
-// Función para detectar el backend según el entorno
-function getBackendUrl() {
-  const hostname = window.location.hostname;
-  if (hostname.includes("localhost")) {
-    return "http://localhost:4000";
-  }
-  if (hostname.includes("netlify.app")) {
-    return "https://tfgv2.onrender.com";
-  }
-  if (hostname.includes("app.github.dev")) {
-    return "https://tfgv2.onrender.com";
-  }
-  return "https://tfgv2.onrender.com";
-}
-const backendUrl = process.env.REACT_APP_BACKEND_URL || getBackendUrl();
-
-function LoginPage() {
+function LoginPage({ onLogin, onGoogleLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -36,6 +20,22 @@ function LoginPage() {
       setError("Correo o contraseña incorrectos.");
     }
   };
+
+  // Función para detectar el backend según el entorno
+  function getBackendUrl() {
+    const hostname = window.location.hostname;
+    if (hostname.includes("localhost")) {
+      return "http://localhost:4000";
+    }
+    if (hostname.includes("netlify.app")) {
+      return "https://tfgv2.onrender.com";
+    }
+    if (hostname.includes("app.github.dev")) {
+      return "https://tfgv2.onrender.com";
+    }
+    return "https://tfgv2.onrender.com";
+  }
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || getBackendUrl();
 
   const loginWithGoogle = async (e) => {
     e.preventDefault();
@@ -66,29 +66,39 @@ function LoginPage() {
   };
 
   return (
-    <div className="main-content">
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={loginUser}>
+    <div className="login-container">
+      <img src="/originallogo.png" alt="Logo" className="login-logo" />
+      <form className="login-form" onSubmit={loginUser}>
+        <div className="login-title">Iniciar sesión</div>
         <input
+          className="login-textfield"
           type="email"
           placeholder="Correo electrónico"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           required
         />
         <input
+          className="login-textfield"
           type="password"
           placeholder="Contraseña"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Iniciar Sesión</button>
+        <button
+          type="submit"
+          className="login-google-btn"
+          style={{ marginTop: "0.7rem" }}
+        >
+          Iniciar sesión
+        </button>
+        <button className="login-google-btn" type="button" onClick={loginWithGoogle}>
+          <img src="/google-icon.svg" alt="" style={{ height: "1.2em" }} />
+          Entrar con Google
+        </button>
+        {error && <p style={{color: "red"}}>{error}</p>}
       </form>
-      <button onClick={loginWithGoogle} style={{marginTop: "10px"}}>
-        Iniciar sesión con Google
-      </button>
-      {error && <p style={{color: "red"}}>{error}</p>}
     </div>
   );
 }

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // <-- Importa useNavigate
+// import { useNavigate } from 'react-router-dom'; // <-- Importa useNavigate
 import "./FavoritosModal.css";
 
 const FavoritosModal = ({ userId, visible, onClose }) => {
   const [favoritos, setFavoritos] = useState([]);
   const [confirmDelete, setConfirmDelete] = useState(null);
-  const navigate = useNavigate(); // <-- Hook para navegar
+  // const navigate = useNavigate(); // <-- Hook para navegar
+
+  useEffect(() => {
+    if (!visible) setConfirmDelete(null);
+  }, [visible]);
 
   useEffect(() => {
     if (!visible || !userId) return;
@@ -25,13 +29,15 @@ const FavoritosModal = ({ userId, visible, onClose }) => {
     });
     setFavoritos(favoritos.filter(f => f.show_id !== fav.show_id));
     setConfirmDelete(null);
-  };
 
+    // Emitir evento global
+    window.dispatchEvent(new CustomEvent('favorito-eliminado', { detail: { show_id: fav.show_id } }));
+  };
   if (!visible) return null;
 
   return (
-    <div className="favoritos-modal-overlay">
-      <div className="favoritos-modal-content">
+    <div className="favoritos-modal-overlay" onClick={onClose}>
+      <div className="favoritos-modal-content" onClick={e => e.stopPropagation()}>
         <h2 className="favoritos-modal-title">Tus Favoritos</h2>
         <button className="favoritos-modal-close" onClick={onClose}>×</button>
         <div className="favoritos-modal-grid">
@@ -44,10 +50,12 @@ const FavoritosModal = ({ userId, visible, onClose }) => {
             <div
               key={fav.show_id}
               className="favoritos-modal-card"
-              onClick={() => {
-                onClose();
-                navigate('/info', { state: { show_id: fav.show_id } });
-                }}
+              // onClick={() => {
+              //   onClose();
+              //   setTimeout(() => {
+              //     navigate('/info', { state: { show_id: fav.show_id } }); PARA Q VAYA A INFOSHOWPAGE
+              //   }, 0);
+              // }}
               style={{ cursor: "pointer" }}
             >
               <img

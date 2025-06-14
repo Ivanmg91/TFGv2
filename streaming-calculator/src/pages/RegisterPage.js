@@ -2,24 +2,13 @@ import { useState } from "react";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import "../App.css";
+import "./PagesCss/RegisterPage.css";
 
-// Función para detectar el backend según el entorno
 function getBackendUrl() {
   const hostname = window.location.hostname;
-  if (hostname.includes("localhost")) {
-    return "http://localhost:4000";
-  }
-  if (hostname.includes("netlify.app")) {
-    return "https://tfgv2.onrender.com"; // Cambia por tu backend real en producción
-  }
-  if (hostname.includes("app.github.dev")) {
-    return "https://tfgv2.onrender.com";
-  }
-  // Por defecto, producción
+  if (hostname.includes("localhost")) return "http://localhost:4000";
   return "https://tfgv2.onrender.com";
 }
-
 const backendUrl = process.env.REACT_APP_BACKEND_URL || getBackendUrl();
 
 function RegisterPage() {
@@ -33,23 +22,13 @@ function RegisterPage() {
     e.preventDefault();
     setError(null);
     try {
-      // Crear usuario en Firebase
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const firebase_uid = userCredential.user.uid;
-
-      // Insertar usuario en tu base de datos
       await fetch(`${backendUrl}/api/usuarios`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firebase_uid,
-          nombre,
-          email,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firebase_uid, nombre, email }),
       });
-
       navigate("/see");
     } catch (err) {
       setError(err.message);
@@ -64,22 +43,13 @@ function RegisterPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const firebase_uid = user.uid;
-      const nombre = user.displayName || ""; // Maybe is not available
+      const nombre = user.displayName || "";
       const email = user.email;
-
-      // Guardar usuario en tu base de datos
       await fetch(`${backendUrl}/api/usuarios`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firebase_uid,
-          nombre,
-          email,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firebase_uid, nombre, email }),
       });
-
       navigate("/see");
     } catch (err) {
       setError(err.message);
@@ -87,10 +57,12 @@ function RegisterPage() {
   };
 
   return (
-    <div className="main-content">
-      <h2>Registro</h2>
-      <form onSubmit={createUser}>
+    <div className="register-container">
+      <img src="/originallogo.png" alt="Logo" className="register-logo" />
+      <form className="register-form" onSubmit={createUser}>
+        <div className="register-title">Registro</div>
         <input
+          className="register-textfield"
           type="text"
           placeholder="Nombre"
           value={nombre}
@@ -98,6 +70,7 @@ function RegisterPage() {
           required
         />
         <input
+          className="register-textfield"
           type="email"
           placeholder="Correo electrónico"
           value={email}
@@ -105,18 +78,22 @@ function RegisterPage() {
           required
         />
         <input
+          className="register-textfield"
           type="password"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Registrarse</button>
+        <button type="submit" className="register-google-btn" style={{ marginTop: "0.7rem" }}>
+          Registrarse
+        </button>
+        <button type="button" className="register-google-btn" onClick={createUserGoogle}>
+          <img src="/google-icon.svg" alt="" style={{ height: "1.2em" }} />
+          Entrar con Google
+        </button>
+        {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
       </form>
-      <button onClick={createUserGoogle} style={{marginTop: "10px"}}>
-        Registrarse con Google
-      </button>
-      {error && <p style={{color: "red"}}>{error}</p>}
     </div>
   );
 }

@@ -52,18 +52,20 @@ function InfoShowPage() {
 
 
     useEffect(() => {
+        let isMounted = true;
         async function fetchMovieById() {
-            if (!selectedMovie && showId) {
+            if (showId) {
                 try {
                     const movie = await api.getShowById(showId);
-                    setSelectedMovie(movie);
+                    if (isMounted) setSelectedMovie(movie);
                 } catch (error) {
-                    setSelectedMovie(null);
+                    if (isMounted) setSelectedMovie(null);
                 }
             }
         }
         fetchMovieById();
-    }, [showId, selectedMovie]);
+        return () => { isMounted = false; };
+    }, [showId]);
 
     const requireLogin = () => {
         setShowLoginPopup(true);
@@ -173,6 +175,16 @@ function InfoShowPage() {
         });
         return () => unsubscribe();
     }, [selectedMovie, backendUrl]);
+
+    useEffect(() => {
+    function handleFavoritoEliminado(e) {
+        if (selectedMovie && e.detail.show_id === selectedMovie.id) {
+        setIsFavorite(false);
+        }
+    }
+    window.addEventListener('favorito-eliminado', handleFavoritoEliminado);
+    return () => window.removeEventListener('favorito-eliminado', handleFavoritoEliminado);
+    }, [selectedMovie]);
 
     // Control like
     const handleLike = async () => {
