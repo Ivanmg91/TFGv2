@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom'; // <-- Importa useNavigate
+// import { useNavigate } from 'react-router-dom'; // import useNavigate
 import "./FavoritosModal.css";
 
 const FavoritosModal = ({ userId, visible, onClose }) => {
   const [favoritos, setFavoritos] = useState([]);
   const [confirmDelete, setConfirmDelete] = useState(null);
-  // const navigate = useNavigate(); // <-- Hook para navegar
+  // const navigate = useNavigate(); // Hook to navigate
 
+  // confirm delete
   useEffect(() => {
     if (!visible) setConfirmDelete(null);
   }, [visible]);
 
+  // load user favorites from api
   useEffect(() => {
-    if (!visible || !userId) return;
+  if (!visible || !userId) return;
     fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://tfgv2.onrender.com'}/api/favoritos/${userId}`)
-        .then(res => res.json())
-        .then(data => {
-        setFavoritos(data);
-        })
-        .catch(() => setFavoritos([]));
-    }, [visible, userId]);
+      .then(res => res.json())
+      .then(data => {
+        setFavoritos(data.favoritos || []);
+      })
+      .catch(() => setFavoritos([]));
+}, [visible, userId]);
 
+  // delete favorite
   const handleDelete = async (fav) => {
     await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://tfgv2.onrender.com'}/api/favoritos`, {
       method: 'DELETE',
@@ -30,7 +33,7 @@ const FavoritosModal = ({ userId, visible, onClose }) => {
     setFavoritos(favoritos.filter(f => f.show_id !== fav.show_id));
     setConfirmDelete(null);
 
-    // Emitir evento global
+    // delete
     window.dispatchEvent(new CustomEvent('favorito-eliminado', { detail: { show_id: fav.show_id } }));
   };
   if (!visible) return null;

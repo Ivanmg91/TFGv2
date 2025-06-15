@@ -81,7 +81,7 @@ app.delete('/api/favoritos', async (req, res) => {
   }
 });
 
-// Comprobar si es favorito
+// check favorito
 app.get('/api/favoritos/:usuario_id/:show_id', async (req, res) => {
   try {
     const { usuario_id, show_id } = req.params;

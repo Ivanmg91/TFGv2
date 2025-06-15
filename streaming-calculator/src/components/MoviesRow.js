@@ -7,7 +7,7 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
   const [showRightArrow, setShowRightArrow] = useState(false);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
 
-  // Actualiza la visibilidad de las flechas según el scroll
+  // update arrows visibility
   const updateArrows = () => {
     const el = rowRef.current;
     if (!el) return;
@@ -15,6 +15,7 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
     setShowRightArrow(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
   };
 
+  // put the scroll at the start of the row
   useEffect(() => {
   const scrollToStart = () => {
     if (rowRef.current) rowRef.current.scrollTo({ left: 0, behavior: 'smooth' });
@@ -26,12 +27,12 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
 
   el.addEventListener('scroll', updateArrows);
   window.addEventListener('resize', updateArrows);
-  window.addEventListener('scrollAllRowsToStart', scrollToStart); // <-- Añade el listener aquí
+  window.addEventListener('scrollAllRowsToStart', scrollToStart);
 
   return () => {
     el.removeEventListener('scroll', updateArrows);
     window.removeEventListener('resize', updateArrows);
-    window.removeEventListener('scrollAllRowsToStart', scrollToStart); // <-- Y lo quitas aquí
+    window.removeEventListener('scrollAllRowsToStart', scrollToStart);
   };
 }, [movies, loading]);
 

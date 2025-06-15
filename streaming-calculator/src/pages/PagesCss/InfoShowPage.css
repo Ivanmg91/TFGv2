@@ -4,7 +4,7 @@
   width: 100%;
   min-height: 60vh;
   gap: 2rem; /* Antes: 32px */
-  margin-top: 0.63rem; /* Antes: 10px */
+  margin-top: 0;
   padding: 0 6rem;
   box-sizing: border-box;
   background: var(--md-sys-color-background);

@@ -137,6 +137,7 @@ function InfoShowPage() {
         fetchComentarios();
     }, [selectedMovie, backendUrl]);
 
+    // firebase
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser && selectedMovie) {
@@ -145,12 +146,12 @@ function InfoShowPage() {
                 if (res.ok) {
                 const data = await res.json();
                 setUserId(data.id);
-                // Comprobar si es favorito
+                // check favorito
                 const favRes = await fetch(`${backendUrl}/api/favoritos/${data.id}/${selectedMovie.id}`);
                 const favData = await favRes.json();
                 setIsFavorite(favData.favorito);
 
-                // Comprobar si es visto
+                // check visto
                 const vistoRes = await fetch(`${backendUrl}/api/vistos/${data.id}/${selectedMovie.id}`);
                 const vistoData = await vistoRes.json();
                 setIsWatched(vistoData.visto);
@@ -282,7 +283,7 @@ function InfoShowPage() {
                             .filter(Boolean)
                         : []
                     };
-                console.log("Enviando favorito:", favoritoPayload); // <-- AÑADE ESTE LOG
+                console.log("Enviando favorito:", favoritoPayload);
                 const res = await fetch(`${backendUrl}/api/favoritos`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

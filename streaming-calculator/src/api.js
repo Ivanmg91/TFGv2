@@ -1,7 +1,7 @@
 import * as streamingAvailability from "streaming-availability";
 import './App.js';
 
-const RAPID_API_KEY = "23a087e865msh24b5530ee4ccf2dp1c50b3jsn8521212f4dcb";
+const RAPID_API_KEY = "d8be2f7af3msh26d4d5aeb0d4312p179a91jsnc81efc53db51";
 const client = new streamingAvailability.Client(new streamingAvailability.Configuration({
   apiKey: RAPID_API_KEY
 }));

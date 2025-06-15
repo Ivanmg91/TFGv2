@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import "./PagesCss/ChoosePlatform.css";
 
 function ChoosePlatformPage() {
   const [userId, setUserId] = useState(null);
@@ -44,27 +45,29 @@ function ChoosePlatformPage() {
       .catch(() => setFavoritos([]));
   }, [userId]);
 
-  // Calcular estadísticas por plataforma
+  // Calcular estadísticas por plataforma (sin duplicados)
   useEffect(() => {
     if (!favoritos.length) {
       setPlatformStats({});
       setBestPlatform(null);
       return;
     }
-    // Agrupar por plataforma
     const stats = {};
     favoritos.forEach((fav) => {
       if (Array.isArray(fav.plataformas)) {
         fav.plataformas.forEach((plat) => {
-          if (!stats[plat]) stats[plat] = { count: 0, titles: [] };
-          stats[plat].count += 1;
-          stats[plat].titles.push(fav.titulo);
+          if (!stats[plat]) stats[plat] = { count: 0, titles: new Set() };
+          stats[plat].titles.add(fav.titulo);
         });
       }
     });
+    Object.keys(stats).forEach((plat) => {
+      stats[plat].count = stats[plat].titles.size;
+      stats[plat].titles = Array.from(stats[plat].titles);
+    });
     setPlatformStats(stats);
 
-    // Calcular la mejor plataforma (más favoritos disponibles)
+    // Mejor plataforma
     let best = null;
     let max = 0;
     Object.entries(stats).forEach(([plat, info]) => {
@@ -90,7 +93,7 @@ function ChoosePlatformPage() {
   }
 
   return (
-    <div className="choose-platform-page" style={{ padding: 32 }}>
+    <div className="choose-platform-page">
       <h2>Estadísticas de tus Favoritos</h2>
       <p>
         Tienes <b>{favoritos.length}</b> películas/series en favoritos.
@@ -123,13 +126,13 @@ function ChoosePlatformPage() {
             <li key={plat} style={{ fontWeight: plat === bestPlatform ? "bold" : "normal" }}>
               {plat} ({info.count} favoritos)
               {plat === bestPlatform && (
-                <span style={{ color: "#2ecc40", marginLeft: 8 }}>★ Mejor opción</span>
+                <span className="best-platform">★ Mejor opción</span>
               )}
             </li>
           ))}
       </ol>
       {bestPlatform && (
-        <div style={{ marginTop: 32, padding: 16, background: "#e0ffe0", borderRadius: 8 }}>
+        <div className="recommend-box">
           <h2>¡Te recomendamos contratar <span style={{ color: "#27ae60" }}>{bestPlatform}</span>!</h2>
           <p>
             Es la plataforma donde más de tus favoritos están disponibles.

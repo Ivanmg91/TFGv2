@@ -18,11 +18,12 @@ function RegisterPage() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // create user, add to firebase and add to database
   const createUser = async (e) => {
     e.preventDefault();
     setError(null);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password); //create firebase user
       const firebase_uid = userCredential.user.uid;
       await fetch(`${backendUrl}/api/usuarios`, {
         method: "POST",
@@ -35,6 +36,7 @@ function RegisterPage() {
     }
   };
 
+  // create user using google
   const createUserGoogle = async (e) => {
     e.preventDefault();
     setError(null);

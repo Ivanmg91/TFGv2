@@ -1,0 +1,125 @@
+.choose-platform-page {
+  background: var(--md-sys-color-background, #17181c);
+  color: var(--md-sys-color-on-background, #fff);
+  max-width: 700px;
+  margin: 2rem auto 0 auto;
+  border-radius: 1.2rem;
+  box-shadow: 0 0.25rem 1.5rem rgba(0,0,0,0.18);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  font-family: inherit;
+}
+
+.choose-platform-page h2 {
+  font-size: 2rem;
+  color: var(--md-sys-color-primary, #4cafef);
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.choose-platform-page h3 {
+  font-size: 1.2rem;
+  color: var(--md-sys-color-on-surface, #bfc9d4);
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.choose-platform-page p {
+  font-size: 1.1rem;
+  color: var(--md-sys-color-on-surface-variant, #bfc9d4);
+  margin-bottom: 1.2rem;
+}
+
+.choose-platform-page ul,
+.choose-platform-page ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.2rem;
+  list-style: none; /* Quita los puntos y números */
+  padding-left: 0;   /* Elimina el padding por defecto */
+}
+
+.choose-platform-page ul > li,
+.choose-platform-page ol > li {
+  font-size: 1.08rem;
+  margin-bottom: 0.5rem;
+  color: var(--md-sys-color-on-surface, #fff);
+  background: var(--md-sys-color-surface, #232a32);
+  border-radius: 0.5rem;
+  padding: 0.7rem 1rem 0.7rem 1.2rem;
+  box-shadow: 0 0.1rem 0.3rem #0002;
+  list-style: none; /* Quita los puntos de cada ítem */
+}
+
+.choose-platform-page ul > li > ul {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  margin-left: 0.7rem;
+}
+
+.choose-platform-page ul > li > ul > li {
+  background: none;
+  color: var(--md-sys-color-on-surface-variant, #bfc9d4);
+  font-size: 1rem;
+  padding: 0.1rem 0 0.1rem 0.5rem;
+  box-shadow: none;
+  border-radius: 0;
+  list-style: none; /* Quita los puntos de sublistas */
+}
+
+.choose-platform-page ol > li {
+  background: var(--md-sys-color-surface-variant, #2c3540);
+  color: var(--md-sys-color-on-surface, #fff);
+  margin-bottom: 0.6rem;
+  padding: 0.7rem 1rem 0.7rem 1.2rem;
+  border-radius: 0.5rem;
+  list-style: none; /* Quita los números */
+}
+
+.choose-platform-page ol > li span {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.choose-platform-page .best-platform {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.choose-platform-page .recommend-box {
+  margin-top: 2rem;
+  padding: 1.2rem;
+  background: #e0ffe0;
+  color: #222;
+  border-radius: 0.7rem;
+  box-shadow: 0 0.1rem 0.5rem #0001;
+  text-align: center;
+}
+
+.choose-platform-page .recommend-box h2 {
+  color: #27ae60;
+  margin-bottom: 0.5rem;
+}
+
+.choose-platform-page .recommend-box p {
+  color: #222;
+  margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+  .choose-platform-page {
+    padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+    border-radius: 0.7rem;
+    margin: 1rem 0.2rem 0 0.2rem;
+  }
+  .choose-platform-page h2 {
+    font-size: 1.3rem;
+  }
+  .choose-platform-page h3 {
+    font-size: 1.05rem;
+  }
+  .choose-platform-page ul > li,
+  .choose-platform-page ol > li {
+    font-size: 1rem;
+    padding: 0.5rem 0.7rem 0.5rem 0.9rem;
+  }
+}

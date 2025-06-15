@@ -10,18 +10,7 @@ function LoginPage({ onLogin, onGoogleLogin }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const loginUser = async (e) => {
-    e.preventDefault();
-    setError(null);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/see");
-    } catch (err) {
-      setError("Correo o contraseña incorrectos.");
-    }
-  };
-
-  // Función para detectar el backend según el entorno
+  // detect backend
   function getBackendUrl() {
     const hostname = window.location.hostname;
     if (hostname.includes("localhost")) {
@@ -37,6 +26,19 @@ function LoginPage({ onLogin, onGoogleLogin }) {
   }
   const backendUrl = process.env.REACT_APP_BACKEND_URL || getBackendUrl();
 
+  // nrmal login
+  const loginUser = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/see");
+    } catch (err) {
+      setError("Correo o contraseña incorrectos.");
+    }
+  };
+
+  // google login
   const loginWithGoogle = async (e) => {
     e.preventDefault();
     setError(null);
