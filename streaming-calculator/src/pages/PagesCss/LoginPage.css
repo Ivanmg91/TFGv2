@@ -2,14 +2,15 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Antes: center */
+  justify-content: flex-start;
   align-items: center;
   background: var(--md-sys-color-background, #0a141e);
 }
 
 .login-logo {
-  margin-bottom: 2.5rem;
-  height: 20rem;      /* Antes: 6rem */
+  margin-top: 5rem;
+  margin-bottom: 3.5rem;
+  height: 16rem;
   width: auto;
 }
 
@@ -18,10 +19,10 @@
   flex-direction: column;
   align-items: center;
   background: var(--md-sys-color-surface, #232a32);
-  padding: 3.5rem 2.5rem 2.5rem 2.5rem; /* Más padding */
-  border-radius: 2rem;                  /* Más redondeado */
-  box-shadow: 0 8px 32px #000a;         /* Sombra más grande */
-  min-width: 500px;                     /* Más ancho */
+  padding: 3.5rem 2.5rem 2.5rem 2.5rem;
+  border-radius: 2rem;
+  box-shadow: 0 8px 32px #000a;
+  min-width: 500px;
   max-width: 95vw;
 }
 
@@ -31,7 +32,38 @@
     padding: 1.2rem 0.5rem 1.5rem 0.5rem;
   }
   .login-logo {
-    height: 5rem;
+    height: 9rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.2rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .login-logo {
+    height: 13rem;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+  }
+  .login-form {
+    min-width: 96vw;
+    max-width: 100vw;
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    border-radius: 1.2rem;
+  }
+  .login-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .login-textfield {
+    font-size: 1rem;
+    padding: 7px 12px;
+    margin-bottom: 0.8rem;
+    max-width: 98vw;
+  }
+  .login-google-btn {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.8rem;
+    max-width: 98vw;
   }
 }
 
@@ -89,12 +121,33 @@
   border: 1.5px solid var(--md-sys-color-primary);
 }
 
+.login-link-text {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--md-sys-color-on-surface, #fff);
+  margin-top: 1.2rem;
+  transition: color 0.2s;
+}
+
+.login-link-highlight {
+  color: var(--md-sys-color-primary, #64aaff);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.login-link-text:hover .login-link-highlight,
+.login-link-text:focus .login-link-highlight {
+  color: var(--md-sys-color-primary, #2196f3);
+}
+
 @media (max-width: 500px) {
   .login-form {
     min-width: 90vw;
     padding: 1.2rem 0.5rem 1.5rem 0.5rem;
   }
   .login-logo {
-    height: 3.5rem;
+    height: 9rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.2rem;
   }
 }

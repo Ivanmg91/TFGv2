@@ -34,8 +34,8 @@
 .choose-platform-page ol {
   margin-left: 1.5rem;
   margin-bottom: 1.2rem;
-  list-style: none; /* Quita los puntos y números */
-  padding-left: 0;   /* Elimina el padding por defecto */
+  list-style: none;
+  padding-left: 0;
 }
 
 .choose-platform-page ul > li,
@@ -47,7 +47,7 @@
   border-radius: 0.5rem;
   padding: 0.7rem 1rem 0.7rem 1.2rem;
   box-shadow: 0 0.1rem 0.3rem #0002;
-  list-style: none; /* Quita los puntos de cada ítem */
+  list-style: none;
 }
 
 .choose-platform-page ul > li > ul {
@@ -63,7 +63,7 @@
   padding: 0.1rem 0 0.1rem 0.5rem;
   box-shadow: none;
   border-radius: 0;
-  list-style: none; /* Quita los puntos de sublistas */
+  list-style: none;
 }
 
 .choose-platform-page ol > li {
@@ -72,7 +72,7 @@
   margin-bottom: 0.6rem;
   padding: 0.7rem 1rem 0.7rem 1.2rem;
   border-radius: 0.5rem;
-  list-style: none; /* Quita los números */
+  list-style: none;
 }
 
 .choose-platform-page ol > li span {

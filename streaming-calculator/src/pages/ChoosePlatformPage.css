@@ -1,0 +1,107 @@
+.choose-platform-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.choose-platform-title {
+  font-size: 2rem;
+  color: var(--md-sys-color-on-surface, #fff);
+  margin-bottom: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+.choose-platform-recommend-text {
+  color: var(--md-sys-color-primary, #64aaff);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.choose-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  width: 100%;
+  justify-items: center;
+}
+
+.choose-platform-card {
+  background: var(--md-sys-color-surface-variant, #1a2027);
+  border-radius: 16px;
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 12px #0003;
+  cursor: pointer;
+  transition: transform 0.15s;
+  text-align: center;
+}
+
+.choose-platform-card:hover {
+  transform: translateY(-4px) scale(1.03);
+}
+
+.choose-platform-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+}
+
+.choose-platform-name {
+  color: var(--md-sys-color-on-surface, #fff);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .choose-platform-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .choose-platform-container {
+    padding: 16px 0;
+  }
+  .choose-platform-title {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+  .choose-platform-recommend-text {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+    padding: 0 8vw;
+  }
+  .choose-platform-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    justify-items: center;
+  }
+  .choose-platform-card {
+    padding: 14px 6px;
+    border-radius: 10px;
+    max-width: 95vw;
+  }
+  .choose-platform-logo {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 0.7rem;
+  }
+  .choose-platform-name {
+    font-size: 1rem;
+  }
+}

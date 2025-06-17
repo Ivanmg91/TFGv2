@@ -54,7 +54,7 @@ function RecommendationsPage() {
   }, []);
 
   return (
-    <div style={{ marginTop: '100px' }}>
+    <div style={{ marginTop: '3rem' }}>
       <div className="movies-row-fullwidth">
         {netflixMovies.length > 0 && (
           <>

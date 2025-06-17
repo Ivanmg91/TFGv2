@@ -334,6 +334,23 @@ app.get('/api/favoritos/:usuario_id', async (req, res) => {
   }
 });
 
+// Eliminar todos los favoritos de un usuario
+app.delete('/api/favoritos/todos', async (req, res) => {
+  try {
+    const { usuario_id } = req.body;
+    if (!usuario_id) {
+      return res.status(400).json({ error: 'Faltan datos' });
+    }
+    await pool.execute(
+      'DELETE FROM favoritos WHERE usuario_id = ?',
+      [usuario_id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 
 
 

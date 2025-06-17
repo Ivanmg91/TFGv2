@@ -99,6 +99,15 @@ function LoginPage({ onLogin, onGoogleLogin }) {
           <img src="/google-icon.svg" alt="" style={{ height: "1.2em" }} />
           Entrar con Google
         </button>
+        <div
+          className="login-link-text"
+          onClick={() => navigate("/register")}
+          tabIndex={0}
+          role="button"
+          style={{ marginTop: "1.2rem", cursor: "pointer" }}
+        >
+          ¿No tienes cuenta? <span className="login-link-highlight">Regístrate</span>
+        </div>
         {error && <p style={{color: "red"}}>{error}</p>}
       </form>
     </div>

@@ -94,6 +94,15 @@ function RegisterPage() {
           <img src="/google-icon.svg" alt="" style={{ height: "1.2em" }} />
           Entrar con Google
         </button>
+        <div
+          className="register-link-text"
+          onClick={() => navigate("/login")}
+          tabIndex={0}
+          role="button"
+          style={{ marginTop: "1.2rem", cursor: "pointer" }}
+        >
+          ¿Ya tienes cuenta? <span className="register-link-highlight">Inicia sesión</span>
+        </div>
         {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
       </form>
     </div>

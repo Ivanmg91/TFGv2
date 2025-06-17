@@ -5,6 +5,7 @@ const CommentsRow = ({ comentarios }) => {
   const rowRef = useRef(null);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const updateArrows = () => {
     const el = rowRef.current;
@@ -12,6 +13,12 @@ const CommentsRow = ({ comentarios }) => {
     setShowLeftArrow(el.scrollLeft > 0);
     setShowRightArrow(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
   };
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     updateArrows();
@@ -35,7 +42,7 @@ const CommentsRow = ({ comentarios }) => {
 
   return (
     <div className="comments-row-container">
-      {showLeftArrow && (
+      {!isMobile && showLeftArrow && (
         <div className="comments-row-shadow left" onClick={scrollLeft}>
           <span className="arrow">&#8592;</span>
         </div>
@@ -55,7 +62,7 @@ const CommentsRow = ({ comentarios }) => {
           ))
         )}
       </div>
-      {showRightArrow && (
+      {!isMobile && showRightArrow && (
         <div className="comments-row-shadow right" onClick={scrollRight}>
           <span className="arrow">&#8594;</span>
         </div>

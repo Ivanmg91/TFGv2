@@ -1,7 +1,7 @@
 // import React, { useEffect, useState } from 'react';
 import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import NavBar from './components/NavBar/NavBar.js';
 import HomePage from './pages/HomePage.js';
 import ChoosePlatformPage from './pages/ChoosePlatformPage.js';
@@ -12,6 +12,7 @@ import InfoShowPage from './pages/InfoShowPage.js';
 import WhoWeArePage from './pages/WhoWeArePage.js';
 import RegisterPage from './pages/RegisterPage.js';
 import LoginPage from './pages/LoginPage.js';
+import FavoritosPage from './pages/FavoritosPage.js';
 
 
 function App() {
@@ -22,13 +23,26 @@ function App() {
   // }, []);
   const [searchText, setSearchText] = useState("");
 
+  // Para acceder a location en rutas hijas, crea un wrapper
+  function FavoritosPageWrapper() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const userId = location.state?.userId;
+    return (
+      <FavoritosPage
+        userId={userId}
+        onBack={() => navigate(-1)}
+      />
+    );
+  }
+
   return (
     <div className="App">
       <BrowserRouter>
         <NavBar setSearchText={setSearchText} />
         <div className="main-content">
           <Routes>
-            <Route path="/" element={<DiscoverPage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/see" element={<DiscoverPage />} />
             <Route path="/chooseplatform" element={<ChoosePlatformPage />} />
@@ -38,6 +52,7 @@ function App() {
             <Route path="/whoweare" element={<WhoWeArePage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/favoritos" element={<FavoritosPageWrapper />} />
             {/* ...otras rutas... */}
           </Routes>
         </div>

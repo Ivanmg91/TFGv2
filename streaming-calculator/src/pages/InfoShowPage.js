@@ -847,7 +847,7 @@ function InfoShowPage() {
                         {comentarioError && <div style={{ color: "red", marginTop: 4 }}>{comentarioError}</div>}
                     </div>
                     )}
-                    <div style={{ padding: "0 6rem" }}>
+                    <div style={{ padding: 0 }}>
                         <CommentsRow comentarios={comentarios} />
                     </div>
 

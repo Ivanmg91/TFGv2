@@ -6,6 +6,7 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
   const rowRef = useRef(null);
   const [showRightArrow, setShowRightArrow] = useState(false);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // update arrows visibility
   const updateArrows = () => {
@@ -15,26 +16,33 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
     setShowRightArrow(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
   };
 
+  // Detecta si es móvil
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // put the scroll at the start of the row
   useEffect(() => {
-  const scrollToStart = () => {
-    if (rowRef.current) rowRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-  };
+    const scrollToStart = () => {
+      if (rowRef.current) rowRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    };
 
-  updateArrows();
-  const el = rowRef.current;
-  if (!el) return;
+    updateArrows();
+    const el = rowRef.current;
+    if (!el) return;
 
-  el.addEventListener('scroll', updateArrows);
-  window.addEventListener('resize', updateArrows);
-  window.addEventListener('scrollAllRowsToStart', scrollToStart);
+    el.addEventListener('scroll', updateArrows);
+    window.addEventListener('resize', updateArrows);
+    window.addEventListener('scrollAllRowsToStart', scrollToStart);
 
-  return () => {
-    el.removeEventListener('scroll', updateArrows);
-    window.removeEventListener('resize', updateArrows);
-    window.removeEventListener('scrollAllRowsToStart', scrollToStart);
-  };
-}, [movies, loading]);
+    return () => {
+      el.removeEventListener('scroll', updateArrows);
+      window.removeEventListener('resize', updateArrows);
+      window.removeEventListener('scrollAllRowsToStart', scrollToStart);
+    };
+  }, [movies, loading]);
 
   const scrollRight = () => {
     if (rowRef.current) {
@@ -50,7 +58,7 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
 
   return (
     <div className="movie-row-container">
-      {showLeftArrow && (
+      {!isMobile && showLeftArrow && (
         <div className="movie-row-shadow left" onClick={scrollLeft}>
           <span className="arrow">&#8592;</span>
         </div>
@@ -64,24 +72,24 @@ const MoviesRow = ({ movies, hasMore, loading }) => {
           ))
         ) : movies.length > 0 ? (
           movies.map((movie, index) => (
-          <div
-            className="movie-card"
-            key={index}
-            onClick={() => {
-              window.scrollTo(0, 0);
-              // Emitir evento global para que todas las filas hagan scroll al inicio
-              window.dispatchEvent(new Event('scrollAllRowsToStart'));
-              navigate('/info', { state: { movie } });
-            }}
-          >
-            <img src={movie.poster} alt={movie.title} />
-          </div>
-))
+            <div
+              className="movie-card"
+              key={index}
+              onClick={() => {
+                window.scrollTo(0, 0);
+                // Emitir evento global para que todas las filas hagan scroll al inicio
+                window.dispatchEvent(new Event('scrollAllRowsToStart'));
+                navigate('/info', { state: { movie } });
+              }}
+            >
+              <img src={movie.poster} alt={movie.title} />
+            </div>
+          ))
         ) : (
           <p>No se encontraron resultados.</p>
         )}
       </div>
-      {showRightArrow && (
+      {!isMobile && showRightArrow && (
         <div className="movie-row-shadow right" onClick={scrollRight}>
           <span className="arrow">&#8594;</span>
         </div>

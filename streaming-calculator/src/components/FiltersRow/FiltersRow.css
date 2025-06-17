@@ -1,4 +1,23 @@
-/*Filters style*/
+html, body {
+  overflow-y: visible !important;
+  height: auto !important;
+}
+
+/* Filters style */
+.filters-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible; /* ✅ Permitir que se vea el contenido fuera del contenedor */
+}
+
+/* Oculta la barra de scroll visualmente pero permite scroll */
+.filters-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.filters-wrapper {
+  -ms-overflow-style: none;  /* IE y Edge */
+  scrollbar-width: none;     /* Firefox */
+}
 
 .filters-row {
   width: 100vw;
@@ -6,131 +25,116 @@
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;             /* Antes: 12px */
+  gap: 0.75rem;
   justify-content: center;
   align-items: center;
-  padding: 0.5rem 0;        /* Antes: 8px 0 */
-    margin-bottom: 1rem; 
+  padding: 0.5rem 0;
+  margin-top: 1rem;
+  overflow: visible; /* ✅ Para que los dropdowns no se recorten si se salen */
 }
 
 .filters {
   background-color: var(--md-sys-color-surface);
   color: var(--md-sys-color-on-surface);
-  padding: 0.7rem 2vw;      /* Antes: 10px */
+  padding: 0.7rem 2vw;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 0.13rem 0.26rem rgba(0, 0, 0, 0.1); /* Antes: 0 2px 4px */
+  box-shadow: 0 0.13rem 0.26rem rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/*Dropdown menu*/
+/* Dropdown button */
 .dropbutton {
   background-color: var(--md-sys-color-surface);
   color: var(--md-sys-color-on-surface);
-  padding: 0.7rem 1.2rem;   /* Antes: 10px */
-  border-radius: 0.5rem;    /* Antes: 8px */
+  padding: 0.7rem 1.2rem;
+  border-radius: 0.5rem;
   text-align: center;
   box-shadow: 0 0.13rem 0.26rem rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
   border: 1px solid var(--md-sys-color-outline-variant);
 }
 
-/* The container <div> - needed to position the dropdown content */
+/* Dropdown container */
 .dropdown {
-  position:relative;
+  position: relative;
   display: inline-block;
 }
 
-/* Dropdown Content (Hidden by Default) */
+/* Dropdown content */
 .dropdown-content {
   display: none;
-  position: absolute;
+  position: fixed;
+  top: auto;
+  left: auto;
   background-color: var(--md-sys-color-surface);
-  width: 18vw;              /* Antes: 220px */
-  overflow: hidden;
-  padding: 0.7rem 1rem;     /* Antes: 10px */
-  box-sizing: border-box;
-  box-shadow: 0px 0.5rem 1rem 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
   border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  padding: 10px;
+  border-radius: 0.5rem;
 }
 
-/* Dropdown Options*/
+/* Nueva clase para el contenido global del dropdown */
+.dropdown-content-global {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 4.5rem; /* Ajusta según la altura de tu barra de filtros */
+  background: var(--md-sys-color-surface);
+  min-width: 300px;
+  max-width: 90vw;
+  max-height: 60vh;
+  overflow-y: auto;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 9999;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+/* Dropdown option */
 .dropdown-option {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;              /* Antes: 8px */
+  gap: 0.5rem;
   color: var(--md-sys-color-on-surface);
   text-decoration: none;
 }
 
-/* Links inside the dropdown */
+/* Input inside dropdown */
 .dropdown-content input {
   color: var(--md-sys-color-primary);
-  padding: 0.8rem 1.1rem;   /* Antes: 12px 16px */
+  padding: 0.8rem 1.1rem;
   text-decoration: none;
   display: block;
 }
 
-/* Change color of dropdown links on hover */
+/* Hover styles */
 .dropdown-content a:hover {
   background-color: var(--md-sys-color-surface-variant);
 }
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
-
-/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 .dropdown:hover .dropbtn {
   background-color: var(--md-sys-color-surface-variant);
 }
 
-@media (max-width: 600px) {
-  .filters-fab {
-    position: fixed;
-    top: 4.2rem;
-    left: 1rem;
-    z-index: 1200;
-    background: var(--md-sys-color-primary, #64aaff);
-    color: var(--md-sys-color-on-primary, #001428);
-    border: none;
-    border-radius: 50%;
-    width: 3.2rem;
-    height: 3.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px #0003;
-    font-size: 1.7rem;
-    cursor: pointer;
+/* Responsive behavior */
+@media (max-width: 768px) {
+  .filters-wrapper,
+  .filters-row {
+    overflow-y: visible !important; /* ✅ Evitar corte en móviles */
   }
 
-  .filters-drawer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 80vw;
-    max-width: 340px;
-    height: 100vh;
-    background: var(--md-sys-color-surface, #232a32);
-    box-shadow: 2px 0 16px #0006;
-    z-index: 1300;
-    transform: translateX(-100%);
-    transition: transform 0.3s;
-    padding: 2rem 1rem 1rem 1rem;
-    overflow-y: auto;
-  }
-  .filters-drawer.open {
-    transform: translateX(0);
-  }
-  .filters-drawer-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: var(--md-sys-color-on-surface);
-    font-size: 2rem;
-    cursor: pointer;
+  .filters-row {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding: 1rem;
+    width: max-content;
   }
 }

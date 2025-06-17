@@ -30,7 +30,17 @@ function DiscoverPage() {
   const [selectedOrderType, setSelectedOrderType] = useState();
   const [loading, setLoading] = useState(true);
   const [selectedAndOr, setSelectedAndOr] = useState();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     fetchInitialMovies();
@@ -47,61 +57,61 @@ function DiscoverPage() {
 
   return (
     <div className="discover-page">
-      <button className="filters-fab" onClick={() => setDrawerOpen(true)}>
-        <span>☰</span>
-      </button>
-      <div className={`filters-drawer${drawerOpen ? " open" : ""}`}>
-        <button className="filters-drawer-close" onClick={() => setDrawerOpen(false)}>×</button>
-        <FiltersRow
-          setMovies={setMovies}
-          setCursor={setCursor}
-          setPrevCursors={setPrevCursors}
-          setHasMore={setHasMore}
-          setSelectedGenres={setSelectedGenres}
-          setSelectedPlatforms={setSelectedPlatforms}
-          setSelectedShowTypes={setSelectedShowTypes}
-          minRating={minRating}
-          setMinRating={setMinRating}
-          maxRating={maxRating}
-          setMaxRating={setMaxRating}
-          minRelase={minRelase}
-          setMinRelase={setMinRelase}
-          maxRelase={maxRelase}
-          setMaxRelase={setMaxRelase}
-          sliderValues={sliderValues}
-          setSliderValues={setSliderValues}
-          setSelectedOrderBy={setSelectedOrderBy}
-          setSelectedOrderType={setSelectedOrderType}
-          setLoading={setLoading}
-          setSelectedAndOr={setSelectedAndOr}
-        />
-      </div>
+      {isMobile && (
+        <div className="filters-drawer">
+          <FiltersRow
+            setMovies={setMovies}
+            setCursor={setCursor}
+            setPrevCursors={setPrevCursors}
+            setHasMore={setHasMore}
+            setSelectedGenres={setSelectedGenres}
+            setSelectedPlatforms={setSelectedPlatforms}
+            setSelectedShowTypes={setSelectedShowTypes}
+            minRating={minRating}
+            setMinRating={setMinRating}
+            maxRating={maxRating}
+            setMaxRating={setMaxRating}
+            minRelase={minRelase}
+            setMinRelase={setMinRelase}
+            maxRelase={maxRelase}
+            setMaxRelase={setMaxRelase}
+            sliderValues={sliderValues}
+            setSliderValues={setSliderValues}
+            setSelectedOrderBy={setSelectedOrderBy}
+            setSelectedOrderType={setSelectedOrderType}
+            setLoading={setLoading}
+            setSelectedAndOr={setSelectedAndOr}
+          />
+        </div>
+      )}
 
-      <div className="filters-row-desktop">
-        <FiltersRow
-          setMovies={setMovies}
-          setCursor={setCursor}
-          setPrevCursors={setPrevCursors}
-          setHasMore={setHasMore}
-          setSelectedGenres={setSelectedGenres}
-          setSelectedPlatforms={setSelectedPlatforms}
-          setSelectedShowTypes={setSelectedShowTypes}
-          minRating={minRating}
-          setMinRating={setMinRating}
-          maxRating={maxRating}
-          setMaxRating={setMaxRating}
-          minRelase={minRelase}
-          setMinRelase={setMinRelase}
-          maxRelase={maxRelase}
-          setMaxRelase={setMaxRelase}
-          sliderValues={sliderValues}
-          setSliderValues={setSliderValues}
-          setSelectedOrderBy={setSelectedOrderBy}
-          setSelectedOrderType={setSelectedOrderType}
-          setLoading={setLoading}
-          setSelectedAndOr={setSelectedAndOr}
-        />
-      </div>
+      {!isMobile && (
+        <div className="filters-row-desktop">
+          <FiltersRow
+            setMovies={setMovies}
+            setCursor={setCursor}
+            setPrevCursors={setPrevCursors}
+            setHasMore={setHasMore}
+            setSelectedGenres={setSelectedGenres}
+            setSelectedPlatforms={setSelectedPlatforms}
+            setSelectedShowTypes={setSelectedShowTypes}
+            minRating={minRating}
+            setMinRating={setMinRating}
+            maxRating={maxRating}
+            setMaxRating={setMaxRating}
+            minRelase={minRelase}
+            setMinRelase={setMinRelase}
+            maxRelase={maxRelase}
+            setMaxRelase={setMaxRelase}
+            sliderValues={sliderValues}
+            setSliderValues={setSliderValues}
+            setSelectedOrderBy={setSelectedOrderBy}
+            setSelectedOrderType={setSelectedOrderType}
+            setLoading={setLoading}
+            setSelectedAndOr={setSelectedAndOr}
+          />
+        </div>
+      )}
 
       <MoviesGrid
         movies={movies}
